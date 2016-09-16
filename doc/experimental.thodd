@@ -1,0 +1,15 @@
+pod name_age:
+	age : int
+	name : string
+	
+view person on name_age:	/// declaration of view person on the pod name_age
+	person:					/// builder of person view
+		> _name : string 	/// argument_name : type_name
+			= "toto" 		/// default value
+			-> name			/// where to assign the argument
+		> _age : int 
+			= 18 
+			-> age
+			
+
+		
