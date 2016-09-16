@@ -1,6 +1,6 @@
-pod name_age:
-	age : int
-	name : string
+pod name_age:				/// pod declaration
+	age : int				/// member data declaration : name : type_name
+	name : string			/// other member declaration
 	
 view person on name_age:	/// declaration of view person on the pod name_age
 	person:					/// builder of person view
