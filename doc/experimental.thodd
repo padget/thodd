@@ -1,3 +1,34 @@
+pod all_integral_type:
+    short_type  : short         /// Integral type are the base of any
+    char_type   : char          /// calculus system. It enables to modelize
+    int_type    : int           /// anything that can be computed
+    long_type   : lint          ///
+    llong_type  : llint         ///
+    big_type    : bint          ///
+    ushort_type : ushort        ///        
+    uchar_type  : uchar         ///
+    uint_type   : uint          ///
+    ulong_type  : ulong         ///
+    ullong_type : ullong        ///   
+    ubig_type   : ubig          ///
+    
+pod all_floating_type:          /// Floating point type are provided to
+    float_type     : float      /// enable the floating point calculus
+    double_type    : double     /// skill to the thodd language
+    ldouble_type   : ldouble    ///
+    lldouble_type  : lldouble   ///
+    bdouble_type   : bdouble    ///
+    ufloat_type    : ufloat     ///
+    udouble_type   : udouble    ///
+    uldouble_type  : uldouble   ///
+    ulldouble_type : ulldouble  ///
+    ubdouble_type  : ubdouble   ///
+    
+pod all_printable_type:
+    string_type : string        /// 
+
+
+
 pod name_age:				/// pod declaration
 	age : int				/// member data declaration : name : type_name
 	name : string			/// other member declaration
@@ -10,6 +41,8 @@ view person on name_age:	/// declaration of view person on the pod name_age
 		> _age : int 
 			= 18 
 			-> age
+			
+			
 			
 
 		
