@@ -10,6 +10,23 @@ view person on name_age:	/// declaration of view person on the pod name_age
 		> _age : int 
 			= 18 
 			-> age
-			
 
+
+
+operator + : int * int -> int
+operator + : short * short -> short
+
+
+[[is_integral]] : t : type -> (t == int || t == short) : boolean
+	
+
+<integral_t> [is_integral(integral_t)]
+[[add]] : integral_t * integral_t -> integral_t
+
+
+<integral_t> [is_integral(integral_t)]
+[[add]] x : integral_t, y : integral_t -> x + y
+
+
+print(add(1, 2)) 
 		
