@@ -41,12 +41,6 @@ view person on name_age:	/// declaration of view person on the pod name_age
 		> _age : int 
 			= 18 
 			-> age
-<<<<<<< HEAD
-=======
-			
-			
-			
->>>>>>> 0225f0c86dd5be93632108525217f3d9c2e7019a
 
 
 
