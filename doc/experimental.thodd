@@ -1,38 +1,256 @@
-pod all_integral_type:
-    short_type  : short         /// Integral type are the base of any
-    char_type   : char          /// calculus system. It enables to modelize
-    int_type    : int           /// anything that can be computed
-    long_type   : lint          ///
-    llong_type  : llint         ///
-    big_type    : bint          ///
-    ushort_type : ushort        ///        
-    uchar_type  : uchar         ///
-    uint_type   : uint          ///
-    ulong_type  : ulong         ///
-    ullong_type : ullong        ///   
-    ubig_type   : ubig          ///
-    
-pod all_floating_type:          /// Floating point type are provided to
-    float_type     : float      /// enable the floating point calculus
-    double_type    : double     /// skill to the thodd language
-    ldouble_type   : ldouble    ///
-    lldouble_type  : lldouble   ///
-    bdouble_type   : bdouble    ///
-    ufloat_type    : ufloat     ///
-    udouble_type   : udouble    ///
-    uldouble_type  : uldouble   ///
-    ulldouble_type : ulldouble  ///
-    ubdouble_type  : ubdouble   ///
-    
-pod all_printable_type:
-    string_type : string        /// 
+#  Les types de bases
+
+## Les types intégrals
+
+Les types intégrals constituent la base des calculs pour thodd. 
+Il existe une multitude de types intégrals permettant de n'utiliser
+que les intervales de valeur dont on a besoins. C'est une question
+d'optimisation. Si l'on a besoin que de valeurs comprises entre 0 et 127, 
+alors on ne prendra pas de type permettant de stocker des valeurs allant 
+jusqu'à plusieurs milliards... Ce serait une perte de mémoire stupide.
+
+ - short - ushort 
+ - char  - uchar
+ - int   - uint
+ - lint  - ulint
+ - llint - ullint
+ - bint  - ubint (virtuellement infini)
+
+
+## Les types flottants
+
+Les types flottants sont essentiels au calcul scientifique mais
+souffrent d'erreurs d'imprécision quand les calculs exigent une 
+précision forte des résultats. Tout comme les intégrals, les 
+flottants se déclinent en plusieurs types suivants les besoins
+du programme.
+
+ - float    - ufloat
+ - double   - udouble
+ - ldouble  - uldouble
+ - lldouble - ulldouble
+ - bdouble  - ubdouble (virtuellement infini)
+
+## Les déclinaisons de types
+
+Les déclinaisons de type permette de manipuler les instances
+autrement que par leur simple valeur. Prenons type_t comme type
+pour la description des déclinaisons :
+ - type_t        : valeur de type_t
+ - [type_t]      : valeur de type_t et constante (ne supporte qu'une seul initialisation)
+ 
+ - @type_t       : pointeurs simples de vers des instances de type_t
+ - (@)type_t     : pointeurs managés vers des instances de type_t 
+ - [(@)]type_t   : pointeur managé et constant vers une instance de type_t
+ - @[type_t]     : pointeur vers une valeur constante de type_t
+ - (@)[type_t]   : pointeur managé vers une valeur constante de type_t
+ - [(@)][type_t] : pointeur managé constant vers une valeur constante de type_t
+
+ - #type_t       : référence vers des instances de type_t
+ - #[type_t]     : référence vers des instances constantes de type_t
+
+### Pointeur et pointeur scopé
+
+Un pointeur réprésente la valeur de l'adresse d'une instance. Quand on
+écrit @type_t on désigne donc une adresse d'une instance de type_t.
+Toute instance possède une adresse. 
+
+La déclaration d'un pointeur se fait donc de la manière suivante :
+<exemple> 
+varname : @type_t = ...;
+</exemple>
+
+L'opérateur @ (at) permet de restituer l'adresse d'une instance :
+<exemple>
+varname    : type_t  = ...;
+varnameptr : @type_t = @varname;
+</exemple>
+
+Un pointeur scopé permet de laisser le soin au programme de détruire
+l'instance au bout du pointeur au moment de la destruction du scope dans 
+lequel il est stocké :
+
+<exemple>
+scope1
+{
+    varnameptr : (@)type_t = ... ;
+} /// Destruction automatique de l'instance pointée par varnameptr. 
+</exemple>
+
+Là comme ça, on se demande quel est l'intérêt des pointeurs... En fait, les pointeurs
+sont utilisés dans un premier temps pour conserver un moyen d'accès pour toutes instances
+initilisées sur le tas (cf. tas vs pile) : 
+
+<exemple>
+scope
+{
+    varnameptrs : @type_t = null;
+
+    scope1
+    {
+        varnameptrs1 : @type_t = new ... ;
+        varnameptrs = varnameptrs1; /// Les deux pointeurs pointent vers la même instance du tas
+    }
+
+    varnameptrs; /// pointe toujours sur l'instance initialisée dans scope1
+                 /// (une initialisation sur le tas ne dépend pas du scope).
+
+    delete varnameptrs; /// Destruction manuelle du pointeur et de l'instance pointée.   
+                        /// Si pas de destruction manuelle, alors il y aura fuite de mémoire 
+                        /// car il n'y aura plus de pointeur sur l'instance.
+}
+
+Pour les pointeurs scopés, il n'y a pas de destruction manuelle à effectuer. 
+En revanche, un seul pointeur scopé peut pointer à un instant t sur l'instance du tas (via new).
+Un pointeur scopé ne peut pas pointer vers une instance dans la pile (non initilisée avec new).
+
+</exemple>
+
+<exemple>
+scope
+{
+    varnameptrs : (@)type_t = null;
+
+    scope1
+    {
+        varnameptrs1 : (@)type_t = new ... ;
+        varnameptrs = varnameptrs1; /// Il y a transfert de propriété de varnameptrs1 vers varnameptr.
+                                    /// varnameptrs1 vaut donc null. 
+    }
+
+    varnameptrs ; /// possède la valeur de varnameptrs1 (transfert de scope)
+} /// Destruction de varnameptrs et donc de l'instance pointée également (à cause de la nature scopée du pointeur).
+
+<exemple>
+
+L'utilisation d'un pointeur se fait donc principalement quand il y a nécessité de 
+transférer une instance d'un scope à l'autre (que ce soit de manière montante ou descendante).
+
+### Référence
+
+Les références sont en tout et pour tout de simple alias sur des instances. 
+
+<exemple>
+varname : type_t = ...;
+varnameref : #type_t = varname;
+varnameptr++ ; /// varname et varnameref on la même valeur incrémenté.
+</exemple>
 
 
 
-pod name_age:				/// pod declaration
-	age : int				/// member data declaration : name : type_name
-	name : string			/// other member declaration
-	
+# Ensemble et POD (Plain of data)
+
+## Plain of Data
+
+Les POD permettent la composition de type au sein d'une même structure :
+
+<exemple>
+
+pod name_age: /// déclaration d'un pod
+{ 
+    name : string; /// string sera développé ultérieurement
+    age  : uint;
+};
+
+</exemple>
+
+## Ensemble
+
+La notion d'ensemble permet de définir une ou plusieurs restriction sur un type donné :
+
+<exemple>
+age : {a : uint | 0 < a && a < 150}; /// age est l'ensemble des objets a de type uint tel que a est compris entre 0 et 150.
+                                     /// On définit donc ainsi un ensemble d'objet par restriction conditionnelle sur un ensemble plus vaste.
+</exemple>
+
+Formellement on définit un ensemble de la manière suivante :
+<grammar>
+
+<name> ':' '{' <instance_name> ':' <type> '|' <expression> '}' /// <expression> doit être sémantiquement booléenne  
+
+</grammar>
+
+Un ensemble se définit donc comme un sous ensemble contraint par une expression booléenne d'un autre ensemble plus vaste.
+Cette expression booléenne sera vérifié à chaque initialisation/affectation de valeur à la variable de type_t (type_t étant le nom de l'ensemble défini) :
+
+<exemple>
+type_t : {o : other_t | expression_on_other_t(o) } ; /// expression_on_other_t(o) renvois doit renvoyer une valeur booléenne   
+
+t : type_t = ... /// ... est la valeur affecté à t et doit vérifier la contrainte expression_on_other_t(...) 
+                 /// sinon l'affectation ne peut avoir lieu et une erreur est levée (cf gestion des erreurs).
+
+t = ... /// affectation d'une autre valeur, de même que pour l'initialisation, la nouvelle valeur doit passer la contrainte
+        /// avant de pouvoir être affectée à t.
+
+</exemple>
+
+
+## Instantiation d'un type_t
+
+Maintenant que nous avons vu un certain nombre de type de base possible (pointeur, integral, flottant, reference, set, pod, ...)
+il nous faut nous intéresser à leur utilisation de base : l'instantiation. 
+Instancier un type signifie déclarer une variable capable de contenir les valeurs de ce type.
+Formellement, l'instantiation se déroule de la façon suivante :
+
+<grammar>
+
+<name> ':' <type> ('=' <expression>) ? ';' 
+
+</grammar>
+
+on a donc une variable '<name>' de type '<type>' avec éventuellement la valeur '<expression>'. L'expression '<expression>' doit 
+compatible avec '<type>' (de même type ou bien convertible).
+
+Une variable instancié n'a de sens que dans le scope où elle aura été déclarer. La variable sera détruire à la sortie du scope. 
+Nous parlons bien ici de la variable et non pas de la valeur. Car il existe deux cas possible pour la valeur : 
+  - elle se situe sur la pile : destruction en même temps que la variable.
+  - elle se situe sur le tas : pas de destruction automatique (sauf si pointeur scopé).
+
+
+### Instanciation statique
+
+L'instanciation statique permet principalement de garantir la durée de vie d'une variable : elle est la même que celle du scope dans
+lequel elle a été déclarée. 
+
+### Instanciation dynamique
+
+L'instanciation dynamique elle permet de laisser au développeur le soin de controlé la durée de vie de la valeur de la variable. 
+Une allocation dynamique se fait par l'utilisation de l'allocateur 'new' et la destruction par 'delete'. 
+Pour éviter toute fuite de mémoire, il y aura donc intérêt à conserver en permanence un pointeur vers la valeur qui a été allouée
+dynamiquement pour que le moment venu, sa désallocation puisse se faire. Autrement, la zone mémoire correspondante serait perdue...
+
+<grammar>
+    <name> ':' '@'<type> = 'new' <type2> '(' <arguments> ')' ';' /// Allocation dynamique
+    <name> ':' <type> = <expression> ';' /// allocation statique  
+    'delete' <name> ';' /// désallocation dynamique 
+</grammar>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 view person on name_age:	/// declaration of view person on the pod name_age
 	person:					/// builder of person view
 		> _name : string 	/// argument_name : type_name
@@ -44,8 +262,8 @@ view person on name_age:	/// declaration of view person on the pod name_age
 
 
 
-operator + : [#]int   * [#]int -> int
-operator + : [#]short * [#]short -> short
+operator + : #[int]   * #[int]   -> [int]
+operator + : #[short] * #[short] -> [short]
 
 
 [[is_integral]] : t : type -> (t == int || t == short) : boolean
