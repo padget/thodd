@@ -360,7 +360,7 @@ namespace thodd
                     target_t& __tgt) const
                 {
                     auto&& __res = algo(__cursor, __end, __tgt);
-                    react(__cursor, __end, __res, __tgt);
+                    react(__cursor, __end, __tgt, __res);
                     return __res;
                 }
 
@@ -1142,40 +1142,3 @@ namespace thodd
 }
 
 #endif // !__ATOM_LANG2_HPP__
-
-
-
-/*
- auto __integer = +caster::short_;
-    auto __integer_result = __integer.attr();
-
-    string __str_integer{"123"};
-    auto __begin = __str_integer.begin(),
-         __end = __str_integer.end(); 
-
-    logger<root>::info(std::boolalpha, __integer(__begin, __end, __integer_result));
-
-    auto __integer_to_int = 
-        [](auto const& __attr)
-        {
-            auto __res = 0;
-            auto __unit = 1u;
-            
-            auto __begin = __attr.begin();
-            auto __end   = --__attr.end();
-
-            while(__end != __begin)
-            {
-                __res += (*__end) * __unit;
-                __unit *= 10;
-                --__end;
-            }
-
-            __res += (*__end) * __unit;
-            __unit *= 10;
-
-            return __res;
-        };
-
-    logger<root>::info(" resultat : ", __integer_to_int(__integer_result));
-*/

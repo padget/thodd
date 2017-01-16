@@ -1,15 +1,7 @@
 #include <exception>
-#include <iostream>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
-#include <thodd/containers.hpp>
 #include <thodd/logging.hpp>
-#include <thodd/lang.hpp>
-#include <thodd/variant.hpp>
-#include <thodd/string.hpp>
-
+#include <thodd/properties.hpp>
+#include <string>
 
 int main(
     int argc,
@@ -20,14 +12,11 @@ try
     using namespace thodd::lang;
     using namespace thodd::contdsl;
 
-    
-
     logger<root>::info("########## ATOM Launched ##########");
-    constexpr auto __tmp = {1,2,3,4,5,6,7,8,9};
 
-    go<query>(
-        with($0) > foreach(cout_ << $0 << endl_), 
-        __tmp);
+    std::string __str {"un= deux"};
+    
+    parse_property(__str.begin(), __str.end());
 
     logger<root>::info("########## ATOM Stopped ##########");
 

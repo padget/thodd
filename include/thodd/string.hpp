@@ -99,7 +99,17 @@ namespace thodd
             }
         }
 
+        template<
+            typename iterator_t>
+        basic_string(
+            detail::range<iterator_t> const& __range) :
+            basic_string(__range.size() + 1)
+        {
+            for(auto const& __letter : __range)
+                push_back(m_data, __letter);
+        }
 
+    public:
         basic_string
         operator +(
             basic_string const& __other) const
