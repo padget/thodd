@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "C++ Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/debug/thodd.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
+            }
+        },
+        {
+            "name": "C++ Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "${workspaceRoot}/debug/thodd.exe",
+            "processId": "${command.pickProcess}",
+            "linux": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
+            },
+            "osx": {
+                "MIMode": "lldb",
+                "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
+            },
+            "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
+        }
+    ]
+}

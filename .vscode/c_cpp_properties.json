@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": ["/usr/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        },
+        {
+            "name": "Linux",
+            "includePath": ["/usr/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        },
+        {
+            "name": "Win32",
+            "includePath": ["c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        },
+        {
+            "name": "atom_project",
+            
+            "includePath": [
+                "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include", 
+                "c:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include", 
+                "C:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include/c++", 
+                "C:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include/c++/backward", 
+                "C:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include/c++/x86_64-w64-mingw32",
+                "C:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include-fixed", 
+                "C:/gcc-7-win64/x86_64-w64-mingw32/include", 
+                "C:/gcc-7-win64/include/c++/7.0.0",
+                "src"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        }
+    ]
+}
