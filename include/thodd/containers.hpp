@@ -29,6 +29,32 @@ namespace thodd
             "that the container where "
             "it is used")
 
+
+    template<
+        typename iterator_t>
+    struct iterator_traits
+    {
+        using value_type = typename iterator_t::value_type;
+    };
+
+
+    template<
+        typename type_t>
+    struct iterator_traits<type_t*>
+    {
+        using value_type = type_t;
+    };
+
+
+    template<
+        typename type_t>
+    struct iterator_traits<type_t const*>
+    {
+        using value_type = type_t;
+    };
+
+    
+
     namespace detail
     {
         template<
@@ -40,6 +66,22 @@ namespace thodd
             end_t m_end;
 
             using iterator_type = begin_t;
+
+        public:
+            inline auto const
+            size()
+            {
+                size_t __size{0u};
+                auto __cursor = m_begin;
+
+                while(__cursor != m_end)
+                {
+                    ++__cursor;
+                    ++__size;
+                }
+
+                return __size;
+            }
 
         public:
             inline auto 
