@@ -8,6 +8,7 @@
 #  include <thodd/meta.hpp>
 #  include <thodd/functional.hpp>
 #  include <thodd/variant.hpp>
+#  include <thodd/containers.hpp>
 
 namespace thodd
 {
@@ -33,19 +34,9 @@ namespace thodd
                     iterator_t const& __end) const
                 {
                     auto&& __res = algo(__cursor, __end);
-                    //react(__cursor, __end, __res);
 
                     return __res;
                 }
-
-                // template<
-                //     typename oreactor_t>
-                // constexpr auto 
-                // operator[](
-                //     oreactor_t const& __react) const
-                // {
-                //     return matcher<algorithm_t, meta::decay<oreactor_t>>{algo, __react};
-                // }
             };
 
         
@@ -203,8 +194,6 @@ namespace thodd
 
                     return min_c <= __cpt && __cpt <= max_c; 
                 }
-
-               
             };
 
             template<
@@ -877,7 +866,7 @@ namespace thodd
             operator * (
                 parser<rparams_t...> const& __right)
             {
-                return (~__right)(1, infinity);
+                return (~__right)(0, infinity);
             }
         }
 
