@@ -1,7 +1,6 @@
 #include <exception>
-#include <thodd/logging.hpp>
-#include <thodd/properties.hpp>
-#include <string>
+#include <thodd/functional_lambda.hpp> 
+
 
 int main(
     int argc,
@@ -9,16 +8,17 @@ int main(
 try
 {
     using namespace thodd;
-    using namespace thodd::lang;
-    using namespace thodd::contdsl;
+    ;
+    auto __cpt = 1u;
 
-    logger<root>::info("########## ATOM Launched ##########");
-
-    std::string __str {"un= deux"};
-    
-    parse_property(__str.begin(), __str.end());
-
-    logger<root>::info("########## ATOM Stopped ##########");
+    std::cout << 
+    tern($0 == val(0u)) [ 
+        cout_ << val(2),
+        val('0') 
+    ][ 
+        cout_ << val(0),
+        val('c')
+    ](2) ;
 
     return 0;
 }

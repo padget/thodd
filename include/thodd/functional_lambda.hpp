@@ -168,332 +168,190 @@ namespace thodd
     }
 
 
-
-    namespace detail
-    {
-        struct nothing
-        {
-            template<
-                typename ... args_t>
-            constexpr void
-            operator()(
-                args_t&&...) const {}
-        };
-    }
-
-    extern constexpr auto nothing = as_functor([](auto&&... __args){});
-
-
-
-    namespace detail
-    {
-        struct compose_builder
-        {
-            template<
-                typename func1_t,
-                typename func2_t>
-            struct compose_impl
-            {
-                meta::remove_all<func1_t> func1;
-                meta::remove_all<func2_t> func2;
-
-                template<
-                    typename ... args_t>
-                constexpr decltype(auto)
-                operator()(
-                    args_t&&... _args) const
-                {
-                    return func1(func2(perfect<args_t>(_args)...));
-                }
-            };
-
-            template<
-                typename func1_t,
-                typename func2_t>
-            constexpr auto
-            operator() (
-                func1_t&& _func1,
-                func2_t&& _func2) const
-            {
-                return as_functor(compose_impl<func1_t, func2_t>{
-                            perfect<func1_t>(_func1),
-                            perfect<func2_t>(_func2)});
-            }
-        };
-    }
-
-    extern constexpr auto compose = detail::compose_builder{};
-
-
-
-
-    namespace detail
-    {
-        struct demux_builder
-        {
-            template<
-                typename indexes_t,
-                typename func_t,
-                typename ... funcs_t>
-            struct demux_impl;
-
-            template<
-                size_t... indexes_c,
-                typename func_t,
-                typename ... funcs_t>
-            struct demux_impl<indexes<indexes_c...>, func_t, funcs_t...>
-            {
-                meta::remove_all<func_t> func;
-
-                tuple<meta::remove_all<funcs_t>...> funcs;
-
-                template<
-                    typename ... args_t>
-                constexpr decltype(auto)
-                operator()(
-                    args_t&&... _args) const
-                {
-                    return func(get<indexes_c>(funcs)(perfect<args_t>(_args)...)...);
-                }
-            };
-
-            template<
-                typename func_t,
-                typename ... funcs_t>
-            constexpr auto
-            operator()(
-                func_t&& _func,
-                funcs_t&&... _funcs) const
-            {
-                return as_functor(demux_impl<make_indexes<sizeof...(funcs_t)>, func_t, funcs_t...>{
-                        perfect<func_t>(_func),
-                        make_tuple(perfect<funcs_t>(_funcs)...)});
-            }
-        };
-    }
-
-    extern constexpr auto demux = as_functor(detail::demux_builder{});
-    extern constexpr auto bind = demux;
-
-
-
-    /*namespace detail
-	{
-    	struct member_builder
-    	{
-    		template<
-				typename func_t,
-				typename instance_t,
-				typename ... bindeds_t>
-    		struct member_impl
-			{
-    			meta::decay<func_t> func;
-    			instance_t&& instance;
-    			tuple<meta::decay<bindeds_t>...> bindeds;
-
-    			template<
-					typename ... args_t>
-    			constexpr decltype(auto)
-    			operator()(
-					args_t&&... _args) const
-    			{
-    				return bindeds.functional_apply(instance.*func, perfect<args_t>(_args)...);
-    			}
-			};
-
-    		template<
-				typename func_t,
-				typename instance_t,
-				typename ... bindeds_t>
-    		constexpr member_impl<func_t, instance_t, bindeds_t...>
-    		operator()(
-    			func_t&& _func,
-				instance_t&& _instance,
-				bindeds_t&&... _bindeds) const
-    		{
-    			return {perfect<func_t>(_func),
-    					perfect<instance_t>(_instance),
-						make_tuple(perfect<bindeds_t>(_bindeds)...)};
-    		}
-    	};
-	}
-
-
-    constexpr detail::member_builder member;
-
-*/
+    extern constexpr auto 
+    nothing = as_functor([](auto&&... __args) {});
 
     extern constexpr auto
-	member = as_functor([](auto&& _func,
-						   auto&& _instance,
-						   auto&&... _prebinded)
-						   {
-							  return as_functor(
-									  [&](auto&&... _args)
-										->decltype(auto)
-										{
-											using func_t = decltype(_func);
-											using instance_t = decltype(_instance);
-
-											return (perfect<instance_t>(_instance).*perfect<func_t>(_func))(_prebinded(perfect<decltype(_args)>(_args)...)...);
-										});
-						   });
-
-    namespace detail
-    {
-        struct for_impl
+    compose = 
+        [](auto&& __fsup, auto&& __finf) 
         {
-            template<
-                typename init_t,
-                typename cond_t,
-                typename step_t>
-            struct for_init_cond_step_impl
+            return as_functor(
+            [__fsup, __finf] (auto&&... __args)
+            -> decltype(auto)
             {
-                meta::remove_all<init_t> init;
-                meta::remove_all<cond_t> cond;
-                meta::remove_all<step_t> step;
-
-
-                template<
-                    typename then_t>
-                struct for_init_cond_step_then_impl
-                {
-                    meta::remove_all<init_t> init;
-                    meta::remove_all<cond_t> cond;
-                    meta::remove_all<step_t> step;
-                    meta::remove_all<then_t> then;
-
-                    template<
-                        typename ... args_t>
-                    constexpr void
-                    operator()(
-                        args_t&&... _args) const
-                    {
-                        for(init(perfect<args_t>(_args)...);
-                            cond(perfect<args_t>(_args)...);
-                            step(perfect<args_t>(_args)...))
-                            then(perfect<args_t>(_args)...);
-                    }
-                };
-
-                template<
-                    typename then_t>
-                constexpr decltype(auto)
-                operator()(
-                    then_t&& _then) const
-                {
-                    return for_init_cond_step_then_impl<then_t>{init, cond, step, perfect<then_t>(_then)};
-                }
-
-            };
-
-            template<
-                typename init_t,
-                typename cond_t,
-                typename step_t>
-            constexpr decltype(auto)
-            operator()(
-                init_t&& _init,
-                cond_t&& _cond,
-                step_t&& _step) const
-            {
-                return for_init_cond_step_impl<init_t, cond_t, step_t>{
-                    perfect<init_t>(_init),
-                    perfect<cond_t>(_cond),
-                    perfect<step_t>(_step)};
-            }
+                return __fsup(
+                        __finf(
+                            perfect<decltype(__args)>(__args)...));
+            });
         };
-    }
-
-    extern constexpr auto for_ = as_functor(detail::for_impl{});
-
-
-
-
-    namespace detail
-    {
-        struct if_impl
-        {
-            template<
-                typename cond_t>
-            struct if_cond_impl
-            {
-                meta::remove_all<cond_t> cond;
-
-                template<
-                    typename then_t>
-                struct if_cond_then_impl
-                {
-                    meta::remove_all<cond_t> cond;
-                    meta::remove_all<then_t> then;
-
-                    template<
-                        typename ... args_t>
-                    constexpr decltype(auto)
-                    operator()(
-                        args_t&&... _args) const
-                    {
-                        if(cond(perfect<args_t>(_args)...))
-                            return then(perfect<args_t>(_args)...);
-                    }
-
-                    template<
-                        typename else_then_t>
-                    struct if_cond_then_else_else_then_impl
-                    {
-                        meta::remove_all<cond_t> cond;
-                        meta::remove_all<then_t> then;
-                        meta::remove_all<else_then_t> else_then;
-
-                        template<
-                            typename ... args_t>
-                        constexpr decltype(auto)
-                        operator()(
-                            args_t&&... _args) const
-                        {
-                            if(cond(perfect<args_t>(_args)...))
-                                return then(perfect<args_t>(_args)...);
-                            else
-                                return else_then(perfect<args_t>(_args)...);
-                        }
-                    };
-
-                    template<
-                        typename else_then_t>
-                    constexpr decltype(auto)
-                    else_(
-                        else_then_t&& _else_then) const
-                    {
-                        return if_cond_then_else_else_then_impl<else_then_t>{cond, then, perfect<else_then_t>(_else_then)};
-                    }
-
-                };
-
-                template<
-                    typename then_t>
-                constexpr decltype(auto)
-                operator()(
-                    then_t&& _then) const
-                {
-                    return if_cond_then_impl<then_t>{cond, perfect<then_t>(_then)};
-                }
-            };
-
-
-            template<
-                typename cond_t>
-            constexpr decltype(auto)
-            operator()(
-                cond_t&& _cond) const
-            {
-                return if_cond_impl<cond_t>{perfect<cond_t>(_cond)};
-            }
-        };
-    }
-
 
     extern constexpr auto
-    if_ = as_functor(detail::if_impl{});
+    bind = 
+        [](auto&& __func, auto&&... __funcs) 
+        {
+            return as_functor(
+            [__func, __funcs...] (auto&&... __args)
+            -> decltype(auto)
+            {
+                return __func(__funcs(perfect<decltype(__args)>(__args)...)...);
+            });  
+        };
+
+    extern constexpr auto
+	member = 
+        [](auto&& _func, auto&& _instance, auto&&... _prebinded)
+        {
+            return as_functor(
+            [=](auto&&... _args) 
+            ->decltype(auto)
+            {
+                using func_t = decltype(_func);
+                using instance_t = decltype(_instance);
+
+                return (perfect<instance_t>(_instance).*perfect<func_t>(_func))(_prebinded(perfect<decltype(_args)>(_args)...)...);
+            });
+        };
+
+    
+    extern constexpr auto
+    ref = 
+        [](auto& __ref)
+        {
+            return as_functor(
+            [&__ref](auto&&... __args)
+            -> decltype(auto)
+            {
+                return __ref;
+            });
+        };
+
+    extern constexpr auto
+    cref = 
+        [](auto const& __cref)
+        {
+            return as_functor(
+            [&__cref] (auto&&... __args)
+            -> decltype(auto)
+            {
+                return __cref;
+            });
+        };
+
+    extern constexpr auto
+    val = 
+        [](auto&& __val)
+        {
+            return as_functor(
+            [__val](auto&&... __args)
+            -> decltype(auto)
+            {
+                return __val;
+            });
+        };
+
+
+    template<
+        typename builder_t>
+    struct statement
+    {
+         builder_t builder;
+
+        constexpr auto
+        operator[] (
+            auto&& __statements) const
+        {
+            return 
+              builder(
+                perfect<decltype(__statements)>(__statements));
+        }
+    };
+
+    
+    constexpr auto
+    as_statement(
+        auto&& __builder)
+    {
+        return statement<meta::decay<decltype(__builder)>>{__builder}; 
+    }
+
+    extern constexpr auto
+    while_ = 
+        [](auto&& __cond)
+        {
+            return 
+            as_statement(
+            [&__cond] (auto&& __statements)
+            {
+                return as_functor(
+                [__cond, __statements](auto&&... __args)
+                {
+                    while(__cond(perfect<decltype(__args)>(__args)...))
+                        __statements(perfect<decltype(__args)>(__args)...);
+                });
+            });
+        };
+
+    extern constexpr auto
+    until_ = 
+        [](auto&& __cond)
+        {
+            return 
+            as_statement(
+            [&__cond] (auto&& __statements)
+            {
+                return as_functor(
+                [__cond, __statements](auto&&... __args)
+                {
+                    while(!__cond(perfect<decltype(__args)>(__args)...))
+                        __statements(perfect<decltype(__args)>(__args)...);
+                });
+            });
+        };
+    
+
+    extern constexpr auto
+    if_ = 
+        [](auto&& __cond)
+        {
+            return 
+            as_statement(
+            [&__cond] (auto&& __statements)
+            {
+                return as_functor(
+                [__cond, __statements](auto&&... __args)
+                {
+                    if(__cond(perfect<decltype(__args)>(__args)...))
+                        __statements(perfect<decltype(__args)>(__args)...);
+                });
+            });
+        };
+
+    extern constexpr auto
+    tern = 
+        [](auto&& __cond)
+        {
+            return 
+            as_statement(
+            [&__cond] (auto&& __statements)
+            {
+                return 
+                as_statement(
+                [&__cond, &__statements](auto&& __else_statements)
+                {
+                    return as_functor(
+                    [__cond, __statements, __else_statements](auto&&... __args)
+                    -> decltype(auto)
+                    {
+                        return 
+                            __cond(perfect<decltype(__args)>(__args)...) ?
+                             __statements(perfect<decltype(__args)>(__args)...) :
+                             __else_statements(perfect<decltype(__args)>(__args)...);
+                    });
+                });
+            });
+        };
+
+
 
 /*
 
@@ -549,103 +407,6 @@ namespace thodd
     constexpr auto iterate = as_functor(detail::iterate_impl{});
 
 */
-
-
-    namespace detail
-    {
-        /// Encapsulate a
-        /// lvalue &
-        template<
-            typename ref_t>
-        struct reference
-        {
-            ref_t& ref;
-
-
-            template<
-                typename ... args_t>
-            constexpr ref_t&
-            operator()(
-                args_t&&... _args) const
-            {
-                return ref;
-            }
-        };
-
-        /// Encapsulate a
-        /// const lvalue &
-        template<
-            typename ref_t>
-        struct const_reference
-        {
-            ref_t const& ref;
-
-
-            template<
-                typename ... args_t>
-            constexpr ref_t const&
-            operator()(
-                args_t&&... _args) const
-            {
-                return ref;
-            }
-        };
-
-        /// Encapsulate a
-        /// value and rvalue
-        template<
-            typename value_t>
-        struct value
-        {
-            value_t m_ref;
-
-            template<
-                typename ... args_t>
-            constexpr value_t const&
-            operator()(
-                args_t&&... _args) const
-            {
-                return m_ref;
-            }
-        };
-    }
-
-
-    /// Return an actor
-    /// based on reference
-    template<
-        typename type_t>
-    constexpr functor<detail::reference<type_t>>
-    ref(
-        type_t& _ref)
-    {
-        return {_ref};
-    }
-
-
-    /// Return an actor
-    /// based on const_reference
-    template<
-        typename type_t>
-    constexpr functor<detail::const_reference<type_t>>
-    cref(
-        type_t&& _ref)
-    {
-        return {perfect<type_t>(_ref)};
-    }
-
-
-    /// Return an actor
-    /// based on value
-    template<
-        typename type_t>
-    constexpr functor<detail::value<meta::decay<type_t>>>
-    val(
-        type_t&& _ref)
-    {
-        return {perfect<type_t>(_ref)};
-    }
-
 
 
 
@@ -1087,117 +848,10 @@ namespace thodd
 
 
 
-    namespace detail
-    {
-        struct until_impl
-        {
-            template<
-                typename cond_t>
-            struct until_cond_impl
-            {
-                meta::remove_all<cond_t> cond;
+  
 
 
-                template<
-                    typename then_t>
-                struct until_cond_then_impl
-                {
-                    meta::remove_all<cond_t> cond;
-                    meta::remove_all<then_t> then;
-
-                    template<
-                        typename ... args_t>
-                    constexpr void
-                    operator()(
-                        args_t&&... _args) const
-                    {
-                        while(!cond(perfect<args_t>(_args)...))
-                            then(perfect<args_t>(_args)...);
-                    }
-                };
-
-
-                template<
-                    typename then_t>
-                constexpr decltype(auto)
-                operator()(
-                    then_t&& _then) const
-                {
-                    return until_cond_then_impl<then_t>{cond, perfect<then_t>(_then)};
-                }
-
-            };
-
-            template<
-                typename cond_t>
-            constexpr decltype(auto)
-            operator()(
-                cond_t&& _cond) const
-            {
-                return as_functor(until_cond_impl<cond_t>{
-                    perfect<cond_t>(_cond)});
-            }
-        };
-    }
-
-    extern constexpr auto until_ = as_functor(detail::until_impl{});
-
-
-
-
-    namespace detail
-    {
-        struct while_impl
-        {
-            template<
-                typename cond_t>
-            struct while_cond_impl
-            {
-                meta::remove_all<cond_t> cond;
-
-
-                template<
-                    typename then_t>
-                struct while_cond_then_impl
-                {
-                    meta::remove_all<cond_t> cond;
-                    meta::remove_all<then_t> then;
-
-                    template<
-                        typename ... args_t>
-                    constexpr void
-                    operator()(
-                        args_t&&... _args) const
-                    {
-                        while(cond(perfect<args_t>(_args)...))
-                            then(perfect<args_t>(_args)...);
-                    }
-                };
-
-                template<
-                    typename then_t>
-                constexpr decltype(auto)
-                operator()(
-                    then_t&& _then) const
-                {
-                    return while_cond_then_impl<then_t>{cond, perfect<then_t>(_then)};
-                }
-
-            };
-
-            template<
-                typename cond_t>
-            constexpr decltype(auto)
-            operator()(
-                cond_t&& _cond) const
-            {
-                return as_functor(while_cond_impl<cond_t>{
-                    perfect<cond_t>(_cond)});
-            }
-        };
-    }
-
-    extern constexpr auto while_ = as_functor(detail::while_impl{});
+   
 
 
 

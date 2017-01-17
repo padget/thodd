@@ -15,7 +15,7 @@ namespace thodd
         iterator_t const __end)
     {
         using namespace lang::parser;
-        
+
         constexpr auto lower = range('a', 'z');
         
         constexpr auto point = sym('.');
