@@ -1,11 +1,11 @@
-#ifndef ATOM_LAW_HPP_
-#  define ATOM_LAW_HPP_
+#ifndef THODD_LAW_HPP_
+#  define THODD_LAW_HPP_
 
 #  include <thodd/meta.hpp>
 #  include <initializer_list>
 #  include <limits>
 
-#  define ATOM_EXCEPTION(name, message)                             \
+#  define THODD_EXCEPTION(name, message)                             \
     class name :                                                    \
         public std::exception                                        \
     {                                                                \
@@ -96,4 +96,4 @@ namespace thodd
     using repeat = std::initializer_list<int>;
 }
 
-#endif /* ATOM_LAW_HPP_ */
+#endif /* THODD_LAW_HPP_ */

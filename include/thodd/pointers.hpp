@@ -5,15 +5,15 @@
  *      Author: padget
  */
 
-#ifndef ATOM_POINTERS_HPP_
-#  define ATOM_POINTERS_HPP_
+#ifndef THODD_POINTERS_HPP_
+#  define THODD_POINTERS_HPP_
 
 #  include <thodd/law.hpp>
 #  include <thodd/require.hpp>
 
 namespace thodd
 {
-    ATOM_EXCEPTION(
+    THODD_EXCEPTION(
         null_pointer_exception, 
         "the pointer is null")
 
@@ -475,4 +475,4 @@ namespace thodd
 }
 
 
-#endif /* ATOM_POINTERS_HPP_ */
+#endif /* THODD_POINTERS_HPP_ */

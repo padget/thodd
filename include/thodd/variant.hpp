@@ -1,5 +1,5 @@
-#ifndef __ATOM_VARIANT_HPP__
-#  define __ATOM_VARIANT_HPP__
+#ifndef __THODD_VARIANT_HPP__
+#  define __THODD_VARIANT_HPP__
 
 #  include <thodd/law.hpp>
 #  include <thodd/meta.hpp>

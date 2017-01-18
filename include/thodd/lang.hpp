@@ -1,5 +1,5 @@
-#ifndef __ATOM_LANG2_HPP__
-#  define __ATOM_LANG2_HPP__
+#ifndef __THODD_LANG2_HPP__
+#  define __THODD_LANG2_HPP__
 
 #  include <limits>
 
@@ -1141,4 +1141,4 @@ namespace thodd
     }
 }
 
-#endif // !__ATOM_LANG2_HPP__
+#endif // !__THODD_LANG2_HPP__

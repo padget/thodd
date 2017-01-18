@@ -1,5 +1,5 @@
-#ifndef __ATOM_TUPLE_HPP__
-#  define __ATOM_TUPLE_HPP__
+#ifndef __THODD_TUPLE_HPP__
+#  define __THODD_TUPLE_HPP__
 
 #  include <thodd/law.hpp>
 #  include <thodd/meta.hpp>

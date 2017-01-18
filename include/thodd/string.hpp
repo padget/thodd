@@ -1,5 +1,5 @@
-#ifndef __ATOM_STRING_HPP__
-#  define __ATOM_STRING_HPP__
+#ifndef __THODD_STRING_HPP__
+#  define __THODD_STRING_HPP__
 
 #  include <thodd/container_dsl.hpp>
 #  include <thodd/containers.hpp>

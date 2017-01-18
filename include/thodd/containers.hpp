@@ -5,8 +5,8 @@
  *      Author: padget
  */
 
-#ifndef ATOM_CONTAINERS_HPP_
-#  define ATOM_CONTAINERS_HPP_
+#ifndef THODD_CONTAINERS_HPP_
+#  define THODD_CONTAINERS_HPP_
 
 #  include <thodd/meta.hpp>
 #  include <thodd/require.hpp>
@@ -21,7 +21,7 @@
 
 namespace thodd
 {
-    ATOM_EXCEPTION(
+    THODD_EXCEPTION(
             bad_iterator_origin,
             "bad_iterator_origin : "
             "the used iterator must "
@@ -1115,7 +1115,7 @@ namespace thodd
 
     namespace arrays
     {
-        ATOM_EXCEPTION(zero_sized_array_exception, 
+        THODD_EXCEPTION(zero_sized_array_exception, 
                        "zero_sized_array_exception : "
                        "an array can't have a zero size !!!")
 
@@ -1145,7 +1145,7 @@ namespace thodd
         }
     }
 
-    ATOM_EXCEPTION(vector_out_of_bound_exception, 
+    THODD_EXCEPTION(vector_out_of_bound_exception, 
                    "vector_out_of_bound_exception : "
                    "tryed to access to an out of bound memory")
 
@@ -2144,4 +2144,4 @@ namespace thodd
 
 }
 
-#endif /* ATOM_CONTAINERS_HPP_ */
+#endif /* THODD_CONTAINERS_HPP_ */

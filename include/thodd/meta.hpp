@@ -1,5 +1,5 @@
-#ifndef ATOM_META_HPP_
-#  define ATOM_META_HPP_
+#ifndef THODD_META_HPP_
+#  define THODD_META_HPP_
 
 namespace thodd
 {
@@ -844,7 +844,7 @@ namespace thodd
 
 
 
-#  define ATOM_IS_XXXX_F(name)                \
+#  define THODD_IS_XXXX_F(name)                \
         template<                             \
             typename type_t>                 \
         constexpr bool name##_f(             \
@@ -889,138 +889,138 @@ namespace thodd
             typename type_t>
         using is_void = __type<lazy::is_void<type_t>>;
 
-        ATOM_IS_XXXX_F(is_void)
+        THODD_IS_XXXX_F(is_void)
 
         template<
             typename type_t>
         using is_null_ptr = __type<lazy::is_null_ptr<type_t>>;
 
-        ATOM_IS_XXXX_F(is_null_ptr)
+        THODD_IS_XXXX_F(is_null_ptr)
 
         template<
             typename type_t>
         using is_integral = __type<lazy::is_integral<type_t>>;
 
-        ATOM_IS_XXXX_F(is_integral)
+        THODD_IS_XXXX_F(is_integral)
 
         template<
             typename type_t>
         using is_floating_point = __type<lazy::is_floating_point<type_t>>;
 
-        ATOM_IS_XXXX_F(is_floating_point)
+        THODD_IS_XXXX_F(is_floating_point)
 
         template<
             typename type_t>
         using is_array = __type<lazy::is_array<type_t>>;
 
-        ATOM_IS_XXXX_F(is_array)
+        THODD_IS_XXXX_F(is_array)
 
         template<
             typename type_t>
         using is_enum = __type<lazy::is_enum<type_t>>;
 
-        ATOM_IS_XXXX_F(is_enum)
+        THODD_IS_XXXX_F(is_enum)
 
         template<
             typename type_t>
         using is_union = __type<lazy::is_union<type_t>>;
 
-        ATOM_IS_XXXX_F(is_union)
+        THODD_IS_XXXX_F(is_union)
 
         template<
             typename type_t>
         using is_class = __type<lazy::is_class<type_t>>;
 
-        ATOM_IS_XXXX_F(is_class)
+        THODD_IS_XXXX_F(is_class)
 
         template<
             typename type_t>
         using is_empty = __type<lazy::is_empty<type_t>>;
 
-        ATOM_IS_XXXX_F(is_empty)
+        THODD_IS_XXXX_F(is_empty)
 
         template<
             typename type_t>
         using is_function = __type<lazy::is_function<type_t>>;
 
-        ATOM_IS_XXXX_F(is_function)
+        THODD_IS_XXXX_F(is_function)
 
         template<
             typename type_t>
         using is_pointer = __type<lazy::is_pointer<type_t>>;
 
-        ATOM_IS_XXXX_F(is_pointer)
+        THODD_IS_XXXX_F(is_pointer)
 
         template<
             typename type_t>
         using is_lvalue_reference = __type<lazy::is_lvalue_reference<type_t>>;
 
-        ATOM_IS_XXXX_F(is_lvalue_reference)
+        THODD_IS_XXXX_F(is_lvalue_reference)
 
         template<
             typename type_t>
         using is_rvalue_reference = __type<lazy::is_rvalue_reference<type_t>>;
 
-        ATOM_IS_XXXX_F(is_rvalue_reference)
+        THODD_IS_XXXX_F(is_rvalue_reference)
 
         template<
             typename type_t>
         using is_member_object_pointer = __type<lazy::is_member_object_pointer<type_t>>;
 
-        ATOM_IS_XXXX_F(is_member_object_pointer)
+        THODD_IS_XXXX_F(is_member_object_pointer)
 
         template<
             typename type_t>
         using is_member_function_pointer = __type<lazy::is_member_function_pointer<type_t>>;
 
-        ATOM_IS_XXXX_F(is_member_function_pointer)
+        THODD_IS_XXXX_F(is_member_function_pointer)
 
         template<
             typename type_t>
         using is_member_pointer = __type<lazy::is_member_pointer<type_t>>;
 
-        ATOM_IS_XXXX_F(is_member_pointer)
+        THODD_IS_XXXX_F(is_member_pointer)
 
         template<
             typename type_t>
         using is_arithmetic = __type<lazy::is_arithmetic<type_t>>;
 
-        ATOM_IS_XXXX_F(is_arithmetic)
+        THODD_IS_XXXX_F(is_arithmetic)
 
         template<
             typename type_t>
         using is_fundamental = __type<lazy::is_fundamental<type_t>>;
 
-        ATOM_IS_XXXX_F(is_fundamental)
+        THODD_IS_XXXX_F(is_fundamental)
 
         template<
             typename type_t>
         using is_scalar = __type<lazy::is_scalar<type_t>>;
 
-        ATOM_IS_XXXX_F(is_scalar)
+        THODD_IS_XXXX_F(is_scalar)
 
         template<
             typename type_t>
         using is_object = __type<lazy::is_object<type_t>>;
 
-        ATOM_IS_XXXX_F(is_object)
+        THODD_IS_XXXX_F(is_object)
 
         template<
             typename type_t>
         using is_compound = __type<lazy::is_compound<type_t>>;
 
-        ATOM_IS_XXXX_F(is_compound)
+        THODD_IS_XXXX_F(is_compound)
 
         template<
             typename type_t>
         using is_reference = __type<lazy::is_reference<type_t>>;
 
-        ATOM_IS_XXXX_F(is_reference)
+        THODD_IS_XXXX_F(is_reference)
 
 
 
 
-#  define ATOM_ADD_XXXX_F(name)                \
+#  define THODD_ADD_XXXX_F(name)                \
         template<                            \
             typename type_t>                \
         constexpr auto name##_f(            \
@@ -1034,40 +1034,40 @@ namespace thodd
             typename type_t>
         using add_const = __type<lazy::add_const<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_const)
+        THODD_ADD_XXXX_F(add_const)
 
         template<
             typename type_t>
         using add_volatile = __type<lazy::add_volatile<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_volatile)
+        THODD_ADD_XXXX_F(add_volatile)
 
         template<
             typename type_t>
         using add_cv = __type<lazy::add_cv<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_cv)
+        THODD_ADD_XXXX_F(add_cv)
 
         template<
             typename type_t>
         using add_pointer = __type<lazy::add_pointer<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_pointer)
+        THODD_ADD_XXXX_F(add_pointer)
 
         template<
             typename type_t>
         using add_lvalue_reference = __type<lazy::add_lvalue_reference<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_lvalue_reference)
+        THODD_ADD_XXXX_F(add_lvalue_reference)
 
         template<
             typename type_t>
         using add_rvalue_reference = __type<lazy::add_rvalue_reference<type_t>>;
 
-        ATOM_ADD_XXXX_F(add_rvalue_reference)
+        THODD_ADD_XXXX_F(add_rvalue_reference)
 
 
-#  define ATOM_REMOVE_XXXX_F(name)            \
+#  define THODD_REMOVE_XXXX_F(name)            \
         template<                            \
             typename type_t>                \
         constexpr auto name##_f(            \
@@ -1081,32 +1081,32 @@ namespace thodd
             typename type_t>
         using remove_const = __type<lazy::remove_const<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_const)
+        THODD_REMOVE_XXXX_F(remove_const)
 
         template<
             typename type_t>
         using remove_volatile = __type<lazy::remove_volatile<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_volatile)
+        THODD_REMOVE_XXXX_F(remove_volatile)
 
         template<
             typename type_t>
         using remove_cv = remove_volatile<
                             remove_const<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_cv)
+        THODD_REMOVE_XXXX_F(remove_cv)
 
         template<
             typename type_t>
         using remove_pointer = __type<lazy::remove_pointer<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_pointer)
+        THODD_REMOVE_XXXX_F(remove_pointer)
 
         template<
             typename type_t>
         using remove_reference = __type<lazy::remove_reference<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_reference)
+        THODD_REMOVE_XXXX_F(remove_reference)
 
         template<
             typename type_t>
@@ -1119,7 +1119,7 @@ namespace thodd
         using decay = remove_cv<
                         remove_reference<type_t>>;
 
-        ATOM_REMOVE_XXXX_F(remove_all)
+        THODD_REMOVE_XXXX_F(remove_all)
 
 
 
@@ -1605,20 +1605,20 @@ namespace thodd
         }
 
 
-#  define ATOM_USING_MEMBER(name)                           \
+#  define THODD_USING_MEMBER(name)                           \
         [](auto&& _t)                                       \
         -> typename meta::remove_all<decltype(_t)>::name {} \
 
 
-#  define ATOM_STATIC_ATTRIBUTE_MEMBER(name)           \
+#  define THODD_STATIC_ATTRIBUTE_MEMBER(name)           \
         [](auto&& _t)                                  \
         -> decltype(remove_all<decltype(_t)>::name) {} \
 
 
-        constexpr auto has_type       = is_valid(ATOM_USING_MEMBER(type));
-        constexpr auto has_value_type = is_valid(ATOM_USING_MEMBER(value_type));
+        constexpr auto has_type       = is_valid(THODD_USING_MEMBER(type));
+        constexpr auto has_value_type = is_valid(THODD_USING_MEMBER(value_type));
 
-        constexpr auto has_static_value = is_valid(ATOM_STATIC_ATTRIBUTE_MEMBER(value));
+        constexpr auto has_static_value = is_valid(THODD_STATIC_ATTRIBUTE_MEMBER(value));
 
 
         namespace lazy
@@ -1644,4 +1644,4 @@ namespace thodd
 
 
 
-#endif /* ATOM_META_HPP_ */
+#endif /* THODD_META_HPP_ */

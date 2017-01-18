@@ -5,8 +5,8 @@
  *      Author: padget
  */
 
-#ifndef ATOM_REQUIRE_HPP_
-#  define ATOM_REQUIRE_HPP_
+#ifndef THODD_REQUIRE_HPP_
+#  define THODD_REQUIRE_HPP_
 
 #  include <thodd/law.hpp>
 #  include <thodd/dsl.hpp>
@@ -133,4 +133,4 @@ namespace thodd
 }
 
 
-#endif /* ATOM_REQUIRE_HPP_ */
+#endif /* THODD_REQUIRE_HPP_ */

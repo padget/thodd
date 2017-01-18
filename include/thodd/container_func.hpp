@@ -1,5 +1,5 @@
-#ifndef __ATOM_CONTAINER_FUNC_HPP__
-#  define __ATOM_CONTAINER_FUNC_HPP__
+#ifndef __THODD_CONTAINER_FUNC_HPP__
+#  define __THODD_CONTAINER_FUNC_HPP__
 
 namespace thodd
 {

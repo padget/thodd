@@ -1,5 +1,5 @@
-#ifndef __ATOM_CONTAINER_DSL_HPP__
-#  define __ATOM_CONTAINER_DSL_HPP__
+#ifndef __THODD_CONTAINER_DSL_HPP__
+#  define __THODD_CONTAINER_DSL_HPP__
 
 #  include <thodd/meta.hpp>
 #  include <thodd/law.hpp>

@@ -1,5 +1,5 @@
-#ifndef ATOM_LOGGING_HPP__
-#define ATOM_LOGGING_HPP__
+#ifndef THODD_LOGGING_HPP__
+#define THODD_LOGGING_HPP__
 
 #  include <iostream>
 #  include <typeinfo>
@@ -109,4 +109,4 @@ namespace thodd
     constexpr logger<type_t>::log<log_level::fatal> logger<type_t>::fatal;
 }
 
-#endif // !ATOM_LOGGING_HPP__
+#endif // !THODD_LOGGING_HPP__
