@@ -182,7 +182,7 @@ namespace thodd
             }
         };
 
-        constexpr asc_order asc;
+        extern constexpr asc_order asc;
 
         struct desc_order
         {
@@ -197,7 +197,7 @@ namespace thodd
             }
         };
 
-        constexpr desc_order desc;
+        extern constexpr desc_order desc;
 
 
         template<
