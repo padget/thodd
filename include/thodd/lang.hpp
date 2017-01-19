@@ -21,39 +21,32 @@ namespace thodd
         namespace matcher
         {
             template<
-                typename algorithm_t>
+                typename algo_t>
             struct matcher
             {
-                algorithm_t algo;
+                algo_t algo;
 
-                template<
-                    typename iterator_t>
                 inline auto
                 operator() (
-                    iterator_t& __cursor, 
-                    iterator_t const& __end) const
+                    auto& __cursor, 
+                    auto const& __end) const
                 {
-                    auto&& __res = algo(__cursor, __end);
-
-                    return __res;
+                    return algo(__cursor, __end);
                 }
             };
 
-        
-            struct matcher_tag{};
-            extern constexpr matcher_tag match{};
 
-
-            template<
-                typename algorithm_t>
             constexpr auto
-            operator << (
-                matcher_tag const&, 
-                algorithm_t&& __algo)
-            -> matcher<meta::decay<algorithm_t>>
+            make_matcher(
+                auto&& __algo)
             {
-                return {perfect<algorithm_t>(__algo)};
+                using algo_t     = decltype(__algo);
+                using algo_dec_t = meta::decay<algo_t>;
+
+                return matcher<algo_dec_t>{perfect<algo_t>(__algo)};
             }
+
+            
         
         
             template<
@@ -63,12 +56,11 @@ namespace thodd
                 tuple<algorithms_t...> algos;
 
                 template<
-                    typename iterator_t, 
                     size_t ... indexes_c>
                 inline auto
                 operator()(
-                    iterator_t& __cursor, 
-                    iterator_t const& __end,
+                    auto& __cursor, 
+                    auto const& __end,
                     indexes<indexes_c...> const&) const 
                 -> decltype(auto)
                 {
@@ -91,47 +83,54 @@ namespace thodd
 
 
             template<
-                typename l_algorithm_t, 
-                typename r_algorithm_t>
+                typename lalgo_t, 
+                typename ralgo_t>
             constexpr auto
             operator | (
-                matcher<l_algorithm_t> const& __left, 
-                matcher<r_algorithm_t> const& __right)
+                matcher<lalgo_t> const& __left, 
+                matcher<ralgo_t> const& __right)
             -> decltype(auto)
             {
-                using left_or_right_t = alternative<meta::decay<l_algorithm_t>, meta::decay<r_algorithm_t>>;
+                using left_or_right_t = alternative<
+                                            meta::decay<lalgo_t>, 
+                                            meta::decay<ralgo_t>>;
 
-                return match << left_or_right_t{make_tuple(__left.algo, __right.algo)};
+                return make_matcher(
+                        left_or_right_t{
+                            make_tuple(__left.algo, 
+                                       __right.algo)});
             }
 
             
             template<
                 typename ... l_algorithms_t, 
-                typename r_algorithm_t>
+                typename ralgo_t>
             constexpr auto
             operator | (
                 matcher<alternative<l_algorithms_t...>> const& __left, 
-                matcher<r_algorithm_t> const& __right)
+                matcher<ralgo_t> const& __right)
             -> decltype(auto)
             {
-                using lefts_or_right_t = alternative<meta::decay<l_algorithms_t>..., meta::decay<r_algorithm_t>>;
+                using lefts_or_right_t = alternative<
+                                            meta::decay<l_algorithms_t>..., 
+                                            meta::decay<ralgo_t>>;
 
-                return match << lefts_or_right_t{__left.algo.algos + __right.algo};
+                return make_matcher(lefts_or_right_t{__left.algo.algos + __right.algo});
             }
 
 
             template<
-                typename l_algorithm_t, 
+                typename lalgo_t, 
                 typename ... r_algorithms_t>
             constexpr auto
             operator | (
-                matcher<l_algorithm_t> const& __left, 
+                matcher<lalgo_t> const& __left, 
                 matcher<alternative<r_algorithms_t...>> const& __right)
             -> decltype(auto)
             {
-                using left_or_rights_t = alternative<meta::decay<l_algorithm_t>, meta::decay<r_algorithms_t>...>;
+                using left_or_rights_t = alternative<meta::decay<lalgo_t>, meta::decay<r_algorithms_t>...>;
 
-                return match << left_or_rights_t{__left.algo + __right.algo.algos};
+                return make_matcher(left_or_rights_t{__left.algo + __right.algo.algos});
             }
 
             
@@ -146,17 +145,17 @@ namespace thodd
             {
                 using lefts_or_rights_t = alternative<meta::decay<l_algorithms_t>..., meta::decay<r_algorithms_t>...>;
 
-                return match << lefts_or_rights_t{__left.algo.algos + __right.algo.algos};
+                return make_matcher(lefts_or_rights_t{__left.algo.algos + __right.algo.algos});
             }
 
 
 
 
             template<
-                typename algorithm_t>
+                typename algo_t>
             struct some
             {
-                algorithm_t algo;
+                algo_t algo;
 
                 size_t min_c{0};
                 size_t max_c{1};
@@ -166,7 +165,7 @@ namespace thodd
                     size_t __min, 
                     size_t __max) const
                 {
-                    return match << some<algorithm_t> {algo, __min, __max};
+                    return make_matcher(some<algo_t> {algo, __min, __max});
                 }
 
 
@@ -174,16 +173,14 @@ namespace thodd
                 operator() (
                     size_t __strict) const
                 {
-                    return match << some<algorithm_t> {algo, __strict, __strict};
+                    return make_matcher(some<algo_t> {algo, __strict, __strict});
                 }
 
 
-                template<
-                    typename iterator_t>
                 inline auto 
                 operator() (
-                    iterator_t& __cursor, 
-                    iterator_t const& __end) const
+                    auto& __cursor, 
+                    auto const& __end) const
                 -> decltype(auto)
                 {
                     auto __cpt = 0u;
@@ -197,22 +194,22 @@ namespace thodd
             };
 
             template<
-                typename r_algorithm_t>
+                typename ralgo_t>
             constexpr auto 
             operator ~ (
-                matcher<r_algorithm_t> const& __right)
+                matcher<ralgo_t> const& __right)
             -> decltype(auto)
             {
-                using some_t = some<meta::decay<r_algorithm_t>>;
+                using some_t = some<meta::decay<ralgo_t>>;
 
                 return some_t{__right.algo};
             }
 
             template<
-                typename r_algorithm_t>
+                typename ralgo_t>
             constexpr auto
             operator * (
-                matcher<r_algorithm_t> const& __right)
+                matcher<ralgo_t> const& __right)
             -> decltype(auto)
             {
                 return (~__right)(0, infinity);
@@ -220,10 +217,10 @@ namespace thodd
 
 
             template<
-                typename r_algorithm_t>
+                typename ralgo_t>
             constexpr auto
             operator + (
-                matcher<r_algorithm_t> const& __right)
+                matcher<ralgo_t> const& __right)
             -> decltype(auto)
             {
                 return (~__right)(1, infinity);
@@ -270,45 +267,45 @@ namespace thodd
 
 
             template<
-                typename l_algorithm_t, 
-                typename r_algorithm_t>
+                typename lalgo_t, 
+                typename ralgo_t>
             constexpr auto
             operator >> (
-                matcher<l_algorithm_t> const& __left,
-                matcher<r_algorithm_t> const& __right)
+                matcher<lalgo_t> const& __left,
+                matcher<ralgo_t> const& __right)
             {
-                using follow_t = follow<meta::decay<l_algorithm_t>, meta::decay<r_algorithm_t>>;
+                using follow_t = follow<meta::decay<lalgo_t>, meta::decay<ralgo_t>>;
 
-                return match << follow_t{make_tuple(__left.algo, __right.algo)};
+                return make_matcher(follow_t{make_tuple(__left.algo, __right.algo)});
             }
 
 
 
             template<
                 typename ... l_algorithms_t, 
-                typename r_algorithm_t>
+                typename ralgo_t>
             constexpr auto
             operator >> (
                 matcher<follow<l_algorithms_t...>> const& __left,
-                matcher<r_algorithm_t> const& __right)
+                matcher<ralgo_t> const& __right)
             {
-                using follow_t = follow<meta::decay<l_algorithms_t>..., meta::decay<r_algorithm_t>>;
+                using follow_t = follow<meta::decay<l_algorithms_t>..., meta::decay<ralgo_t>>;
 
-                return match << follow_t{__left.algo.algos + __right.algo};
+                return make_matcher(follow_t{__left.algo.algos + __right.algo});
             }
 
             
             template<
-                typename l_algorithm_t, 
+                typename lalgo_t, 
                 typename ... r_algorithms_t>
             constexpr auto
             operator >> (
-                matcher<l_algorithm_t> const& __left,
+                matcher<lalgo_t> const& __left,
                 matcher<follow<r_algorithms_t...>> const& __right)
             {
-                using follow_t = follow<meta::decay<l_algorithm_t>, meta::decay<r_algorithms_t>...>;
+                using follow_t = follow<meta::decay<lalgo_t>, meta::decay<r_algorithms_t>...>;
 
-                return match << follow_t{__left.algo + __right.algo.algos};
+                return make_matcher(follow_t{__left.algo + __right.algo.algos});
             }
 
 
@@ -322,7 +319,7 @@ namespace thodd
             {
                 using follow_t = follow<meta::decay<l_algorithms_t>..., meta::decay<r_algorithms_t>...>;
 
-                return match << follow_t{__left.algo.algos + __right.algo.algos};
+                return make_matcher(follow_t{__left.algo.algos + __right.algo.algos});
             }
         }
 
@@ -338,17 +335,17 @@ namespace thodd
             /// algorithme peut être valable pour 
             /// plusieurs types cibles.
             ///
-            /// # typename algorithm_t  algorithme encaspulé
+            /// # typename algo_t  algorithme encaspulé
             /// # typename target_t     type cible de l'algorithme
             template<
-                typename algorithm_t, 
+                typename algo_t, 
                 typename target_t, 
-                typename reactor_t = detail::nothing>
+                typename reactor_t = decltype(nothing)>
             struct caster
             {
                 using target = target_t;
 
-                algorithm_t algo;
+                algo_t algo;
                 reactor_t react;
 
                 template<
@@ -376,34 +373,27 @@ namespace thodd
                 operator[] (
                     oreactor_t const& __react) const
                 {
-                    return caster<algorithm_t, 
+                    return caster<algo_t, 
                                   target_t, 
                                   meta::decay<oreactor_t>>{algo, __react};
                 }
             };
 
-        
-            template<
-                typename target_t>
-            struct caster_tag{};
 
             template<
                 typename target_t>
-            extern constexpr caster_tag<target_t> cast{};
-
-
-            template<
-                typename target_t,
-                typename algorithm_t>
-            constexpr auto
-            operator << (
-                caster_tag<target_t> const&, 
-                algorithm_t&& __algo)
-            -> caster<meta::decay<algorithm_t>, target_t>
+            constexpr auto 
+            make_caster(
+               auto&& __algo)
             {
-                return {perfect<algorithm_t>(__algo)};
+                using algo_t     = decltype(__algo);
+                using algo_dec_t = meta::decay<algo_t>;
+
+                return 
+                    caster<algo_dec_t, target_t>
+                    {perfect<algo_t>(__algo)};
             }
-        
+
         
             template<
                 typename ... casters_t>
@@ -467,7 +457,9 @@ namespace thodd
                 
                 using targets_t = __target<left_or_right_t>;
                 
-                return cast<targets_t> << left_or_right_t{make_tuple(__left, __right)};
+                return 
+                    make_caster<targets_t>(
+                        left_or_right_t{make_tuple(__left, __right)});
             }
 
             
@@ -482,7 +474,9 @@ namespace thodd
                 using lefts_or_right_t = alternative<lcasters_t..., caster<rparams_t...>>;
                 using target_t = __target<lefts_or_right_t>;
 
-                return cast<target_t> << lefts_or_right_t{__left.algo.casters + __right};
+                return 
+                    make_caster<target_t>(
+                        lefts_or_right_t{__left.algo.casters + __right});
             }
 
 
@@ -497,7 +491,9 @@ namespace thodd
                 using left_or_rights_t = alternative<caster<lparams_t...>, rcasters_t...>;
                 using target_t = __target<left_or_rights_t>;
 
-                return cast<target_t> << left_or_rights_t{__left + __right.algo.algos};
+                return 
+                    make_caster<target_t>(
+                        left_or_rights_t{__left + __right.algo.algos});
             }
 
             
@@ -513,7 +509,9 @@ namespace thodd
                 using lefts_or_rights_t = alternative<lcasters_t..., rcasters_t...>;
                 using target_t = __target<lefts_or_rights_t>;
 
-                return cast<target_t> << lefts_or_rights_t{__left.algo.casters + __right.algo.casters};
+                return 
+                    make_caster<target_t>(
+                        lefts_or_rights_t{__left.algo.casters + __right.algo.casters});
             }
 
 
@@ -533,7 +531,9 @@ namespace thodd
                     size_t __min, 
                     size_t __max) const
                 {
-                    return cast<target> << some<caster_t>{caster, __min, __max};
+                    return 
+                        make_caster<target>(
+                            some<caster_t>{caster, __min, __max});
                 }
 
                 
@@ -541,7 +541,9 @@ namespace thodd
                 operator() (
                     size_t __strict) const
                 {
-                    return cast<target> << some<caster_t>{caster, __strict, __strict};
+                    return 
+                        make_caster<target>(
+                            some<caster_t>{caster, __strict, __strict});
                 }
 
 
@@ -667,7 +669,9 @@ namespace thodd
 
                 using target_t = __target<follow_t>;
 
-                return cast<target_t> << follow_t{make_tuple(__left, __right)};
+                return 
+                    make_caster<target_t>(
+                        follow_t{make_tuple(__left, __right)});
             }
 
 
@@ -683,7 +687,9 @@ namespace thodd
                 using follow_t = follow<lcasters_t..., caster<rparams_t...>>;
                 using target_t = __target<follow_t>;
 
-                return cast<target_t> << follow_t{__left.algo.casters + __right};
+                return 
+                    make_caster<target_t>(
+                        follow_t{__left.algo.casters + __right});
             }
 
             
@@ -699,7 +705,9 @@ namespace thodd
                 using follow_t = follow<caster<lparams_t...>, rcasters_t...>;
                 using target_t = __target<follow_t>;
 
-                return cast<target_t> << follow_t{__right + __left.algo.casters};
+                return 
+                    make_caster<target_t>(
+                        follow_t{__right + __left.algo.casters});
             }
 
 
@@ -714,7 +722,9 @@ namespace thodd
                 using follow_t = follow<lcasters_t..., rcasters_t...>;
                 using target_t = __target<follow_t>;
 
-                return cast<target_t> << follow_t{__left.algo.casters + __right.algo.casters};
+                return 
+                    make_caster<target_t>(
+                        follow_t{__left.algo.casters + __right.algo.casters});
             }
         }
 
@@ -737,6 +747,7 @@ namespace thodd
                 operator()(
                     iterator_t& __cursor, 
                     iterator_t const& __end) const
+                -> decltype(auto)
                 {   
                     return matcher(__cursor, __end);
                 }
@@ -996,59 +1007,37 @@ namespace thodd
 
         namespace matcher
         {
-            template<
-                typename char_t>
-            constexpr auto
-            range( 
-                char_t min_c, 
-                char_t max_c)
-            {
-                return match << 
-                         if_(val(min_c) <= *$0 && *$0 <= val(max_c)) 
-                            ((++$0, val(true)))
-                        .else_
-                            (val(false));   
-            }
-
+            extern constexpr auto 
+            range =
+                [](auto __min, auto __max)
+                {
+                    return 
+                    make_matcher(
+                    [__min, __max](auto& __cursor, auto const& __end)
+                    {
+                        return 
+                            __min <= *__cursor && *__cursor <= __max ?
+                            (++__cursor, true) : 
+                            false;
+                    });
+                };
 
             extern constexpr auto digit = range('0', '9');
 
-
-            template<
-                typename char_t>
-            constexpr auto 
-            sym(
-                char_t symbol_c)
-            {
-                return match << 
-                        if_(val(symbol_c) == *$0) 
-                            ((++$0, val(true)))
-                       .else_
-                            (val(false));
-            }
-
-
-            template<
-                typename char_t>
-            constexpr auto
-            word(
-                char_t const& __char)
-            {
-                return sym(__char);
-            }
-
-            template<
-                typename char_t,
-                typename char2_t,
-                typename ... chars_t>
-            constexpr auto
-            word(
-                char_t const& __char,
-                char2_t const& __char2,
-                chars_t const&... __chars)
-            {
-                return sym(__char) >> word(__char2, __chars...) ;
-            }
+            extern constexpr auto 
+            sym = 
+                [] (auto __symbol)
+                {
+                    return 
+                    make_matcher(
+                    [__symbol](auto& __cursor, auto const& __end)
+                    {
+                        return 
+                            *__cursor == __symbol ? 
+                            (++__cursor, true) : 
+                            false;
+                    });
+                };
         }
 
         namespace caster
@@ -1060,11 +1049,11 @@ namespace thodd
             sym(
                 char_t symbol_c)
             {
-                return cast<meta::decay<char_t>> 
-                    << if_(bind(matcher::sym(symbol_c), $0, $1))
-                           ((--$0, $2 = compose(static_cast_(type_<meta::decay<char_t>>{}), *$0), ++$0, val(true)))
-                       .else_
-                            (val(false));
+                return 
+                    make_caster<meta::decay<char_t>>( 
+                        tern(bind(matcher::sym(symbol_c), $0, $1))
+                        [--$0, $2 = compose(static_cast_<meta::decay<char_t>>, *$0), ++$0, val(true)]
+                        [val(false)]);
             }
 
             template<
@@ -1074,45 +1063,21 @@ namespace thodd
                 char_t min_c, 
                 char_t max_c)
             {
-                return cast<meta::decay<char_t>> << 
-                        if_(bind(matcher::range(min_c, max_c), $0, $1))
-                           ((--$0, $2 = compose(static_cast_(type_<meta::decay<char_t>>{}), *$0), ++$0, val(true)))
-                       .else_
-                           (val(false));
+                return  
+                    make_caster<meta::decay<char_t>>(
+                        tern(bind(matcher::range(min_c, max_c), $0, $1))
+                        [--$0, $2 = compose(static_cast_<meta::decay<char_t>>, *$0), ++$0, val(true)]
+                        [val(false)]);
             }
 
             template<
                 typename int_t>
             extern constexpr 
-            auto digit = cast<meta::decay<int_t>> <<
-                            if_(bind(matcher::digit, $0, $1))
-                                ((--$0, $2 = compose(static_cast_(type_<meta::decay<int_t>>{}), (*$0) - val('0')), ++$0, val(true)))
-                            .else_
-                                (val(false));
-
-           
-            
-            template<
-                typename char_t>
-            constexpr auto
-            word(
-                char_t const& __char)
-            {
-                return sym(__char);
-            }
-
-            template<
-                typename char_t,
-                typename char2_t,
-                typename ... chars_t>
-            constexpr auto
-            word(
-                char_t const& __char,
-                char2_t const& __char2,
-                chars_t const&... __chars)
-            {
-                return sym(__char) >> word(__char2, __chars...) ;
-            }
+            auto digit = 
+                    make_caster<meta::decay<int_t>>(
+                        tern(bind(matcher::digit, $0, $1))
+                        [--$0, $2 = compose(static_cast_<meta::decay<int_t>>, (*$0) - val('0')), ++$0, val(true)]
+                        [val(false)]);
         }
 
         namespace parser
