@@ -1042,33 +1042,49 @@ namespace thodd
 
         namespace caster
         {
+            extern constexpr auto 
+            sym = 
+                [](auto __symbol) 
+                {
+                    using char_t = meta::decay<decltype(__symbol)>;
+                    
+                    return 
+                    make_caster<char_t>(
+                    [__symbol](auto& __cursor, auto const& __end, auto& __tgt)
+                    {
+                        if(matcher::sym(__symbol)(__cursor, __end))   
+                        {   
+                            --__cursor; 
+                            __tgt = static_cast<char_t>(*__cursor); 
+                            ++__cursor; 
+                            return true;
+                        }
+                        else 
+                            return false;
+                    });
+                };
 
-            template<
-                typename char_t>
-            constexpr auto
-            sym(
-                char_t symbol_c)
-            {
-                return 
-                    make_caster<meta::decay<char_t>>( 
-                        tern(bind(matcher::sym(symbol_c), $0, $1))
-                        [--$0, $2 = compose(static_cast_<meta::decay<char_t>>, *$0), ++$0, val(true)]
-                        [val(false)]);
-            }
-
-            template<
-                typename char_t> 
-            constexpr auto
-            range(
-                char_t min_c, 
-                char_t max_c)
-            {
-                return  
-                    make_caster<meta::decay<char_t>>(
-                        tern(bind(matcher::range(min_c, max_c), $0, $1))
-                        [--$0, $2 = compose(static_cast_<meta::decay<char_t>>, *$0), ++$0, val(true)]
-                        [val(false)]);
-            }
+            extern constexpr auto 
+            range = 
+                [](auto __min, auto __max) 
+                {
+                    using char_t = meta::decay<decltype(__min)>;
+                    
+                    return 
+                    make_caster<char_t>(
+                    [__min, __max](auto& __cursor, auto const& __end, auto& __tgt)
+                    {
+                        if(matcher::range(__min, __max)(__cursor, __end))   
+                        {   
+                            --__cursor; 
+                            __tgt = static_cast<char_t>(*__cursor); 
+                            ++__cursor; 
+                            return true;
+                        }
+                        else 
+                            return false;
+                    });
+                };
 
             template<
                 typename int_t>
@@ -1078,6 +1094,10 @@ namespace thodd
                         tern(bind(matcher::digit, $0, $1))
                         [--$0, $2 = compose(static_cast_<meta::decay<int_t>>, (*$0) - val('0')), ++$0, val(true)]
                         [val(false)]);
+
+            
+            extern constexpr auto
+            digit = make_caster<>
         }
 
         namespace parser
