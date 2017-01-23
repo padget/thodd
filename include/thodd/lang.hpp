@@ -1095,9 +1095,7 @@ namespace thodd
                         [--$0, $2 = compose(static_cast_<meta::decay<int_t>>, (*$0) - val('0')), ++$0, val(true)]
                         [val(false)]);
 
-            
-            extern constexpr auto
-            digit = make_caster<>
+          
         }
 
         namespace parser

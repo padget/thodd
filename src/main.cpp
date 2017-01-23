@@ -1,6 +1,6 @@
 #include <exception>
 #include <thodd/logging.hpp>
-#include <thodd/lang.hpp> 
+#include <thodd/lang_new.hpp> 
 #include <string>
 
 
@@ -12,13 +12,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;    
     
-    std::string __str = {"c"};
     
-    auto __cursor = __str.begin();
-    auto __end    = __str.end();
-    
-    std::cout << matcher::sym('c')(__cursor, __end);
-
     return 0;
 }
 catch (std::exception &e)

@@ -490,7 +490,6 @@ namespace thodd
     template<>
     struct tuple<>
     {
-
     public:
         constexpr tuple() = default;
     };
