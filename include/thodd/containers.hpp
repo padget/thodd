@@ -112,8 +112,8 @@ namespace thodd
             range(
                 begin_t __begin, 
                 end_t __end) :
-                m_begin{move(__begin)},
-                m_end{move(__end)} {}
+                m_begin{__begin},
+                m_end{__end} {}
 
             template<
                 typename container_t>

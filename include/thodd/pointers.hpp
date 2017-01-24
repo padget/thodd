@@ -10,6 +10,7 @@
 
 #  include <thodd/law.hpp>
 #  include <thodd/require.hpp>
+#  include <thodd/functional.hpp>
 
 namespace thodd
 {
