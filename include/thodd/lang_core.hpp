@@ -1,13 +1,19 @@
-#ifndef __THODD_LANG_TOKEN_HPP__
-#  define __THODD_LANG_TOKEN_HPP__
+#ifndef __THODD_LANG_CORE_HPP__
+#  define __THODD_LANG_CORE_HPP__
 
-#  include <thodd/containers.hpp>
 #  include <thodd/meta.hpp>
+#  include <thodd/containers.hpp>
 
 namespace thodd
 {
     namespace lang
     {
+        template<
+            typename type_t>
+        using __target = typename type_t::target;
+
+
+
         namespace detail
         {
             template<

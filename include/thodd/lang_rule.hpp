@@ -1,6 +1,9 @@
 #ifndef __THODD_LANG_RULE_HPP__
 #  define __THODD_LANG_RULE_HPP__
 
+#  include <thodd/lang_core.hpp>
+#  include <thodd/lang_matcher.hpp>
+
 namespace thodd
 {
     namespace lang
@@ -9,18 +12,35 @@ namespace thodd
             typename algo_t>
         struct rule
         {
-            matcher<algo_t> match;
+            algo_t algo;
         };
-
 
 
         template<
             typename algo_t>
         constexpr auto 
         make_rule(
-            matcher<algo_t> const& __matcher)
+            algo_t&& __algo)
         {
-            return rule<algo_t>{__matcher};
+            return rule<meta::decay<algo_t>>{perfect<algo_t>(__algo)};
+        }
+
+
+
+        template<
+            typename algo_t>
+        inline auto 
+        matches(
+            rule<matcher<algo_t>> const& __rule, 
+            auto& __cursor, 
+            auto const& __end)
+        {
+            auto __save = __cursor;
+
+            if(!matches(__rule.algo , __cursor, __end))
+                __cursor = __save;
+
+            return token(__save, __cursor);
         }
 
 
@@ -32,13 +52,9 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {
-            auto __save = __cursor;
-
-            if(!matches(__rule.match , __cursor, __end))
-                __cursor = __save;
-
-            return token(__save, __cursor);
+            return matches(__rule.algo, __cursor, __end);
         }
+
     }
 }
 

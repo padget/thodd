@@ -16,6 +16,7 @@ namespace thodd
             algo_t algo;
         };
 
+
         constexpr auto 
         make_matcher(
             auto&& __algo)
@@ -24,6 +25,7 @@ namespace thodd
             matcher<meta::decay<decltype(__algo)>>
             {perfect<decltype(__algo)>(__algo)};
         }
+
 
         template<  
             typename algo_t>

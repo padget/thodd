@@ -6,8 +6,8 @@
 #  include <thodd/variant.hpp>
 #  include <thodd/containers.hpp>
 
-#  include <thodd/lang_new_core.hpp>
-#  include <thodd/lang_new_matcher.hpp>
+#  include <thodd/lang_core.hpp>
+#  include <thodd/lang_matcher.hpp>
 
 namespace thodd
 {
@@ -55,7 +55,7 @@ namespace thodd
 
         inline auto
         matches(
-            matcher<some<auto>> const& __some, 
+            matcher<some<matcher<auto>>> const& __some, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -67,6 +67,35 @@ namespace thodd
             return __some.algo.min <= __cpt 
                 && __cpt <= __some.algo.max;
                 
+        }
+
+
+        template<
+            typename ... cases_t>
+        inline auto 
+        matches(
+            rule<some<rule<cases_t>...>> const& __alter, 
+            auto& __cursor, 
+            auto const& __end)
+        {              
+            decltype(token(__cursor, __cursor)) __res;
+            auto __save = __cursor;
+
+            __alter.algo.cases.template foreach(
+                [&__res, &__save, 
+                 &__cursor, &__end] 
+                (auto&& __case)
+                {
+                    if(!((bool) __res)) 
+                        __res = matches(perfect<decltype(__case)>(__case), 
+                                         __cursor, 
+                                         __end);  
+                    
+                    if(!__res) 
+                        __cursor = __save;
+                });
+        
+            return __res;
         }
     }
 }
