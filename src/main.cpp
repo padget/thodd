@@ -26,15 +26,23 @@ try
             return *__cursor == 'd' ? (++__cursor, true) : false;
         });
 
-    auto __ccccdcc_rule = make_rule((~__c)(4) >> __d >> __c >> __c);
+    auto __c_rule = make_rule(__c);
+    auto __d_rule = make_rule(__d);
+
+    //auto __c_or_d_rule = __c_rule | __d_rule;
+    auto __c_and_d_rule = __c_rule >> __d_rule;
     
-    std::string str{"ccccdcc"};
+    std::string str{"ecccdcc"};
 
     auto __begin = str.begin();
     auto __end = str.end();
     
-    for(auto const& __item : matches(__ccccdcc_rule, __begin, __end))
-        std::cout << __item;
+    auto __res = matches(__c_and_d_rule, __begin, __end);
+
+    std::cout << __res.subranges.size() << std::endl;
+
+//    for(auto const& __item : __res)
+//         std::cout << __item;
 
     return 0;
 }

@@ -18,17 +18,39 @@ namespace thodd
         {
             template<
                 typename iterator_t>
-            struct token
+            class token final 
             {
+            public:
                 using range_t = thodd::detail::range<iterator_t>;
 
-                range_t<iterator_t> range;
-                list<range_t<iterator_t>> subranges;
+                range_t range;
+                thodd::list<token> subranges;
                 
                 operator bool () const 
                 {
                     return range.begin() != range.end();
                 }
+            
+                token() = default;
+                token(token const&) = default;
+                token(token&&) = default; 
+                ~token() = default;
+                token& operator=(token const&) = default;
+                token& operator=(token&&) = default;
+
+            public:
+                token(
+                    iterator_t const& __begin, 
+                    iterator_t const& __end) :
+                    range{thodd::range(__begin, __end)} {}
+            
+            
+                token(
+                    iterator_t const& __begin, 
+                    iterator_t const& __end, 
+                    list<token> const& __subranges) :
+                    range{thodd::range(__begin, __end)}, 
+                    subranges{__subranges} {}
 
             public:    
                 inline auto const
@@ -97,11 +119,22 @@ namespace thodd
         inline auto 
         token(
             auto const& __begin, 
-            auto const&__end)
+            auto const& __end)
         {
             return 
             detail::token<meta::decay<decltype(__begin)>>
-            {thodd::range(__begin, __end)};
+            {__begin, __end};
+        }
+
+        inline auto 
+        token(
+            auto const& __begin, 
+            auto const& __end, 
+            auto&& __subranges)
+        {
+            return 
+            detail::token<meta::decay<decltype(__begin)>>
+            {__begin, __end, __subranges};
         }
     }
 }

@@ -66,7 +66,6 @@ namespace thodd
 
             return __some.algo.min <= __cpt 
                 && __cpt <= __some.algo.max;
-                
         }
 
 

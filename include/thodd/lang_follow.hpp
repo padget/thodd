@@ -76,25 +76,34 @@ namespace thodd
             rule<follow<rule<cases_t>...>> const& __alter, 
             auto& __cursor, 
             auto const& __end)
-        {              
-            decltype(token(__cursor, __cursor)) __res;
-            auto __save = __cursor;
+        {   
+            list<decltype(token(__cursor, __cursor))> __subranges;
 
-            __alter.algo.cases.template foreach(
-                [&__res, &__save, 
-                 &__cursor, &__end] 
+            auto __save = __cursor;
+            auto __continue = true;
+
+            __alter.algo.algos.template foreach(
+                [&__continue, &__subranges, 
+                 &__save, &__cursor, &__end] 
                 (auto&& __case)
                 {
-                    if(!((bool) __res)) 
-                        __res = matches(perfect<decltype(__case)>(__case), 
-                                         __cursor, 
-                                         __end);  
-                    
-                    if(!__res) 
-                        __cursor = __save;
+                    using case_t = decltype(__case);
+
+                    if(__continue)
+                    {
+                        auto __subrange = 
+                            matches(perfect<case_t>(__case), __cursor, __end);
+
+                        if((__continue = (bool) __subrange))
+                            __subranges.push_at(__subrange, __subranges.end()); 
+                        
+                        if(!__continue) 
+                            __cursor = __save;
+                    }
                 });
+                
         
-            return __res;
+            return token(__save, __cursor, __subranges);
         }
     }
 }

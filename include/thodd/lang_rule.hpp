@@ -26,7 +26,6 @@ namespace thodd
         }
 
 
-
         template<
             typename algo_t>
         inline auto 

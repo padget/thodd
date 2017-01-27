@@ -29,7 +29,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator | (
-            matcher<alternative<lcases_t...>> const& __lalter,
+            matcher<alternative<matcher<lcases_t>...>> const& __lalter,
             matcher<rcase_t> const& __rmatcher)
         {
             return 
@@ -45,8 +45,8 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator | (
-            matcher<alternative<lcases_t...>> const& __lalter,
-            matcher<alternative<rcases_t...>> const& __ralter)
+            matcher<alternative<matcher<lcases_t>...>> const& __lalter,
+            matcher<alternative<matcher<rcases_t>...>> const& __ralter)
         {
             return 
             make_matcher(
@@ -82,14 +82,13 @@ namespace thodd
                     __rmatcher));   
         }
 
-
-        template<
-            typename ... lalgos_t, 
-            typename ralgo_t>
+         template<
+            typename ... lcases_t, 
+            typename rcase_t>
         constexpr auto
-        operator | (
-            matcher<follow<lalgos_t...>> const& __lalter,
-            matcher<ralgo_t> const& __rmatcher)
+        operator >> (
+            matcher<follow<matcher<lcases_t>...>> const& __lalter,
+            matcher<rcase_t> const& __rmatcher)
         {
             return 
             make_matcher(
@@ -100,15 +99,124 @@ namespace thodd
 
 
         template<
-            typename ... lalgos_t, 
-            typename ... ralgos_t>
+            typename ... lcases_t, 
+            typename ... rcases_t>
         constexpr auto
-        operator | (
-            matcher<follow<lalgos_t...>> const& __lalter,
-            matcher<follow<ralgos_t...>> const& __ralter)
+        operator >> (
+            matcher<follow<matcher<lcases_t>...>> const& __lalter,
+            matcher<follow<matcher<rcases_t>...>> const& __ralter)
         {
             return 
             make_matcher(
+                make_follow(
+                    __lalter.algo.algos 
+                  + __ralter.algo.algos));
+        }
+
+        
+
+
+        template<
+            typename lcase_t, 
+            typename rcase_t>
+        constexpr auto
+        operator | (
+            rule<lcase_t> const& __lrule,
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_alternative(
+                    __lrule, 
+                    __rrule));   
+        }
+
+
+        template<
+            typename ... lalgos_t, 
+            typename ralgo_t>
+        constexpr auto
+        operator | (
+            rule<alternative<rule<lalgos_t>...>> const& __lalter,
+            rule<ralgo_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_alternative(
+                    __lalter.algo.algos 
+                  + __rrule));
+        }
+
+        template<
+            typename ... lcases_t, 
+            typename ... rcases_t>
+        constexpr auto
+        operator | (
+            rule<alternative<rule<lcases_t>...>> const& __lalter,
+            rule<alternative<rule<rcases_t>...>> const& __ralter)
+        {
+            return 
+            make_rule(
+                make_alternative(
+                    __lalter.algo.cases 
+                  + __ralter.algo.cases));
+        }
+
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator ~ (
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_some( 
+                __rrule);   
+        }
+
+
+
+           template<
+            typename lalgo_t, 
+            typename ralgo_t>
+        constexpr auto
+        operator >> (
+            rule<lalgo_t> const& __lrule,
+            rule<ralgo_t> const& __rrule )
+        {
+            return 
+            make_rule(
+                make_follow(
+                    __lrule, 
+                    __rrule));   
+        }
+
+         template<
+            typename ... lcases_t, 
+            typename rcase_t>
+        constexpr auto
+        operator >> (
+            rule<follow<rule<lcases_t>...>> const& __lalter,
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_follow(
+                    __lalter.algo.algos 
+                  + __rrule));
+        }
+
+
+        template<
+            typename ... lcases_t, 
+            typename ... rcases_t>
+        constexpr auto
+        operator >> (
+            rule<follow<rule<lcases_t>...>> const& __lalter,
+            rule<follow<rule<rcases_t>...>> const& __ralter)
+        {
+            return 
+            make_rule(
                 make_follow(
                     __lalter.algo.algos 
                   + __ralter.algo.algos));

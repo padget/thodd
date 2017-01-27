@@ -109,9 +109,17 @@ namespace thodd
             }
 
         public:
+            range() = default;
+            range(range const&) = default;
+            range(range&&) = default;
+            ~range() = default;
+            range& operator=(range const&) = default;
+            range& operator=(range&&) = default;
+        
+        public: 
             range(
-                begin_t __begin, 
-                end_t __end) :
+                begin_t const& __begin, 
+                end_t  const& __end) :
                 m_begin{__begin},
                 m_end{__end} {}
 
@@ -125,17 +133,14 @@ namespace thodd
     }
   
   
-    template<
-        typename begin_t, 
-        typename end_t>
     inline auto
     range(
-        begin_t __begin, 
-        end_t __end)
+        auto __begin, 
+        auto __end)
     {
         return detail::range<
-                meta::decay<begin_t>, 
-                meta::decay<end_t>>
+                meta::decay<decltype(__begin)>, 
+                meta::decay<decltype(__end)>>
                 {__begin, __end};
     }
 
@@ -170,24 +175,6 @@ namespace thodd
             item_t item;
             node* next{nullptr};
             node* pred{nullptr};
-
-            node(
-                item_t&& _item,
-                node* _next,
-                node* _pred):
-                item{_item},
-                next{_next},
-                pred{_pred} {}
-
-            node(
-                item_t const& _item,
-                node* _next,
-                node* _pred):
-                item{_item},
-                next{_next},
-                pred{_pred} {}
-
-            ~node(){}
         };
 
         node* m_first{nullptr};
@@ -365,6 +352,7 @@ namespace thodd
         list(list&&) = default;
         list& operator= (list&&) = default;
 
+
     public:
         template<
             typename iterator_t>
@@ -392,6 +380,10 @@ namespace thodd
             list{ range(__container.begin(), 
                         __container.end()) } {}
 
+        list(
+            list const& __container) : 
+            list{ range(__container.begin(), 
+                        __container.end()) } {}
 
         list(
             std::initializer_list<item_t>&& __init) :
@@ -407,7 +399,7 @@ namespace thodd
             auto&& __end = end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(thodd::move(__item), __end);
         }
 
 
@@ -467,7 +459,7 @@ namespace thodd
             auto&& __end = this->end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(thodd::move(__item), __end);
 
             return *this;
         }
@@ -675,6 +667,11 @@ namespace thodd
             typename container_t>
         set(
             container_t& __container) : 
+            set{ range(__container.begin(), 
+                       __container.end()) } {}
+
+        set(
+            set const& __container) : 
             set{ range(__container.begin(), 
                        __container.end()) } {}
 
@@ -944,6 +941,11 @@ namespace thodd
             typename container_t>
         map(
             container_t& __container) : 
+            map{ range(__container.begin(), 
+                       __container.end()) } {}
+
+        map(
+            map const& __container) : 
             map{ range(__container.begin(), 
                        __container.end()) } {}
 
