@@ -399,7 +399,7 @@ namespace thodd
             auto&& __end = end();
 
             for(auto&& __item : __container)
-                this->push_at(thodd::move(__item), __end);
+                this->push_at(rvalue(__item), __end);
         }
 
 
@@ -459,7 +459,7 @@ namespace thodd
             auto&& __end = this->end();
 
             for(auto&& __item : __container)
-                this->push_at(thodd::move(__item), __end);
+                this->push_at(rvalue(__item), __end);
 
             return *this;
         }
@@ -690,7 +690,7 @@ namespace thodd
             auto&& __end = end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(rvalue(__item), __end);
         }
 
         
@@ -750,7 +750,7 @@ namespace thodd
             auto&& __end = this->end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(rvalue(__item), __end);
 
             return *this;
         }
@@ -964,7 +964,7 @@ namespace thodd
             auto&& __end = end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(rvalue(__item), __end);
         }
 
     public:
@@ -1023,7 +1023,7 @@ namespace thodd
             auto&& __end = this->end();
 
             for(auto&& __item : __container)
-                this->push_at(move(__item), __end);
+                this->push_at(rvalue(__item), __end);
 
             return *this;
         }
@@ -1141,7 +1141,7 @@ namespace thodd
             auto __bound = __old_size > __new_size ? __new_size : __old_size;
         
             for(auto __index = 0u; __index < __bound; ++__index)
-                __new[__index] = move(__array[__index]);
+                __new[__index] = rvalue(__array[__index]);
 
             return __new;
         }
@@ -1508,7 +1508,7 @@ namespace thodd
                 resize(m_capacity + 10);
 
             for(auto __i = m_size; __i > __index; --__i)
-                m_first[__i] = move(m_first[__i - 1]);
+                m_first[__i] = rvalue(m_first[__i - 1]);
 
             m_first[__index] = __item;
             ++m_size;
@@ -1522,7 +1522,7 @@ namespace thodd
             item_t&& __item,
             iterator_type __pos)
         {
-            std::cout << "move elt" << std::endl;
+            std::cout << "rvalue elt" << std::endl;
             go<contract>(
                 require(cref(__pos.origin()) == cref(this))
                 > throw_<bad_iterator_origin>());
@@ -1535,7 +1535,7 @@ namespace thodd
                 resize(m_capacity + 10);
 
             for(auto __i = m_size; __i > __index; --__i)
-                m_first[__i] = move(m_first[__i - 1]);
+                m_first[__i] = rvalue(m_first[__i - 1]);
 
             m_first[__index] = perfect<item_t>(__item);
             ++m_size;
@@ -1557,7 +1557,7 @@ namespace thodd
                 size_t __index = __pos.item() - m_first;
                 
                 for(auto __i = __index; __i < m_size - 1; ++__i)
-                    m_first[__i] = move(m_first[__i + 1]);
+                    m_first[__i] = rvalue(m_first[__i + 1]);
 
                 --m_size;
             }

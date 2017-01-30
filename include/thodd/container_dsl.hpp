@@ -594,9 +594,9 @@ namespace thodd
                         {
                             if(__order(*__after, *__current))
                             {
-                                auto __tmp = move(*__after);
-                                *__after   = move(*__current);
-                                *__current = move(__tmp);
+                                auto __tmp = rvalue(*__after);
+                                *__after   = rvalue(*__current);
+                                *__current = rvalue(__tmp);
                             }
 
                             ++__after;

@@ -63,7 +63,7 @@ namespace thodd
         typename type_t>
     constexpr
     meta::add_rvalue_reference<meta::remove_reference<type_t>>
-    move(
+    rvalue(
         type_t&& arg) noexcept
     {
         return static_cast<meta::add_rvalue_reference<meta::remove_reference<type_t>>>(arg);

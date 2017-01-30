@@ -53,7 +53,7 @@ namespace thodd
             typename otype_t>
         handler(
             handler<otype_t>&& _other):
-            m_handled{move(_other.m_handled)} {}
+            m_handled{rvalue(_other.m_handled)} {}
 
 
         handler&
@@ -81,7 +81,7 @@ namespace thodd
         operator=(
             handler<otype_t>&& _other)
         {
-            reset(move(_other.m_handled));
+            reset(rvalue(_other.m_handled));
             return *this;
         }
 
@@ -276,13 +276,13 @@ namespace thodd
         shared(
             shared<otype_t>&& _other):
             handler<type_t>{_other},
-            m_counter{move(_other.m_counter)} {}
+            m_counter{rvalue(_other.m_counter)} {}
 
 
         shared(
             shared&& _other):
             handler<type_t>{_other},
-            m_counter{move(_other.m_counter)} {}
+            m_counter{rvalue(_other.m_counter)} {}
 
 
         template<
@@ -321,7 +321,7 @@ namespace thodd
         {
             release();
             this->handler<type_t>::operator =(_other);
-            this->m_counter = move(_other.m_counter);
+            this->m_counter = rvalue(_other.m_counter);
             return *this;
         }
 
@@ -334,7 +334,7 @@ namespace thodd
             {
                 release();
                 this->handler<type_t>::operator =(_other);
-                this->m_counter = move(_other.m_counter);
+                this->m_counter = rvalue(_other.m_counter);
             }
 
             return *this;

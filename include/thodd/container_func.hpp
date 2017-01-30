@@ -52,7 +52,7 @@ namespace thodd
                 -> decltype(auto)
                 {
                     return push_at(__container, 
-                                   move(perfect<decltype(__item)>(__item)), 
+                                   rvalue(perfect<decltype(__item)>(__item)), 
                                    __container.end());
                 };
 
@@ -62,7 +62,7 @@ namespace thodd
                  -> decltype(auto)
                  {
                      return push_at(__container, 
-                                    move(perfect<decltype(__item)>(__item)), 
+                                    rvalue(perfect<decltype(__item)>(__item)), 
                                     __container.begin());
                  };
 

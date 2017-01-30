@@ -115,7 +115,7 @@ namespace thodd
 
         variant(
             variant&& __other):
-            holded(move(__other.holded)) {}
+            holded(rvalue(__other.holded)) {}
 
         virtual ~variant() = default;
 
@@ -153,7 +153,7 @@ namespace thodd
             variant&& __other)
         {
             if(this != &__other)
-                holded = move(__other.holded);
+                holded = rvalue(__other.holded);
 
             return *this;
         }

@@ -54,7 +54,7 @@ namespace thodd
         tuple_get(
             tuple_element_pod<item_t, _index>&& _pod)
         {
-            return move(_pod.item);
+            return rvalue(_pod.item);
         }
 
 
@@ -83,7 +83,7 @@ namespace thodd
             explicit constexpr
             tuple_indexed(
                 tuple_indexed<items_t...>&& _other) :
-                tuple_element_pod<items_t, indexes_c>{move(tuple_get<indexes_c>(_other))}... {}
+                tuple_element_pod<items_t, indexes_c>{rvalue(tuple_get<indexes_c>(_other))}... {}
 
             explicit constexpr
             tuple_indexed(
