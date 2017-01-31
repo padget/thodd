@@ -104,8 +104,12 @@ namespace thodd
             tuple_indexed<indexes<indexes1_c...>, items1_t...> const& _tuple1,
             tuple_indexed<indexes<indexes2_c...>, items2_t...> const& _tuple2)
         {
-            return tuple_indexed<make_indexes<sizeof...(indexes1_c) + sizeof...(indexes2_c)>, items1_t..., items2_t...>
-                    {tuple_get<indexes1_c>(_tuple1)..., tuple_get<indexes2_c>(_tuple2)...};
+            return tuple_indexed<
+                    make_indexes<sizeof...(indexes1_c) 
+                               + sizeof...(indexes2_c)>, 
+                    items1_t..., items2_t...>
+                  {tuple_get<indexes1_c>(_tuple1)..., 
+                   tuple_get<indexes2_c>(_tuple2)...};
         }
 
         /// Operator== that compare
@@ -599,7 +603,7 @@ namespace thodd
     {
         using tpl = tuple<items1_t..., item2_t>;
 
-        return  tpl{__tuple1.indexed + make_tuple(perfect<item2_t>(__item2)).indexed};
+        return tpl{__tuple1.indexed + make_tuple(perfect<item2_t>(__item2)).indexed};
     }
 
 
@@ -615,7 +619,7 @@ namespace thodd
     {
         using tpl = tuple<item1_t, items2_t...>;
 
-        return  tpl{make_tuple(perfect<item1_t>(__item1)).indexed + __tuple2.indexed};
+        return tpl{make_tuple(perfect<item1_t>(__item1)).indexed + __tuple2.indexed};
     }
 
 

@@ -300,7 +300,7 @@ namespace thodd
         template<typename...> typename node_t, 
         typename ... funcs_t>
     constexpr auto
-    node(
+    make_node(
         funcs_t&&... __funcs)
     {
         return dsl_node<node_t<meta::decay<funcs_t>...>>

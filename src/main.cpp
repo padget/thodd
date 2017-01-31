@@ -3,6 +3,40 @@
 #include <thodd/lang.hpp> 
 #include <string>
 
+struct __test
+{
+    void get() & 
+    {
+        std::cout << "&" << std::endl;
+    }
+
+
+    void get() const &
+    {
+        std::cout << "const &" << std::endl;
+    }
+
+
+    void get() &&
+    {
+        std::cout << "&&" << std::endl;
+    }
+};
+
+void foo(auto&& __t)
+{
+    using namespace thodd;
+
+    perfect<decltype(__t)>(__t).get();
+}
+
+void foo2(__test&& __t)
+{
+    using namespace thodd;
+    
+    __t.get();
+}
+
 
 int main(
     int argc,
@@ -11,38 +45,45 @@ try
 {
     using namespace thodd;
     using namespace thodd::lang;    
+
+    foo(__test{});
+    auto __t = __test{};
+
+    foo2(__test{});
+    rvalue(__t).get();
+
+
+//     constexpr auto __c = 
+//         make_matcher(
+//         [](auto& __cursor, auto const& __end)
+//         {
+//             return *__cursor == 'c' ? (++__cursor, true) : false;
+//         });
+
+//      constexpr auto __d = 
+//         make_matcher(
+//         [](auto& __cursor, auto const& __end)
+//         {
+//             return *__cursor == 'd' ? (++__cursor, true) : false;
+//         });
+
+//     auto __c_rule = make_rule(__c);
+//     auto __d_rule = make_rule(__d);
+
+//     //auto __c_or_d_rule = __c_rule | __d_rule;
+//     auto __c_and_d_rule = __c_rule >> __d_rule;
     
-    constexpr auto __c = 
-        make_matcher(
-        [](auto& __cursor, auto const& __end)
-        {
-            return *__cursor == 'c' ? (++__cursor, true) : false;
-        });
+//     std::string str{"ecccdcc"};
 
-     constexpr auto __d = 
-        make_matcher(
-        [](auto& __cursor, auto const& __end)
-        {
-            return *__cursor == 'd' ? (++__cursor, true) : false;
-        });
-
-    auto __c_rule = make_rule(__c);
-    auto __d_rule = make_rule(__d);
-
-    //auto __c_or_d_rule = __c_rule | __d_rule;
-    auto __c_and_d_rule = __c_rule >> __d_rule;
+//     auto __begin = str.begin();
+//     auto __end = str.end();
     
-    std::string str{"ecccdcc"};
+//     auto __res = matches(__c_and_d_rule, __begin, __end);
 
-    auto __begin = str.begin();
-    auto __end = str.end();
-    
-    auto __res = matches(__c_and_d_rule, __begin, __end);
+//     std::cout << __res.subranges.size() << std::endl;
 
-    std::cout << __res.subranges.size() << std::endl;
-
-//    for(auto const& __item : __res)
-//         std::cout << __item;
+// //    for(auto const& __item : __res)
+// //         std::cout << __item;
 
     return 0;
 }

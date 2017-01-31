@@ -33,40 +33,34 @@ namespace thodd
 
     constexpr size_t infinity = std::numeric_limits<size_t>::max();
 
-
+ 
     template<
         typename type_t>
     constexpr type_t&&
     perfect(
-        meta::add_lvalue_reference<meta::remove_reference<type_t>> _t) noexcept
+        meta::remove_reference<type_t>& __t) noexcept
     {
-        return static_cast<type_t&&>(_t);
-    }
-
-
-    template<typename type_t>
-    constexpr type_t&&
-    perfect(
-        meta::add_rvalue_reference<meta::remove_reference<type_t>> _t) noexcept
-    {
-        static_assert(
-            !meta::is_lvalue_reference<type_t>::value,
-            "template argument"
-            " substituting type_t "
-            "is an lvalue reference type");
-
-        return static_cast<type_t&&>(_t);
+        return static_cast<type_t&&>(__t);
     }
 
 
     template<
         typename type_t>
-    constexpr
-    meta::add_rvalue_reference<meta::remove_reference<type_t>>
+    constexpr type_t&&
+    perfect(
+        meta::remove_reference<type_t>&& __t) noexcept
+    {
+        return static_cast<type_t&&>(__t);
+    }    
+
+
+    template<
+        typename type_t>
+    constexpr meta::remove_reference<type_t>&&
     rvalue(
         type_t&& arg) noexcept
     {
-        return static_cast<meta::add_rvalue_reference<meta::remove_reference<type_t>>>(arg);
+        return static_cast<meta::remove_reference<type_t>&&>(arg);
     }
 
 

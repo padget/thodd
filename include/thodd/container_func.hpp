@@ -12,7 +12,6 @@ namespace thodd
            };
 
 
-
     extern constexpr auto 
     push_at = [](auto& __container, 
                  auto&& __item, 
@@ -24,6 +23,7 @@ namespace thodd
                                     __pos);
               };
 
+
     extern constexpr auto
     push_back = [](auto& __container, 
                    auto&& __item)
@@ -33,6 +33,7 @@ namespace thodd
                                    perfect<decltype(__item)>(__item), 
                                    __container.end());
                 };
+
 
     extern constexpr auto
     push_front = [](auto& __container, 
@@ -45,7 +46,6 @@ namespace thodd
                  };
 
 
-
     extern constexpr auto
     move_back = [](auto& __container, 
                    auto&& __item)
@@ -55,6 +55,7 @@ namespace thodd
                                    rvalue(perfect<decltype(__item)>(__item)), 
                                    __container.end());
                 };
+
 
     extern constexpr auto
     move_front = [](auto& __container, 
@@ -67,7 +68,6 @@ namespace thodd
                  };
 
 
-
     extern constexpr auto 
     pop_at = [](auto& __container, 
                 auto const& __pos)
@@ -75,6 +75,7 @@ namespace thodd
               {
                   return __container.pop_at(__pos);
               };
+
 
     extern constexpr auto
     pop_back = [](auto& __container)

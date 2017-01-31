@@ -43,7 +43,7 @@ namespace thodd
     require(
         cond_t&& __cond)
     {
-        return node<detail::require_node>(perfect<cond_t>(__cond));
+        return  make_node<detail::require_node>(perfect<cond_t>(__cond));
     }
 
     template<
@@ -60,7 +60,7 @@ namespace thodd
     to(
         func_t&& __func)
     {
-        return node<detail::to_node>(perfect<func_t>(__func));
+        return  make_node<detail::to_node>(perfect<func_t>(__func));
     }
 
 

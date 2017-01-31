@@ -42,7 +42,7 @@ namespace thodd
         test(
             func_t&& __func)
         {
-            return node<detail::test_node>(perfect<func_t>(__func));
+            return make_node<detail::test_node>(perfect<func_t>(__func));
         }
 
         template<
@@ -51,7 +51,7 @@ namespace thodd
         with(
             params_t&&... __params)
         {
-            return node<detail::with_node>(make_tuple(perfect<params_t>(__params)...));
+            return  make_node<detail::with_node>(make_tuple(perfect<params_t>(__params)...));
         }
 
         template<
@@ -60,7 +60,7 @@ namespace thodd
         assert(
             assertion_t&& __assertion)
         {
-            return node<detail::assert_node>(perfect<assertion_t>(__assertion));
+            return  make_node<detail::assert_node>(perfect<assertion_t>(__assertion));
         }
 
         template<

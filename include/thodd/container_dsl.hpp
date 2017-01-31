@@ -71,7 +71,7 @@ namespace thodd
         with(
             getter_t&& __get)
         {
-            return node<detail::with_node>(perfect<getter_t>(__get));
+            return  make_node<detail::with_node>(perfect<getter_t>(__get));
         }
       
         template<
@@ -80,7 +80,7 @@ namespace thodd
         foreach(
             algo_t&& __algo)
         {
-            return node<detail::foreach_node>(perfect<algo_t>(__algo));
+            return  make_node<detail::foreach_node>(perfect<algo_t>(__algo));
         }
 
         template<
@@ -89,7 +89,7 @@ namespace thodd
         foreach_iter(
             algo_t&& __algo)
         {
-            return node<detail::foreach_iter_node>(perfect<algo_t>(__algo));
+            return  make_node<detail::foreach_iter_node>(perfect<algo_t>(__algo));
         }
         
         template<
@@ -98,7 +98,7 @@ namespace thodd
         where(
             cond_t&& __cond)
         {
-            return node<detail::where_node>(perfect<cond_t>(__cond));
+            return  make_node<detail::where_node>(perfect<cond_t>(__cond));
         }
 
         template<
@@ -107,7 +107,7 @@ namespace thodd
         update(
             val_t&& __val)
         {
-            return node<detail::foreach_node>($item = perfect<val_t>(__val));
+            return make_node<detail::foreach_node>($item = perfect<val_t>(__val));
         }
 
         template<
@@ -116,7 +116,7 @@ namespace thodd
         sort(
             order_t&& __order)
         {
-            return node<detail::sort_node>(perfect<order_t>(__order));
+            return  make_node<detail::sort_node>(perfect<order_t>(__order));
         }
 
 
@@ -126,7 +126,7 @@ namespace thodd
         select(
             view_t&& __view)
         {
-            return node<detail::foreach_node>(bind(push_back, __view, $item));    
+            return  make_node<detail::foreach_node>(bind(push_back, __view, $item));    
         }
 
 
@@ -136,7 +136,7 @@ namespace thodd
         transfer(
             view_t&& __view)
         {
-            return node<detail::foreach_node>(bind(move_back, __view, $item));    
+            return  make_node<detail::foreach_node>(bind(move_back, __view, $item));    
         }
 
 
@@ -146,7 +146,7 @@ namespace thodd
         count(
             ref_t&& __ref)
         {
-            return node<detail::foreach_node>(++perfect<ref_t>(__ref));
+            return  make_node<detail::foreach_node>(++perfect<ref_t>(__ref));
         }
 
         template<
@@ -155,7 +155,7 @@ namespace thodd
         limit(
             limit_t&& __limit)
         {
-            return node<detail::limit_node>(__limit);
+            return  make_node<detail::limit_node>(__limit);
         }
 
         template<
@@ -164,7 +164,7 @@ namespace thodd
         first(
             first_t&& __first)
         {
-            return node<detail::first_node>(__first);
+            return  make_node<detail::first_node>(__first);
         }
 
 

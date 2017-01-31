@@ -844,14 +844,14 @@ namespace thodd
 
 
 
-#  define THODD_IS_XXXX_F(name)                \
-        template<                             \
+#  define THODD_IS_XXXX_F(name)              \
+        template<                            \
             typename type_t>                 \
         constexpr bool name##_f(             \
-                type_<type_t> const&)         \
-        {                                     \
-            return name<type_t>::value;          \
-        }                                     \
+                type_<type_t> const&)        \
+        {                                    \
+            return name<type_t>::value;      \
+        }                                    \
 
         template<
             typename type1_t,
@@ -1067,14 +1067,14 @@ namespace thodd
         THODD_ADD_XXXX_F(add_rvalue_reference)
 
 
-#  define THODD_REMOVE_XXXX_F(name)            \
-        template<                            \
+#  define THODD_REMOVE_XXXX_F(name)         \
+        template<                           \
             typename type_t>                \
         constexpr auto name##_f(            \
-            type_<type_t> const&)            \
-        {                                    \
-            return type_<name<type_t>>{};    \
-        }                                    \
+            type_<type_t> const&)           \
+        {                                   \
+            return type_<name<type_t>>{};   \
+        }                                   \
 
 
         template<
