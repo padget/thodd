@@ -85,7 +85,7 @@ namespace thodd
             std::initializer_list<item_t>&& __init)
         {
             for(auto&& __item : __init)
-                push_back(*this, thodd::rvalue(__item));
+                thodd::push_back(*this, thodd::rvalue(__item));
         }
 
 
@@ -96,7 +96,7 @@ namespace thodd
             detail::range<iterator_t> const& __range)
         {
             for(auto&& __item : __range)
-                push_back(*this, __item);   
+                thodd::push_back(*this, __item);   
         }
 
         
@@ -185,7 +185,7 @@ namespace thodd
             auto&& __item,
             set_iterator)
         {
-            push_at(perfect<decltype(__item)>(__item));
+            this->push_at(perfect<decltype(__item)>(__item));
         }
 
 

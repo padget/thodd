@@ -68,7 +68,7 @@ namespace thodd
 
 
     public:
-        using map_iterator = typename set<entry>::set_iterator;
+        using map_iterator = typename set<entry<key_t, value_t>>::iterator_type;
         using iterator_type = map_iterator;
 
     public:
@@ -115,178 +115,128 @@ namespace thodd
             m_content.clear();
         }
 
-     public:
-        ~map() = default;
+       public:
+        ~map() { this->clear(); }
         map() = default;
-        map(map&&) = default;
-        map& operator=(map&&) = default;
-
 
     public:
-        template<
-            typename iterator_t>
         map(
-            detail::range<iterator_t> const& __range)
+            map const& __other) :
+            m_content(__other.m_content) {}
+
+
+        map(
+            map&& __other) : 
+            m_content(thodd::rvalue(__other.m_content)) {}
+
+
+        map(
+            std::initializer_list<entry<key_t, value_t>>&& __init)
         {
-            using namespace contdsl;
-
-            go<query>(copy, __range, *this);
-        } 
-
-
-        template<
-            typename iterator_t>
-        map(
-            iterator_t __begin,
-            iterator_t __end) :
-            map{ range(__begin, __end) } {}
-
-
-        template<
-            typename container_t>
-        map(
-            container_t& __container) : 
-            map{ range(__container.begin(), 
-                       __container.end()) } {}
-
-        map(
-            map const& __container) : 
-            map{ range(__container.begin(), 
-                       __container.end()) } {}
-
-
-        map(
-            std::initializer_list<entry>&& __init) :
-            map{ range(__init.begin(), 
-                       __init.end()) } {}
-
-
-        template<
-            typename container_t>
-        map(
-            container_t&& __container)
-        {
-            auto&& __end = end();
-
-            for(auto&& __item : __container)
-                this->push_at(rvalue(__item), __end);
+            for(auto&& __item : __init)
+                thodd::push_back(*this, thodd::rvalue(__item));
         }
 
+
     public:
         template<
             typename iterator_t>
-        map&
-        operator= (
+        map(
             detail::range<iterator_t> const& __range)
         {
-            using namespace contdsl;
+            for(auto&& __item : __range)
+                thodd::push_back(*this, __item);   
+        }
 
+        
+        map(
+            auto __begin, 
+            auto __end) :
+            map(thodd::range(__begin, __end)) {}
+    
+    
+    public:
+        inline map& 
+        operator = (
+            map const& __other) 
+        {
+            if(this != &__other)
+                m_content = __other.m_content;
+
+            return *this;
+        }
+
+        
+        inline map& 
+        operator = (
+            map&& __other) 
+        {
+            if(this != &__other)
+                m_content = thodd::rvalue(__other.m_content);
+
+            return *this;
+        }
+
+
+        inline map& 
+        operator = (
+            std::initializer_list<entry<key_t, value_t>>&& __init)
+        {
             this->clear();
-            go<query>(copy, __range, *this);
+
+            for(auto&& __item : __init)
+                thodd::push_back(*this, thodd::rvalue(__item));
+        
+            return *this;
+        }
+
+
+        template<
+            typename iterator_t>
+        inline map&
+        operator = (
+            detail::range<iterator_t> const& __range) 
+        {
+            this->clear();
             
-            return *this;
-        }
-        
-
-        map&
-        operator= (
-            map const& __other)
-        {
-            return &__other != this ? 
-                        (*this) = range(this->begin(), 
-                                        this->end()) :
-                        *this;
-        }
-
-        
-        template<
-            typename container_t>
-        map&
-        operator=(
-            container_t& __container)
-        {
-            return (*this) = range(__container.begin(), 
-                                   __container.end());
-        }
-
-
-        map&
-        operator=(
-            std::initializer_list<entry> __range)
-        {
-            return (*this) = range(__range.begin(), __range.end());
-        }
-
-
-        template<
-            typename container_t>
-        map&
-        operator=(
-            container_t&& __container)
-        {
-            this->clear();
-            auto&& __end = this->end();
-
-            for(auto&& __item : __container)
-                this->push_at(rvalue(__item), __end);
+            for(auto&& __item : __range)
+                thodd::push_back(*this, __item);
 
             return *this;
         }
 
 
     public:
-        inline iterator_type
+        inline void
         push_at(
-            entry const& _entry)
+            entry<key_t, value_t> const& __entry)
         {
             using namespace contdsl; 
 
-            auto __iter = m_content.push_at(_entry);
+            m_content.push_at(__entry);
+
             go<query>(with($0) > sort(asc), m_content);
-
-            return __iter;
         }
 
-
-        inline iterator_type
+        inline void 
         push_at(
-            key_t&& _key,
-            value_t const& _value)
+            entry<key_t, value_t> const& __entry, 
+            iterator_type __pos)
         {
-            return push_at(entry{_key, _value});
+            this->push_at(__entry);
         }
 
-
-        inline iterator_type
-        push_at(
-            key_t const& _key,
-            value_t&& _value)
-        {
-            return push_at(entry{_key, _value});
-        }
-
-
-        inline iterator_type
-        push_at(
-            key_t&& _key,
-            value_t&& _value)
-        {
-            return push_at(entry{_key, _value});
-        }
-
-
-        inline iterator_type
-        push_at(
-            key_t const& _key,
-            value_t const& _value)
-        {
-            return push_at(entry{_key, _value});
-        }
-
-
-        inline iterator_type
+        inline void
         pop_at(
-            key_t const& _key)
+            iterator_type __pos)
+        {
+            m_content.pop_at(__pos);
+        }
+
+
+        inline void
+        pop_at(
+            key_t const& __key)
         {
             using namespace contdsl;
 
@@ -295,26 +245,9 @@ namespace thodd
             go<query>(
                 with(ref(*this)) 
                 > first(ref(__pos)) 
-                > where([&_key](entry const& _item){return _item.key == _key;}));
+                > where([&__key](entry<key_t, value_t> const& __item){return __item.key == __key;}));
 
-            return m_content.pop_at(__pos);
-        }
-
-
-        inline iterator_type
-        pop_at(
-            key_t&& _key)
-        {
-            using namespace contdsl;
-
-            auto __pos = this->end();
-
-            go<query>(
-                with(ref(*this)) 
-                > first(ref(__pos)) 
-                > where([&_key](entry const& _item){return _item.key == _key;}));
-
-            return m_content.pop_at(__pos);
+            this->pop_at(__pos);
         }
     };
 }
