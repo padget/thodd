@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include <thodd/law.hpp>
-#include <thodd/container_map.hpp>
+#include <thodd/container_view.hpp>
 
 #include <list>
 class something
@@ -25,21 +25,16 @@ operator == (
 }
 
 
-template<typename key_t, typename value_t>
-std::ostream& 
-operator << (
-    std::ostream& __out, thodd::entry<key_t, value_t> const& __entry)
-{
-    return (__out << __entry.key << ' ' << __entry.value);
-}
-
 int main(
     int argc, 
     char* args[])
 try
 {
-    thodd::map<int, int> __ls{thodd::entry<int, int>{1, 2}, thodd::entry<int, int>{3, 4}, thodd::entry<int, int>{1, 2}};
-    for(auto&& __item : __ls)
+    thodd::list<int> __ls{1,2,3,4,5,6};
+
+    auto __vs = thodd::view(__ls);
+
+    for(auto&& __item : __vs)
         std::cout << __item << std::endl;
 
 }
