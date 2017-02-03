@@ -141,25 +141,25 @@ namespace thodd
             inline auto
             begin()
             {
-                return iterator_type(m_content.begin());
+                return iterator_type{m_content.begin()};
             }
 
             inline auto const
             begin() const
             {
-                return iterator_type(m_content.begin());
+                return iterator_type{m_content.begin()};
             }
 
             inline auto
             end()
             {
-                return iterator_type(m_content.end());
+                return iterator_type{m_content.end()};
             }
 
             inline auto const
             end() const
             {
-                return iterator_type(m_content.end());
+                return iterator_type{m_content.end()};
             }
 
         public:
@@ -253,7 +253,7 @@ namespace thodd
                 item_t& __item,
                 iterator_type __pos)
             {
-                return m_content.push_at(&__item, __pos.iter());
+                return m_content.push_at(&__item, __pos.iter);
             }
 
             inline auto
@@ -261,7 +261,7 @@ namespace thodd
                 item_t&& __item,
                 iterator_type __pos)
             {
-                return m_content.push_at(&__item, __pos.iter());
+                return m_content.push_at(&__item, __pos.iter);
             }
 
 
@@ -269,7 +269,7 @@ namespace thodd
             pop_at(
                 iterator_type __pos)
             {
-                return m_content.pop_at(__pos.iter());
+                return m_content.pop_at(__pos.iter);
             }
         };
     }
