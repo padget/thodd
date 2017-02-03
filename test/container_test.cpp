@@ -4,7 +4,6 @@
 #include <thodd/law.hpp>
 #include <thodd/container_view.hpp>
 
-#include <list>
 class something
 {
 public:
@@ -33,6 +32,12 @@ try
     thodd::list<int> __ls{1,2,3,4,5,6};
 
     auto __vs = thodd::view(__ls);
+
+    for(auto&& __item : __vs)
+        std::cout << __item << std::endl;
+
+    for(auto& __item : __ls)
+        __item++;
 
     for(auto&& __item : __vs)
         std::cout << __item << std::endl;
