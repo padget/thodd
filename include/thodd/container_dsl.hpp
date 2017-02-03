@@ -4,8 +4,8 @@
 #  include <thodd/meta.hpp>
 #  include <thodd/law.hpp>
 #  include <thodd/dsl.hpp>
+#  include <thodd/functional.hpp>
 #  include <thodd/container_func.hpp>
- 
 
 namespace thodd
 {

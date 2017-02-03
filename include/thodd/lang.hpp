@@ -1,5 +1,5 @@
-#ifndef __THODD_LANG_NEW_HPP__
-#  define __THODD_LANG_NEW_HPP__
+#ifndef __THODD_LANG_HPP__
+#  define __THODD_LANG_HPP__
 
 #  include <thodd/lang_core.hpp>
 
@@ -26,7 +26,7 @@
 ///      ||
 /// |----------|
 /// |   RULE   |
-/// |__________|_________________________
+/// |__________|_____________________________
 ///      ||             ||             ||
 /// |----------|   |----------|   |----------|
 /// |   SOME   |   |  ALTER   |   |  FOLLOW  |
