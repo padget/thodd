@@ -53,9 +53,11 @@ namespace thodd
         }
 
 
+        template<
+            typename something_t>
         inline auto
         matches(
-            matcher<some<matcher<auto>>> const& __some, 
+            matcher<some<matcher<something_t>>> const& __some, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -73,26 +75,16 @@ namespace thodd
             typename ... cases_t>
         inline auto 
         matches(
-            rule<some<rule<cases_t>...>> const& __alter, 
+            rule<some<rule<case_t>>> const& __alter, 
             auto& __cursor, 
             auto const& __end)
-        {              
-            decltype(token(__cursor, __cursor)) __res;
-            auto __save = __cursor;
+        {            
+            list<decltype(token(__cursor, __cursor))> __subranges;
 
-            __alter.algo.cases.template foreach(
-                [&__res, &__save, 
-                 &__cursor, &__end] 
-                (auto&& __case)
-                {
-                    if(!((bool) __res)) 
-                        __res = matches(perfect<decltype(__case)>(__case), 
-                                         __cursor, 
-                                         __end);  
-                    
-                    if(!__res) 
-                        __cursor = __save;
-                });
+            auto __save = __cursor;
+            auto __continue = true;
+            
+           
         
             return __res;
         }

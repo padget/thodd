@@ -11,8 +11,7 @@ namespace thodd
         template<
             typename type_t>
         using __target = typename type_t::target;
-
-
+        
 
         namespace detail
         {

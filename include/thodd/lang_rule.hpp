@@ -53,7 +53,6 @@ namespace thodd
         {
             return matches(__rule.algo, __cursor, __end);
         }
-
     }
 }
 

@@ -96,12 +96,13 @@ namespace thodd
 
                         if((__continue = (bool) __subrange))
                             __subranges.push_at(__subrange, __subranges.end()); 
-                        
-                        if(!__continue) 
+                        else 
+                        {  
+                            __subranges.clear();
                             __cursor = __save;
-                    }
+                        }   
+                    }     
                 });
-                
         
             return token(__save, __cursor, __subranges);
         }

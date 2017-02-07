@@ -1,13 +1,57 @@
 #include <iostream>
 #include <exception>
 
+#include <string>
+
 #include <thodd/lang.hpp>
+
+extern constexpr auto __digit = 
+    thodd::lang::make_matcher(
+        [] (auto& __cursor, 
+            auto const& __end)
+        {
+            auto&& __res = '0' <= *__cursor 
+                        && *__cursor <= '9';
+
+            return __res ? 
+                (++__cursor, true) : 
+                false;
+        });
+
+
+extern constexpr auto __letter = 
+    thodd::lang::make_matcher(
+        [] (auto& __cursor, 
+            auto const& __end)
+        {
+            auto&& __res = 'a' <= *__cursor 
+                        && *__cursor <= 'z';
+
+            return __res ? 
+                (++__cursor, true) : 
+                false;
+        });
 
 int main(
     int argc, 
     char* args[])
 try
 {
+    using namespace thodd;
+    using namespace thodd::lang;
+
+    std::string __input{"1a"};
+    auto const __end = __input.end();
+    
+    auto __dol_rule = make_rule(__digit) >> make_rule(__letter);
+
+    auto __begin2 = __input.begin();
+    auto __res2 = matches(__dol_rule, __begin2, __end);
+
+    for(auto&& __cursor : __res2)
+        std::cout << __cursor << std::endl;
+
+    std::cout << __res2.subranges.size() << std::endl;
 
 }
 catch(std::exception& __e)

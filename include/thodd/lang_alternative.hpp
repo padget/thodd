@@ -83,6 +83,7 @@ namespace thodd
                  &__cursor, &__end] 
                 (auto&& __case)
                 {
+                    std::cout << "coucou" << std::endl;
                     if(!((bool) __res)) 
                         __res = matches(perfect<decltype(__case)>(__case), 
                                          __cursor, 
