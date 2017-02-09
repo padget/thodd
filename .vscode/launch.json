@@ -6,7 +6,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/debug/thodd.exe",
+            "program": "${workspaceRoot}/debug/lang_test.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

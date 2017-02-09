@@ -8,6 +8,7 @@
 
 #  include <thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_rule.hpp> 
 
 namespace thodd
 {
@@ -19,27 +20,14 @@ namespace thodd
         {
             something_t something;
             size_t min{0u}, 
-                   max{1u};
+                   max{10u};
 
             constexpr auto 
-            operator()(
-                size_t __min, 
-                size_t __max) const
+            operator() (
+                size_t __min, size_t __max) const 
+            -> decltype(auto)
             {
-                return 
-                make_matcher(
-                    some<something_t>
-                    {something, __min, __max});
-            }
-
-            constexpr auto 
-            operator()(
-                size_t __minmax) const
-            {
-                return 
-                make_matcher(
-                    some<something_t>
-                    {something, __minmax, __minmax});
+                return some{something, __min, __max};
             }
         };
 
@@ -72,23 +60,114 @@ namespace thodd
 
 
         template<
-            typename ... cases_t>
+            typename something_t>
         inline auto 
         matches(
-            rule<some<rule<case_t>>> const& __alter, 
+            rule<some<rule<something_t>>> const& __some, 
             auto& __cursor, 
             auto const& __end)
-        {            
-            list<decltype(token(__cursor, __cursor))> __subranges;
+        {     
+            using token_t = decltype(token(__cursor, __cursor));
 
-            auto __save = __cursor;
-            auto __continue = true;
-            
-           
+            list<token_t> __subranges;
+
+            auto __save = __cursor;            
+            auto __cpt = 0u;
+            token_t __subrange;
+
+            while((__subrange = matches(__some.algo.something, __cursor, __end)) 
+                && __cpt <= __some.algo.max)
+            {
+                thodd::push_back(__subranges, __subrange);
+                ++__cpt;
+            }
+
+            if(!(__some.algo.min <= __cpt 
+                && __cpt <= __some.algo.max))
+            {    
+                __subranges.clear();
+                __cursor = __save;
+            }
         
-            return __res;
+            return token(__save, __cursor, __subranges);
+        }
+
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator ~ (
+            matcher<rcase_t> const& __rmatcher )
+        {
+            return 
+            make_matcher(
+                make_some( 
+                    __rmatcher));   
+        }
+
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator ~ (
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_some( 
+                    __rrule));   
+        }
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator + (
+            matcher<rcase_t> const& __rmatcher )
+        {
+            return 
+            make_matcher(
+                make_some( 
+                    __rmatcher))(1, thodd::infinity);   
+        }
+
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator + (
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_some( 
+                    __rrule))(1, thodd::infinity);   
+        }
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator * (
+            matcher<rcase_t> const& __rmatcher )
+        {
+            return 
+            make_matcher(
+                make_some( 
+                    __rmatcher))(0, thodd::infinity);   
+        }
+
+
+        template<
+            typename rcase_t>
+        constexpr auto
+        operator * (
+            rule<rcase_t> const& __rrule)
+        {
+            return 
+            make_rule(
+                make_some( 
+                    __rrule))(0, thodd::infinity);   
         }
     }
 }
 
-#endif // !__THODD_LANG2_HPP__
+#endif 

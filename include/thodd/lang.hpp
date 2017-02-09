@@ -10,8 +10,6 @@
 #  include <thodd/lang_follow.hpp>
 #  include <thodd/lang_some.hpp>
 
-#  include <thodd/lang_operator.hpp>
-
 
 
 

@@ -14,6 +14,14 @@ namespace thodd
         struct matcher
         {
             algo_t algo;
+
+            constexpr auto
+            operator() (
+                auto&&... __params) const 
+            -> decltype(auto)
+            {
+                return matcher{algo(perfect<decltype(__params)>(__params)...)};
+            }
         };
 
 

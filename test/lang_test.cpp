@@ -40,10 +40,12 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"1a"};
+    std::string __input{"111"};
     auto const __end = __input.end();
+    auto __dol_rule = *make_rule(__digit);
     
-    auto __dol_rule = make_rule(__digit) >> make_rule(__letter);
+    std::cout << __dol_rule.algo.min << std::endl;
+    std::cout << __dol_rule.algo.max << std::endl;
 
     auto __begin2 = __input.begin();
     auto __res2 = matches(__dol_rule, __begin2, __end);

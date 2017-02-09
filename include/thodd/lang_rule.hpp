@@ -13,6 +13,14 @@ namespace thodd
         struct rule
         {
             algo_t algo;
+
+            constexpr auto
+            operator() (
+                auto&&... __params) const 
+            -> decltype(auto)
+            {
+                return rule{algo(perfect<decltype(__params)>(__params)...)};
+            }
         };
 
 

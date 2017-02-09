@@ -36,7 +36,7 @@
                 "C:/gcc-7-win64/lib/gcc/x86_64-w64-mingw32/7.0.0/include-fixed", 
                 "C:/gcc-7-win64/x86_64-w64-mingw32/include", 
                 "C:/gcc-7-win64/include/c++/7.0.0",
-                "src"],
+                "include"],
             "browse" : {
                 "limitSymbolsToIncludedHeaders" : true,
                 "databaseFilename" : ""
