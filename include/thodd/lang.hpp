@@ -4,7 +4,7 @@
 #  include <thodd/lang_core.hpp>
 
 #  include <thodd/lang_matcher.hpp>
-#  include <thodd/lang_rule.hpp>
+#  include <thodd/lang_word.hpp>
 
 #  include <thodd/lang_alternative.hpp>
 #  include <thodd/lang_follow.hpp>
@@ -23,7 +23,7 @@
 /// |__________|
 ///      ||
 /// |----------|
-/// |   RULE   |
+/// |   WORD   |
 /// |__________|_____________________________
 ///      ||             ||             ||
 /// |----------|   |----------|   |----------|

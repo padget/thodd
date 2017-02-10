@@ -7,7 +7,7 @@
 
 #  include <thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
-#  include <thodd/lang_rule.hpp> 
+#  include <thodd/lang_word.hpp> 
 
 namespace thodd
 {
@@ -75,7 +75,7 @@ namespace thodd
             typename ... cases_t>
         inline auto 
         matches(
-            rule<follow<rule<cases_t>...>> const& __alter, 
+            word<follow<word<cases_t>...>> const& __alter, 
             auto& __cursor, 
             auto const& __end)
         {   
@@ -163,14 +163,14 @@ namespace thodd
             typename ralgo_t>
         constexpr auto
         operator >> (
-            rule<lalgo_t> const& __lrule,
-            rule<ralgo_t> const& __rrule )
+            word<lalgo_t> const& __lword,
+            word<ralgo_t> const& __rword )
         {
             return 
-            make_rule(
+            make_word(
                 make_follow(
-                    __lrule, 
-                    __rrule));   
+                    __lword, 
+                    __rword));   
         }
 
         
@@ -179,14 +179,14 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator >> (
-            rule<follow<rule<lcases_t>...>> const& __lalter,
-            rule<rcase_t> const& __rrule)
+            word<follow<word<lcases_t>...>> const& __lalter,
+            word<rcase_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_follow(
                     __lalter.algo.algos 
-                  + __rrule));
+                  + __rword));
         }
 
 
@@ -195,11 +195,11 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator >> (
-            rule<follow<rule<lcases_t>...>> const& __lalter,
-            rule<follow<rule<rcases_t>...>> const& __ralter)
+            word<follow<word<lcases_t>...>> const& __lalter,
+            word<follow<word<rcases_t>...>> const& __ralter)
         {
             return 
-            make_rule(
+            make_word(
                 make_follow(
                     __lalter.algo.algos 
                   + __ralter.algo.algos));

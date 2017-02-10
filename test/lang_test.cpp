@@ -42,13 +42,13 @@ try
 
     std::string __input{"111"};
     auto const __end = __input.end();
-    auto __dol_rule = *make_rule(__digit);
+    auto __dol_word = *make_word(__digit);
     
-    std::cout << __dol_rule.algo.min << std::endl;
-    std::cout << __dol_rule.algo.max << std::endl;
+    std::cout << "min : " << __dol_word.algo.min << std::endl;
+    std::cout << "max : " << __dol_word.algo.max << std::endl;
 
     auto __begin2 = __input.begin();
-    auto __res2 = matches(__dol_rule, __begin2, __end);
+    auto __res2 = matches(__dol_word, __begin2, __end);
 
     for(auto&& __cursor : __res2)
         std::cout << __cursor << std::endl;

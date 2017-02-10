@@ -8,7 +8,7 @@
 
 #  include <thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
-#  include <thodd/lang_rule.hpp> 
+#  include <thodd/lang_word.hpp> 
 
 namespace thodd
 {
@@ -63,7 +63,7 @@ namespace thodd
             typename something_t>
         inline auto 
         matches(
-            rule<some<rule<something_t>>> const& __some, 
+            word<some<word<something_t>>> const& __some, 
             auto& __cursor, 
             auto const& __end)
         {     
@@ -110,12 +110,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator ~ (
-            rule<rcase_t> const& __rrule)
+            word<rcase_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_some( 
-                    __rrule));   
+                    __rword));   
         }
 
         template<
@@ -135,12 +135,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator + (
-            rule<rcase_t> const& __rrule)
+            word<rcase_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_some( 
-                    __rrule))(1, thodd::infinity);   
+                    __rword))(1, thodd::infinity);   
         }
 
         template<
@@ -160,12 +160,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator * (
-            rule<rcase_t> const& __rrule)
+            word<rcase_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_some( 
-                    __rrule))(0, thodd::infinity);   
+                    __rword))(0, thodd::infinity);   
         }
     }
 }

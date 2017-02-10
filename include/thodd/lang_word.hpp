@@ -1,5 +1,5 @@
-#ifndef __THODD_LANG_RULE_HPP__
-#  define __THODD_LANG_RULE_HPP__
+#ifndef __THODD_LANG_WORD_HPP__
+#  define __THODD_LANG_WORD_HPP__
 
 #  include <thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
@@ -10,7 +10,7 @@ namespace thodd
     {
         template<
             typename algo_t>
-        struct rule
+        struct word
         {
             algo_t algo;
 
@@ -19,7 +19,7 @@ namespace thodd
                 auto&&... __params) const 
             -> decltype(auto)
             {
-                return rule{algo(perfect<decltype(__params)>(__params)...)};
+                return word{algo(perfect<decltype(__params)>(__params)...)};
             }
         };
 
@@ -27,10 +27,10 @@ namespace thodd
         template<
             typename algo_t>
         constexpr auto 
-        make_rule(
+        make_word(
             algo_t&& __algo)
         {
-            return rule<meta::decay<algo_t>>{perfect<algo_t>(__algo)};
+            return word<meta::decay<algo_t>>{perfect<algo_t>(__algo)};
         }
 
 
@@ -38,13 +38,13 @@ namespace thodd
             typename algo_t>
         inline auto 
         matches(
-            rule<matcher<algo_t>> const& __rule, 
+            word<matcher<algo_t>> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {
             auto __save = __cursor;
 
-            if(!matches(__rule.algo , __cursor, __end))
+            if(!matches(__word.algo , __cursor, __end))
                 __cursor = __save;
 
             return token(__save, __cursor);
@@ -55,11 +55,11 @@ namespace thodd
             typename algo_t>
         inline auto 
         matches(
-            rule<algo_t> const& __rule, 
+            word<algo_t> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {
-            return matches(__rule.algo, __cursor, __end);
+            return matches(__word.algo, __cursor, __end);
         }
     }
 }

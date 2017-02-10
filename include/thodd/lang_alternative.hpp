@@ -7,7 +7,7 @@
 
 #  include<thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
-#  include <thodd/lang_rule.hpp> 
+#  include <thodd/lang_word.hpp> 
 
 namespace thodd
 {
@@ -73,7 +73,7 @@ namespace thodd
             typename ... cases_t>
         inline auto 
         matches(
-            rule<alternative<rule<cases_t>...>> const& __alter, 
+            word<alternative<word<cases_t>...>> const& __alter, 
             auto& __cursor, 
             auto const& __end)
         {              
@@ -155,14 +155,14 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator | (
-            rule<lcase_t> const& __lrule,
-            rule<rcase_t> const& __rrule)
+            word<lcase_t> const& __lword,
+            word<rcase_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_alternative(
-                    __lrule, 
-                    __rrule));   
+                    __lword, 
+                    __rword));   
         }
 
 
@@ -171,14 +171,14 @@ namespace thodd
             typename ralgo_t>
         constexpr auto
         operator | (
-            rule<alternative<rule<lalgos_t>...>> const& __lalter,
-            rule<ralgo_t> const& __rrule)
+            word<alternative<word<lalgos_t>...>> const& __lalter,
+            word<ralgo_t> const& __rword)
         {
             return 
-            make_rule(
+            make_word(
                 make_alternative(
                     __lalter.algo.algos 
-                  + __rrule));
+                  + __rword));
         }
 
         template<
@@ -186,11 +186,11 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator | (
-            rule<alternative<rule<lcases_t>...>> const& __lalter,
-            rule<alternative<rule<rcases_t>...>> const& __ralter)
+            word<alternative<word<lcases_t>...>> const& __lalter,
+            word<alternative<word<rcases_t>...>> const& __ralter)
         {
             return 
-            make_rule(
+            make_word(
                 make_alternative(
                     __lalter.algo.cases 
                   + __ralter.algo.cases));
