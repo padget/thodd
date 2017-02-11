@@ -23,14 +23,15 @@ namespace thodd
             }
         };
 
-
-        template<
-            typename algo_t>
         constexpr auto 
         make_word(
-            algo_t&& __algo)
+            auto&& __algo)
         {
-            return word<meta::decay<algo_t>>{perfect<algo_t>(__algo)};
+            using algo_t = decltype(__algo);
+
+            return 
+            word<meta::decay<algo_t>>
+            {perfect<algo_t>(__algo)};
         }
 
 
