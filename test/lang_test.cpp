@@ -32,6 +32,18 @@ extern constexpr auto __letter =
                 false;
         });
 
+inline void
+print_tokens(
+    auto&& __tree,
+    auto&& __offset)
+{
+    
+    std::cout << __offset << "id : " << __tree.id << std::endl;
+
+    for(auto&& __token : __tree.subranges)
+        print_tokens(__token, __offset+=' ');
+}
+
 int main(
     int argc, 
     char* args[])
@@ -48,13 +60,9 @@ try
     std::cout << "max : " << __dol_word.algo.max << std::endl;
 
     auto __begin2 = __input.begin();
-    auto __res2 = matches(__dol_word, __begin2, __end);
+    auto __tree = matches(__dol_word, __begin2, __end);
 
-    for(auto&& __cursor : __res2)
-        std::cout << __cursor << std::endl;
-
-    std::cout << __res2.subranges.size() << std::endl;
-
+    print_tokens(__tree, std::string());
 }
 catch(std::exception& __e)
 {

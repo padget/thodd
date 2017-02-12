@@ -48,7 +48,7 @@ namespace thodd
             if(!matches(__word.algo , __cursor, __end))
                 __cursor = __save;
 
-            return token(__save, __cursor);
+            return token(__word, __save, __cursor);
         }
 
 

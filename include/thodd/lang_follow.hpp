@@ -79,7 +79,7 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {   
-            list<decltype(token(__cursor, __cursor))> __subranges;
+            list<decltype(token(__alter, __cursor, __cursor))> __subranges;
 
             auto __save = __cursor;
             auto __continue = true;
@@ -106,7 +106,7 @@ namespace thodd
                     }     
                 });
         
-            return token(__save, __cursor, __subranges);
+            return token(__alter, __save, __cursor, __subranges);
         }
 
           template<

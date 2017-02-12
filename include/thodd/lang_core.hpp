@@ -20,8 +20,11 @@ namespace thodd
             class token final 
             {
             public:
+
+                using id_t = void const *;
                 using range_t = thodd::detail::range<iterator_t>;
 
+                id_t id{nullptr};
                 range_t range;
                 thodd::list<token> subranges;
                 
@@ -39,15 +42,19 @@ namespace thodd
 
             public:
                 token(
+                    id_t __id,
                     iterator_t const& __begin, 
                     iterator_t const& __end) :
+                    id(__id),
                     range{thodd::range(__begin, __end)} {}
             
             
                 token(
+                    id_t __id,
                     iterator_t const& __begin, 
                     iterator_t const& __end, 
                     list<token> const& __subranges) :
+                    id(__id),
                     range{thodd::range(__begin, __end)}, 
                     subranges{__subranges} {}
 
@@ -117,23 +124,25 @@ namespace thodd
 
         inline auto 
         token(
+            auto const& __word,
             auto const& __begin, 
             auto const& __end)
         {
             return 
             detail::token<meta::decay<decltype(__begin)>>
-            {__begin, __end};
+            {&__word, __begin, __end};
         }
 
         inline auto 
         token(
+            auto const& __word,
             auto const& __begin, 
             auto const& __end, 
             auto&& __subranges)
         {
             return 
             detail::token<meta::decay<decltype(__begin)>>
-            {__begin, __end, __subranges};
+            {&__word, __begin, __end, __subranges};
         }
     }
 }

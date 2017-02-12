@@ -67,7 +67,7 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {     
-            using token_t = decltype(token(__cursor, __cursor));
+            using token_t = decltype(token(__some, __cursor, __cursor));
 
             list<token_t> __subranges;
 
@@ -89,7 +89,7 @@ namespace thodd
                 __cursor = __save;
             }
         
-            return token(__save, __cursor, __subranges);
+            return token(__some, __save, __cursor, __subranges);
         }
 
 

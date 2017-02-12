@@ -77,7 +77,7 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {              
-            auto&& __res = token(__cursor, __cursor);
+            auto&& __res = token(__alter, __cursor, __cursor);
             auto __save = __cursor;
 
             __alter.algo.cases.template foreach(
