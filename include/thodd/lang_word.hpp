@@ -13,6 +13,7 @@ namespace thodd
         struct word
         {
             algo_t algo;
+            typename uuid::uuid_t id{uuid::next_id()};
 
             constexpr auto
             operator() (
@@ -47,7 +48,7 @@ namespace thodd
 
             if(!matches(__word.algo , __cursor, __end))
                 __cursor = __save;
-
+            std::cout << &__word << std::endl;
             return token(__word, __save, __cursor);
         }
 

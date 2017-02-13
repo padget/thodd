@@ -74,10 +74,11 @@ namespace thodd
             auto __save = __cursor;            
             auto __cpt = 0u;
             token_t __subrange;
-
+            
             while((__subrange = matches(__some.algo.something, __cursor, __end)) 
                 && __cpt <= __some.algo.max)
             {
+                std::cout << "addrs : " << &__some.algo.something << std::endl;
                 thodd::push_back(__subranges, __subrange);
                 ++__cpt;
             }
@@ -88,7 +89,10 @@ namespace thodd
                 __subranges.clear();
                 __cursor = __save;
             }
-        
+            
+            std::cout << "addr : " << &__some << std::endl;
+            std::cout << sizeof(__some) << std::endl;
+
             return token(__some, __save, __cursor, __subranges);
         }
 

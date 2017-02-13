@@ -4,6 +4,7 @@
 #include <string>
 
 #include <thodd/lang.hpp>
+#include <thodd/uuid.hpp>
 
 extern constexpr auto __digit = 
     thodd::lang::make_matcher(
@@ -41,7 +42,7 @@ print_tokens(
     std::cout << __offset << "id : " << __tree.id << std::endl;
 
     for(auto&& __token : __tree.subranges)
-        print_tokens(__token, __offset+=' ');
+        print_tokens(__token, __offset + ' ');
 }
 
 int main(
@@ -52,7 +53,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"111"};
+    std::string __input{"1111111"};
     auto const __end = __input.end();
     auto __dol_word = *make_word(__digit);
     
@@ -63,6 +64,21 @@ try
     auto __tree = matches(__dol_word, __begin2, __end);
 
     print_tokens(__tree, std::string());
+
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
+    std::cout << uuid::next_id() << std::endl;
 }
 catch(std::exception& __e)
 {
