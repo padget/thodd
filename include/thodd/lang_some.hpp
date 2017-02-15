@@ -99,7 +99,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator ~ (
-            regex<rcase_t> const& __rregex )
+            regex<rcase_t> const& __rregex)
         {
             return 
             make_regex(
@@ -125,7 +125,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator + (
-            regex<rcase_t> const& __rregex )
+            regex<rcase_t> const& __rregex)
         {
             return 
             make_regex(
@@ -151,7 +151,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator * (
-            regex<rcase_t> const& __rregex )
+            regex<rcase_t> const& __rregex)
         {
             return 
             make_regex(
