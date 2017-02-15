@@ -6,7 +6,7 @@
 #  include <thodd/variant.hpp>
 
 #  include <thodd/lang_core.hpp>
-#  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_regex.hpp>
 #  include <thodd/lang_word.hpp> 
 
 namespace thodd
@@ -44,7 +44,7 @@ namespace thodd
             typename ... algos_t>
         inline auto 
         matches(
-            matcher<follow<matcher<algos_t>...>> const& __follow, 
+            regex<follow<regex<algos_t>...>> const& __follow, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -118,14 +118,14 @@ namespace thodd
             typename ralgo_t>
         constexpr auto
         operator >> (
-            matcher<lalgo_t> const& __lmatcher,
-            matcher<ralgo_t> const& __rmatcher )
+            regex<lalgo_t> const& __lregex,
+            regex<ralgo_t> const& __rregex )
         {
             return 
-            make_matcher(
+            make_regex(
                 make_follow(
-                    __lmatcher, 
-                    __rmatcher));   
+                    __lregex, 
+                    __rregex));   
         }
 
          template<
@@ -133,14 +133,14 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator >> (
-            matcher<follow<matcher<lcases_t>...>> const& __lalter,
-            matcher<rcase_t> const& __rmatcher)
+            regex<follow<regex<lcases_t>...>> const& __lalter,
+            regex<rcase_t> const& __rregex)
         {
             return 
-            make_matcher(
+            make_regex(
                 make_follow(
                     __lalter.algo.algos 
-                  + __rmatcher));
+                  + __rregex));
         }
 
 
@@ -149,11 +149,11 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator >> (
-            matcher<follow<matcher<lcases_t>...>> const& __lalter,
-            matcher<follow<matcher<rcases_t>...>> const& __ralter)
+            regex<follow<regex<lcases_t>...>> const& __lalter,
+            regex<follow<regex<rcases_t>...>> const& __ralter)
         {
             return 
-            make_matcher(
+            make_regex(
                 make_follow(
                     __lalter.algo.algos 
                   + __ralter.algo.algos));

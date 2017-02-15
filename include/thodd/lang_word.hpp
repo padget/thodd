@@ -4,7 +4,7 @@
 #  include <thodd/functional.hpp>
 
 #  include <thodd/lang_core.hpp>
-#  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_regex.hpp>
 
 namespace thodd
 {
@@ -54,7 +54,7 @@ namespace thodd
             typename caster_t>
         inline auto 
         matches(
-            word<matcher<algo_t>, caster_t> const& __word, 
+            word<regex<algo_t>, caster_t> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {

@@ -6,7 +6,7 @@
 #include <thodd/lang.hpp>
 
 extern constexpr auto __digit = 
-    thodd::lang::make_matcher(
+    thodd::lang::make_regex(
         [] (auto& __cursor, 
             auto const& __end)
         {
@@ -20,7 +20,7 @@ extern constexpr auto __digit =
 
 
 extern constexpr auto __letter = 
-    thodd::lang::make_matcher(
+    thodd::lang::make_regex(
         [] (auto& __cursor, 
             auto const& __end)
         {

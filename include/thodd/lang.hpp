@@ -3,7 +3,7 @@
 
 #  include <thodd/lang_core.hpp>
 
-#  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_regex.hpp>
 #  include <thodd/lang_word.hpp>
 
 #  include <thodd/lang_alternative.hpp>
@@ -19,7 +19,7 @@
 /// |__________|
 ///      ||
 /// |----------|
-/// | MATCHER  |
+/// | REGEX  |
 /// |__________|
 ///      ||
 /// |----------|

@@ -6,7 +6,7 @@
 #  include<thodd/variant.hpp>
 
 #  include<thodd/lang_core.hpp>
-#  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_regex.hpp>
 #  include <thodd/lang_word.hpp> 
 
 namespace thodd
@@ -46,7 +46,7 @@ namespace thodd
             typename ... cases_t>
         inline auto 
         matches(
-            matcher<alternative<matcher<cases_t>...>> const& __alter, 
+            regex<alternative<regex<cases_t>...>> const& __alter, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -114,14 +114,14 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator | (
-            matcher<lcase_t> const& __lmatcher,
-            matcher<rcase_t> const& __rmatcher )
+            regex<lcase_t> const& __lregex,
+            regex<rcase_t> const& __rregex )
         {
             return 
-            make_matcher(
+            make_regex(
                 make_alternative(
-                    __lmatcher, 
-                    __rmatcher));   
+                    __lregex, 
+                    __rregex));   
         }
 
 
@@ -130,14 +130,14 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator | (
-            matcher<alternative<matcher<lcases_t>...>> const& __lalter,
-            matcher<rcase_t> const& __rmatcher)
+            regex<alternative<regex<lcases_t>...>> const& __lalter,
+            regex<rcase_t> const& __rregex)
         {
             return 
-            make_matcher(
+            make_regex(
                 make_alternative(
                     __lalter.algo.cases 
-                  + __rmatcher));
+                  + __rregex));
         }
 
 
@@ -146,11 +146,11 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator | (
-            matcher<alternative<matcher<lcases_t>...>> const& __lalter,
-            matcher<alternative<matcher<rcases_t>...>> const& __ralter)
+            regex<alternative<regex<lcases_t>...>> const& __lalter,
+            regex<alternative<regex<rcases_t>...>> const& __ralter)
         {
             return 
-            make_matcher(
+            make_regex(
                 make_alternative(
                     __lalter.algo.cases 
                   + __ralter.algo.cases));

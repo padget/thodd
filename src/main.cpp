@@ -54,14 +54,14 @@ try
 
 
 //     constexpr auto __c = 
-//         make_matcher(
+//         make_regex(
 //         [](auto& __cursor, auto const& __end)
 //         {
 //             return *__cursor == 'c' ? (++__cursor, true) : false;
 //         });
 
 //      constexpr auto __d = 
-//         make_matcher(
+//         make_regex(
 //         [](auto& __cursor, auto const& __end)
 //         {
 //             return *__cursor == 'd' ? (++__cursor, true) : false;

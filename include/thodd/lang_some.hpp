@@ -7,7 +7,7 @@
 #  include <thodd/containers.hpp>
 
 #  include <thodd/lang_core.hpp>
-#  include <thodd/lang_matcher.hpp>
+#  include <thodd/lang_regex.hpp>
 #  include <thodd/lang_word.hpp> 
 
 namespace thodd
@@ -45,7 +45,7 @@ namespace thodd
             typename something_t>
         inline auto
         matches(
-            matcher<some<matcher<something_t>>> const& __some, 
+            regex<some<regex<something_t>>> const& __some, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -99,12 +99,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator ~ (
-            matcher<rcase_t> const& __rmatcher )
+            regex<rcase_t> const& __rregex )
         {
             return 
-            make_matcher(
+            make_regex(
                 make_some( 
-                    __rmatcher));   
+                    __rregex));   
         }
 
 
@@ -125,12 +125,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator + (
-            matcher<rcase_t> const& __rmatcher )
+            regex<rcase_t> const& __rregex )
         {
             return 
-            make_matcher(
+            make_regex(
                 make_some( 
-                    __rmatcher))(1, thodd::infinity);   
+                    __rregex))(1, thodd::infinity);   
         }
 
 
@@ -151,12 +151,12 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator * (
-            matcher<rcase_t> const& __rmatcher )
+            regex<rcase_t> const& __rregex )
         {
             return 
-            make_matcher(
+            make_regex(
                 make_some( 
-                    __rmatcher))(0, thodd::infinity);   
+                    __rregex))(0, thodd::infinity);   
         }
 
 
