@@ -39,7 +39,12 @@ print_tokens(
     auto&& __offset)
 {
     
-    std::cout << __offset << "id : " << __tree.id << std::endl;
+    std::cout << __offset << "index : " << __tree.index << ':'; 
+
+    for(auto&& __c : __tree)
+        std::cout << __c;
+
+    std::cout << std::endl;
 
     for(auto&& __token : __tree.subranges)
         print_tokens(__token, __offset + ' ');
@@ -53,32 +58,15 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"1111111"};
+    std::string __input{"a12h12hhh12h"};
     auto const __end = __input.end();
-    auto __dol_word = *make_word(__digit);
+    auto __dol_word = *(make_word(__digit) | make_word(__letter));
     
-    std::cout << "min : " << __dol_word.algo.min << std::endl;
-    std::cout << "max : " << __dol_word.algo.max << std::endl;
 
     auto __begin2 = __input.begin();
     auto __tree = matches(__dol_word, __begin2, __end);
-
+    
     print_tokens(__tree, std::string());
-
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
-    std::cout << uuid::next_id() << std::endl;
 }
 catch(std::exception& __e)
 {

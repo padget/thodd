@@ -17,7 +17,7 @@ namespace thodd
         }
     };
 
-    typename uuid::uuid_data_t uuid::id{0u};
+    typename uuid::uuid_t uuid::id{0u};
 }
 
 #endif

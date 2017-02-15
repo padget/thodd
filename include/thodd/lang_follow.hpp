@@ -79,13 +79,14 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {   
-            list<decltype(token(__alter, __cursor, __cursor))> __subranges;
+            list<decltype(token(0u, __cursor, __cursor))> __subranges;
 
             auto __save = __cursor;
             auto __continue = true;
+            auto __index = 0u;
 
             __alter.algo.algos.template foreach(
-                [&__continue, &__subranges, 
+                [&__continue, &__subranges, &__index, 
                  &__save, &__cursor, &__end] 
                 (auto&& __case)
                 {
@@ -97,7 +98,11 @@ namespace thodd
                             matches(perfect<case_t>(__case), __cursor, __end);
 
                         if((__continue = (bool) __subrange))
-                            __subranges.push_at(__subrange, __subranges.end()); 
+                        {
+                            __subrange.index = __index;
+                            thodd::push_back(__subranges, __subrange); 
+                            ++__index;
+                        }
                         else 
                         {  
                             __subranges.clear();
@@ -106,7 +111,7 @@ namespace thodd
                     }     
                 });
         
-            return token(__alter, __save, __cursor, __subranges);
+            return token(0u, __save, __cursor, __subranges);
         }
 
           template<

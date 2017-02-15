@@ -67,7 +67,7 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {     
-            using token_t = decltype(token(__some, __cursor, __cursor));
+            using token_t = decltype(token(0u, __cursor, __cursor));
 
             list<token_t> __subranges;
 
@@ -93,7 +93,7 @@ namespace thodd
             std::cout << "addr : " << &__some << std::endl;
             std::cout << sizeof(__some) << std::endl;
 
-            return token(__some, __save, __cursor, __subranges);
+            return token(0u, __save, __cursor, __subranges);
         }
 
 

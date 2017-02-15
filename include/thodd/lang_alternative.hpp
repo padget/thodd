@@ -77,24 +77,29 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {              
-            auto&& __res = token(__alter, __cursor, __cursor);
+            auto&& __res = token(0u, __cursor, __cursor);
             auto __save = __cursor;
+            auto __index = 0u;
 
             __alter.algo.cases.template foreach(
-                [&__res, &__save, 
+                [&__res, &__save, &__index, 
                  &__cursor, &__end] 
                 (auto&& __case)
                 {
-                    std::cout << "coucou" << std::endl;
-                    if(!((bool) __res)) 
+                   if(!((bool) __res)) 
                         __res = matches(perfect<decltype(__case)>(__case), 
                                          __cursor, 
                                          __end);  
                     
                     if(!__res) 
+                    {
                         __cursor = __save;
+                        ++__index;
+                    }
                 });
-        
+            
+            __res.index = __index;
+
             return __res;
         }
 
