@@ -7,11 +7,11 @@ namespace thodd
     {
         template<
             typename algo_t,
-            typename caster_t>
+            typename reactor_t>
         struct rule
         {
             algo_t algo;
-            caster_t caster;
+            reactor_t reactor;
 
             constexpr auto
             operator() (
@@ -25,26 +25,26 @@ namespace thodd
         constexpr auto
         make_rule(
             auto&& __algo,
-            auto&& __caster)
+            auto&& __reactor)
         -> decltype(auto)
         {
             using algo_t = decltype(__algo);
-            using caster_t = decltype(__caster);
+            using reactor_t = decltype(__reactor);
             
             return 
             rule<
                 meta::decay<algo_t>,
-                meta::decay<caster_t>>
+                meta::decay<reactor_t>>
             {perfect<algo_t>(__algo),
-             perfect<caster_t>(__caster)};
+             perfect<reactor_t>(__reactor)};
         }
 
         template<
             typename algo_t,
-            typename caster_t>
+            typename reactor_t>
         inline auto
         matches(
-            rule<word<algo_t>, caster_t> const& __rule,
+            rule<word<algo_t>, reactor_t> const& __rule,
             auto& __cursor,
             auto const& __end, 
             auto& __target)
@@ -52,16 +52,16 @@ namespace thodd
             auto __tokens = matches(__rule.algo, __cursor, __end);
 
             if((bool) __tokens)
-                __rule.caster(__tokens, __target);
+                __rule.reactor(__tokens, __target);
         }
 
 
         template<
             typename algo_t, 
-            typename caster_t>
+            typename reactor_t>
         inline auto 
         matches(
-            rule<algo_t, caster_t> const& __rule
+            rule<algo_t, reactor_t> const& __rule
             auto& __cursor, 
             auto const& __end, 
             auto& __target)

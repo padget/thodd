@@ -75,7 +75,7 @@ namespace thodd
             typename ... cases_t>
         inline auto 
         matches(
-            word<follow<word<cases_t>...>> const& __alter, 
+            word<follow<word<cases_t, >...>, > const& __alter, 
             auto& __cursor, 
             auto const& __end)
         {   
@@ -168,8 +168,8 @@ namespace thodd
             typename ralgo_t>
         constexpr auto
         operator >> (
-            word<lalgo_t> const& __lword,
-            word<ralgo_t> const& __rword )
+            word<lalgo_t, > const& __lword,
+            word<ralgo_t, > const& __rword )
         {
             return 
             make_word(
@@ -184,8 +184,8 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator >> (
-            word<follow<word<lcases_t>...>> const& __lalter,
-            word<rcase_t> const& __rword)
+            word<follow<word<lcases_t, >...>, > const& __lalter,
+            word<rcase_t, > const& __rword)
         {
             return 
             make_word(
@@ -200,8 +200,8 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator >> (
-            word<follow<word<lcases_t>...>> const& __lalter,
-            word<follow<word<rcases_t>...>> const& __ralter)
+            word<follow<word<lcases_t, >...>, > const& __lalter,
+            word<follow<word<rcases_t, >...>, > const& __ralter)
         {
             return 
             make_word(

@@ -4,7 +4,6 @@
 #include <string>
 
 #include <thodd/lang.hpp>
-#include <thodd/uuid.hpp>
 
 extern constexpr auto __digit = 
     thodd::lang::make_matcher(
@@ -60,11 +59,11 @@ try
 
     std::string __input{"a12h12hhh12h"};
     auto const __end = __input.end();
-    auto __dol_word = *(make_word(__digit) | make_word(__letter));
+    constexpr auto __dol_word = make_word(*(__digit | __letter));
     
 
-    auto __begin2 = __input.begin();
-    auto __tree = matches(__dol_word, __begin2, __end);
+    auto __begin = __input.begin();
+    auto __tree = matches(__dol_word, __begin, __end);
     
     print_tokens(__tree, std::string());
 }

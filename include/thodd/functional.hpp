@@ -167,9 +167,14 @@ namespace thodd
         return as_functor(statements<base_t, base2_t>{_functor.base, _functor2.base});
     }
 
-
     extern constexpr auto 
     nothing = as_functor([](auto&&... __args) {});
+
+    struct id
+    {
+        constexpr auto 
+        operator()(auto&&...) {}
+    };
 
     extern constexpr auto 
     always = 

@@ -1,6 +1,8 @@
 #ifndef __THODD_LANG_WORD_HPP__
 #  define __THODD_LANG_WORD_HPP__
 
+#  include <thodd/functional.hpp>
+
 #  include <thodd/lang_core.hpp>
 #  include <thodd/lang_matcher.hpp>
 
@@ -9,11 +11,12 @@ namespace thodd
     namespace lang
     {
         template<
-            typename algo_t>
+            typename algo_t, 
+            typename caster_t = thodd::id>
         struct word
         {
             algo_t algo;
-           
+            caster_t caster;
 
             constexpr auto
             operator() (
@@ -21,6 +24,16 @@ namespace thodd
             -> decltype(auto)
             {
                 return word{algo(perfect<decltype(__params)>(__params)...)};
+            }
+
+            constexpr auto
+            operator[](
+                auto&& __caster) const
+            -> decltype(auto)
+            {
+                return 
+                word<algo_t, meta::decay<decltype(__caster)>>
+                {algo, perfect<decltype(__caster)>(__caster)};
             }
         };
 
@@ -37,10 +50,11 @@ namespace thodd
 
 
         template<
-            typename algo_t>
+            typename algo_t, 
+            typename caster_t>
         inline auto 
         matches(
-            word<matcher<algo_t>> const& __word, 
+            word<matcher<algo_t>, caster_t> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {
@@ -54,10 +68,11 @@ namespace thodd
 
 
         template<
-            typename algo_t>
+            typename algo_t,
+            typename caster_t>
         inline auto 
         matches(
-            word<algo_t> const& __word, 
+            word<algo_t, caster_t> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {

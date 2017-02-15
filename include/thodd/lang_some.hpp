@@ -63,7 +63,7 @@ namespace thodd
             typename something_t>
         inline auto 
         matches(
-            word<some<word<something_t>>> const& __some, 
+            word<some<word<something_t>, >, > const& __some, 
             auto& __cursor, 
             auto const& __end)
         {     
@@ -114,7 +114,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator ~ (
-            word<rcase_t> const& __rword)
+            word<rcase_t, > const& __rword)
         {
             return 
             make_word(
@@ -139,7 +139,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator + (
-            word<rcase_t> const& __rword)
+            word<rcase_t, > const& __rword)
         {
             return 
             make_word(
@@ -164,7 +164,7 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator * (
-            word<rcase_t> const& __rword)
+            word<rcase_t, > const& __rword)
         {
             return 
             make_word(
