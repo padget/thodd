@@ -70,10 +70,12 @@ namespace thodd
 
 
         template<
-            typename ... cases_t>
+            typename ... cases_t, 
+            typename ... casters_t, 
+            typename caster_t>
         inline auto 
         matches(
-            word<alternative<word<cases_t, >...>, > const& __alter, 
+            word<alternative<word<cases_t, casters_t>...>, caster_t> const& __alter, 
             auto& __cursor, 
             auto const& __end)
         {              
@@ -157,11 +159,13 @@ namespace thodd
 
         template<
             typename lcase_t, 
-            typename rcase_t>
+            typename lcaster_t,
+            typename rcase_t, 
+            typename rcaster_t>
         constexpr auto
         operator | (
-            word<lcase_t, > const& __lword,
-            word<rcase_t, > const& __rword)
+            word<lcase_t, lcaster_t> const& __lword,
+            word<rcase_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
@@ -172,12 +176,15 @@ namespace thodd
 
 
         template<
-            typename ... lalgos_t, 
-            typename ralgo_t>
+            typename ... lalgos_t,
+            typename ... lcasters_t,
+            typename lcaster_t, 
+            typename ralgo_t,
+            typename rcaster_t>
         constexpr auto
         operator | (
-            word<alternative<word<lalgos_t, >...>, > const& __lalter,
-            word<ralgo_t, > const& __rword)
+            word<alternative<word<lalgos_t, lcasters_t>...>, lcaster_t> const& __lalter,
+            word<ralgo_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
@@ -187,12 +194,16 @@ namespace thodd
         }
 
         template<
-            typename ... lcases_t, 
-            typename ... rcases_t>
+            typename ... lcases_t,
+            typename ... lcasters_t,
+            typename lcaster_t, 
+            typename ... rcases_t,
+            typename ... rcasters_t, 
+            typename rcaster_t>
         constexpr auto
         operator | (
-            word<alternative<word<lcases_t, >...>, > const& __lalter,
-            word<alternative<word<rcases_t, >...>, > const& __ralter)
+            word<alternative<word<lcases_t, lcasters_t>...>, lcaster_t> const& __lalter,
+            word<alternative<word<rcases_t, rcasters_t>...>, rcaster_t> const& __ralter)
         {
             return 
             make_word(

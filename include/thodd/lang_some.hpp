@@ -60,10 +60,12 @@ namespace thodd
 
 
         template<
-            typename something_t>
+            typename something_t,
+            typename caster_t, 
+            typename some_caster_t>
         inline auto 
         matches(
-            word<some<word<something_t>, >, > const& __some, 
+            word<some<word<something_t,  caster_t>>, some_caster_t> const& __some, 
             auto& __cursor, 
             auto const& __end)
         {     
@@ -78,7 +80,6 @@ namespace thodd
             while((__subrange = matches(__some.algo.something, __cursor, __end)) 
                 && __cpt <= __some.algo.max)
             {
-                std::cout << "addrs : " << &__some.algo.something << std::endl;
                 thodd::push_back(__subranges, __subrange);
                 ++__cpt;
             }
@@ -89,9 +90,6 @@ namespace thodd
                 __subranges.clear();
                 __cursor = __save;
             }
-            
-            std::cout << "addr : " << &__some << std::endl;
-            std::cout << sizeof(__some) << std::endl;
 
             return token(0u, __save, __cursor, __subranges);
         }
@@ -111,10 +109,11 @@ namespace thodd
 
 
         template<
-            typename rcase_t>
+            typename rcase_t, 
+            typename rcaster_t>
         constexpr auto
         operator ~ (
-            word<rcase_t, > const& __rword)
+            word<rcase_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
@@ -136,10 +135,11 @@ namespace thodd
 
 
         template<
-            typename rcase_t>
+            typename rcase_t, 
+            typename rcaster_t>
         constexpr auto
         operator + (
-            word<rcase_t, > const& __rword)
+            word<rcase_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
@@ -161,10 +161,11 @@ namespace thodd
 
 
         template<
-            typename rcase_t>
+            typename rcase_t, 
+            typename rcaster_t>
         constexpr auto
         operator * (
-            word<rcase_t, > const& __rword)
+            word<rcase_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
