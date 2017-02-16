@@ -74,7 +74,7 @@ namespace thodd
             typename caster_t>
         inline auto 
         matches(
-            word<follow<word<cases_t, casters_t>...>, caster_t> const& __alter, 
+            word<follow<word<cases_t, casters_t>...>, caster_t> const& __follow, 
             auto& __cursor, 
             auto const& __end)
         {   
@@ -84,7 +84,7 @@ namespace thodd
             auto __continue = true;
             auto __index = 0u;
 
-            __alter.algo.algos.template foreach(
+            __follow.algo.algos.template foreach(
                 [&__continue, &__subranges, &__index, 
                  &__save, &__cursor, &__end] 
                 (auto&& __case)
@@ -113,7 +113,33 @@ namespace thodd
             return token(0u, __save, __cursor, thodd::rvalue(__subranges));
         }
 
-          template<
+
+        
+        template<
+            typename ... algos_t, 
+            typename ... casters_t, 
+            typename caster_t>
+        inline auto 
+        interpret(
+            word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
+            auto&& __tree)
+        {
+            tuple<meta::decay<
+                    decltype(
+                        interpret(
+                            thodd::declval<casters_t>(), 
+                            __tree))>...> __tpl;
+
+            __follow.algo.algos.template foreach(
+                [&__continue, &__subranges, &__index, 
+                 &__save, &__cursor, &__end] 
+                (auto&& __case)
+                {});
+            return __follow.caster(__tpl);
+        }
+
+
+        template<
             typename lalgo_t, 
             typename ralgo_t>
         constexpr auto
