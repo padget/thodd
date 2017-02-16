@@ -89,9 +89,10 @@ namespace thodd
                 (auto&& __case)
                 {
                    if(!((bool) __res)) 
-                        __res = matches(perfect<decltype(__case)>(__case), 
+                        __res = thodd::rvalue(
+                                matches(perfect<decltype(__case)>(__case), 
                                          __cursor, 
-                                         __end);  
+                                         __end));  
                     
                     if(!__res) 
                     {

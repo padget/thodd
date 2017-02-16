@@ -99,7 +99,7 @@ namespace thodd
                         if((__continue = (bool) __subrange))
                         {
                             __subrange.index = __index;
-                            thodd::push_back(__subranges, __subrange); 
+                            thodd::push_back(__subranges, thodd::rvalue(__subrange)); 
                             ++__index;
                         }
                         else 
@@ -110,7 +110,7 @@ namespace thodd
                     }     
                 });
         
-            return token(0u, __save, __cursor, __subranges);
+            return token(0u, __save, __cursor, thodd::rvalue(__subranges));
         }
 
           template<

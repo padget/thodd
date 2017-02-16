@@ -80,7 +80,7 @@ namespace thodd
             while((__subrange = matches(__some.algo.something, __cursor, __end)) 
                 && __cpt <= __some.algo.max)
             {
-                thodd::push_back(__subranges, __subrange);
+                thodd::push_back(__subranges, thodd::rvalue(__subrange));
                 ++__cpt;
             }
 
@@ -91,7 +91,30 @@ namespace thodd
                 __cursor = __save;
             }
 
-            return token(0u, __save, __cursor, __subranges);
+            return token(0u, __save, __cursor, thodd::rvalue(__subranges));
+        }
+
+
+        template<
+            typename something_t, 
+            typename caster_t, 
+            typename some_caster_t>
+        inline auto 
+        interpret(
+            word<some<word<something_t,  caster_t>>, some_caster_t> const& __some,
+            auto&& __tree)
+        {
+            using item_t = decltype(
+                            interpret(
+                                __some.algo.something, 
+                                *__tree.subranges.begin()));
+
+            list<meta::decay<item_t>> __lst;
+
+            for(auto const& __tk : __tree.subranges)
+                thodd::push_back(__lst, thodd::rvalue(interpret(__some.algo.something, __tk)));
+
+            return __some.caster(__lst);
         }
 
 

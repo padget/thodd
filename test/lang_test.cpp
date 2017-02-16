@@ -37,8 +37,10 @@ print_tokens(
     auto&& __tree,
     auto&& __offset)
 {
-    
-    std::cout << __offset << "index : " << __tree.index << ':'; 
+    std::cout << __offset 
+              << "index : "     
+              << __tree.index 
+              << ':'; 
 
     for(auto&& __c : __tree)
         std::cout << __c;
@@ -57,15 +59,46 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"a12h12hhh12h"};
+    std::string __input{"123"};
     auto const __end = __input.end();
-    constexpr auto __dol_word = make_word(*(__digit | __letter));
+
+    constexpr auto 
+    __d_word = 
+        make_word(*__digit)
+        [([](auto const& __token)
+        {
+            std::cout << "coucou" << std::endl;
+            auto __unit = 1u;
+            long long __res{0};
+
+            for(auto&& __c : __token)
+            {
+                __res += (__c - '0') * __unit;
+                __unit *= 10;
+            }
+
+            return __res;
+        })];
+
+    constexpr auto __ds_word = *__d_word;
     
 
     auto __begin = __input.begin();
-    auto __tree = matches(__dol_word, __begin, __end);
+    auto __token = matches(__ds_word, __begin, __end);
+    auto&& __list = interpret(__ds_word, __token);
+
+    for(auto&& __int : __list)
+        std::cout << __int << std::endl;
     
-    print_tokens(__tree, std::string());
+    print_tokens(__token, std::string());
+
+    list<int> i{1,2,3};
+
+    auto __r = thodd::id{}(i);
+    
+    for(auto&& __int : __r)
+        std::cout << __int << std::endl;
+    
 }
 catch(std::exception& __e)
 {

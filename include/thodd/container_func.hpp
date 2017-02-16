@@ -3,7 +3,6 @@
 
 namespace thodd
 {
-    /// Return size
     extern constexpr auto
     size = [](auto const& __container)
            -> decltype(auto)

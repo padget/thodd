@@ -17,6 +17,8 @@
 *tags*
 /release/
 
+*.bat
+
 
 # Compiled Object files
 *.slo

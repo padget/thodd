@@ -10,6 +10,13 @@ namespace thodd
 {
     namespace lang
     {
+
+        THODD_EXCEPTION(
+            bad_caster_exception, 
+            "bad_caster_exception : "
+            "the caster is not adapted " 
+            "to the found range of stream")
+
         template<
             typename algo_t, 
             typename caster_t = thodd::id>
@@ -18,6 +25,7 @@ namespace thodd
             algo_t algo;
             caster_t caster;
 
+
             constexpr auto
             operator() (
                 auto&&... __params) const 
@@ -25,6 +33,7 @@ namespace thodd
             {
                 return word{algo(perfect<decltype(__params)>(__params)...)};
             }
+
 
             constexpr auto
             operator[](
@@ -68,15 +77,30 @@ namespace thodd
 
 
         template<
-            typename algo_t,
-            typename caster_t>
+            typename ... params_t>
         inline auto 
         matches(
-            word<algo_t, caster_t> const& __word, 
+            word<params_t...> const& __word, 
             auto& __cursor, 
             auto const& __end)
         {
             return matches(__word.algo, __cursor, __end);
+        }
+
+
+        template<
+            typename algo_t, 
+            typename caster_t>
+        inline auto 
+        interpret(
+            word<regex<algo_t>, caster_t> const& __word,
+            auto const& __tree)
+        {
+            if(static_cast<bool>(__tree) 
+            && __tree.subranges.size() == 0)
+                return __word.caster(__tree);
+            else 
+                throw bad_caster_exception();
         }
     }
 }

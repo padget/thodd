@@ -170,11 +170,6 @@ namespace thodd
     extern constexpr auto 
     nothing = as_functor([](auto&&... __args) {});
 
-    struct id
-    {
-        constexpr auto 
-        operator()(auto&&...) {}
-    };
 
     extern constexpr auto 
     always = 
@@ -428,6 +423,20 @@ namespace thodd
     extern constexpr auto $14  = as_functor(placeholder<14>());
     extern constexpr auto $15  = as_functor(placeholder<15>());
 
+    struct id
+    {
+        constexpr auto 
+        operator()( 
+            auto&&... __args) const
+        -> decltype(auto) 
+        {
+            auto&& __first = $0(perfect<decltype(__args)>(__args)...);
+            return __first;
+        }
+
+        constexpr auto
+        operator() () const {}
+    };
 
     template<
         typename builder_t>
