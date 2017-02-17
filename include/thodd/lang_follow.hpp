@@ -127,15 +127,20 @@ namespace thodd
             tuple<meta::decay<
                     decltype(
                         interpret(
-                            thodd::declval<casters_t>(), 
+                            thodd::declval<word<algos_t,  casters_t>>(), 
                             __tree))>...> __tpl;
 
-            __follow.algo.algos.template foreach(
-                [&__continue, &__subranges, &__index, 
-                 &__save, &__cursor, &__end] 
-                (auto&& __case)
-                {});
-            return __follow.caster(__tpl);
+            auto __subtree = __tree.sub_begin(); 
+
+            /*__follow.algo.algos.template foreach_join(
+                [&__subtree] 
+                (auto&& __case, 
+                 auto&& __tpl_item)
+                {
+                    __tpl_item = interpret(__case, __subtree);
+                    ++__subtree;
+                }, __tpl);
+            */return __follow.caster(__tpl);
         }
 
 

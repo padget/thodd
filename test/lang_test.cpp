@@ -64,7 +64,7 @@ try
 
     constexpr auto 
     __d_word = 
-        make_word(*__digit)
+        make_word(__digit)
         [([](auto const& __token)
         {
             std::cout << "coucou" << std::endl;
@@ -80,16 +80,16 @@ try
             return __res;
         })];
 
-    constexpr auto __ds_word = *__d_word;
+    constexpr auto __ds_word = __d_word >> __d_word;
     
 
     auto __begin = __input.begin();
     auto __token = matches(__ds_word, __begin, __end);
-    auto&& __list = interpret(__ds_word, __token);
+    auto&& __tpl = interpret(__ds_word, __token);
 
-    for(auto&& __int : __list)
-        std::cout << __int << std::endl;
     
+    
+
     print_tokens(__token, std::string());
 
     list<int> i{1,2,3};

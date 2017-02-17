@@ -327,6 +327,23 @@ namespace thodd
         {
             repeat{(perfect<func_t>(_func)(perfect<tuple_t>(_tuple).template get<indexes_c>()), 0)...};
         }
+
+        template<
+            typename tuple_t,
+            typename ... tuples_t,
+            typename func_t,
+            size_t ... indexes_c>
+        constexpr void
+        foreach_join(
+            tuple_t&& _tuple,
+            func_t&& _func,
+            tuples_t&&... __tuples,
+            indexes<indexes_c...>)
+        {
+            repeat{(perfect<func_t>(_func)(
+                        perfect<tuple_t>(_tuple).template get<indexes_c>(), 
+                        perfect<tuples_t>(__tuples).template get<indexes_c>()...), 0)...};
+        }
     }
 
 
@@ -485,6 +502,34 @@ namespace thodd
         {
             tuple_algorithm::foreach(this->indexed,
                                      perfect<func_t>(_func),
+                                     make_indexes<sizeof...(items_t)>{});
+        }
+
+        template<
+            typename func_t, 
+            typename ... tuples_t>
+        constexpr void
+        foreach_join(
+            func_t&& _func, 
+            tuples_t&& ... __tuples)
+        {
+            tuple_algorithm::foreach_join(this->indexed,
+                                     perfect<func_t>(_func),
+                                     perfect<tuples_t>(__tuples)...,
+                                     make_indexes<sizeof...(items_t)>{});
+        }
+
+        template<
+            typename func_t, 
+            typename ... tuples_t>
+        constexpr void
+        foreach_join(
+            func_t&& _func, 
+            tuples_t&& ... __tuples) const
+        {
+            tuple_algorithm::foreach_join(this->indexed,
+                                     perfect<func_t>(_func),
+                                     perfect<tuples_t>(__tuples)...,
                                      make_indexes<sizeof...(items_t)>{});
         }
     };
