@@ -30,15 +30,6 @@ namespace thodd
             follow<meta::decay<algos_t>...>
             {__algos};
         }
-        
-        constexpr auto 
-        make_follow(
-            auto&&... __algos)
-        {
-            return 
-            make_follow(
-                make_tuple(perfect<decltype(__algos)>(__algos)...));
-        }
 
         template<
             typename ... algos_t>
@@ -114,6 +105,23 @@ namespace thodd
         }
 
 
+         template<
+            typename ... algos_t, 
+            typename ... casters_t, 
+            typename caster_t, 
+            size_t ... indexes_c>
+        inline auto 
+        interpret(
+            word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
+            auto&& __tree, 
+            indexes<indexes_c...> const&)
+        {
+            return 
+            thodd::make_tuple(
+                interpret(
+                    thodd::get<indexes_c>(__follow.algo.algos), 
+                    __tree)...);
+        }
         
         template<
             typename ... algos_t, 
@@ -124,23 +132,6 @@ namespace thodd
             word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
             auto&& __tree)
         {
-            tuple<meta::decay<
-                    decltype(
-                        interpret(
-                            thodd::declval<word<algos_t,  casters_t>>(), 
-                            __tree))>...> __tpl;
-
-            auto __subtree = __tree.sub_begin(); 
-
-            /*__follow.algo.algos.template foreach_join(
-                [&__subtree] 
-                (auto&& __case, 
-                 auto&& __tpl_item)
-                {
-                    __tpl_item = interpret(__case, __subtree);
-                    ++__subtree;
-                }, __tpl);
-            */return __follow.caster(__tpl);
         }
 
 
@@ -155,8 +146,9 @@ namespace thodd
             return 
             make_regex(
                 make_follow(
-                    __lregex, 
-                    __rregex));   
+                    make_tuple(
+                        __lregex, 
+                        __rregex)));   
         }
 
          template<
@@ -164,13 +156,13 @@ namespace thodd
             typename rcase_t>
         constexpr auto
         operator >> (
-            regex<follow<regex<lcases_t>...>> const& __lalter,
+            regex<follow<regex<lcases_t>...>> const& __lfollow,
             regex<rcase_t> const& __rregex)
         {
             return 
             make_regex(
                 make_follow(
-                    __lalter.algo.algos 
+                    __lfollow.algo.algos 
                   + __rregex));
         }
 
@@ -180,14 +172,14 @@ namespace thodd
             typename ... rcases_t>
         constexpr auto
         operator >> (
-            regex<follow<regex<lcases_t>...>> const& __lalter,
-            regex<follow<regex<rcases_t>...>> const& __ralter)
+            regex<follow<regex<lcases_t>...>> const& __lfollow,
+            regex<follow<regex<rcases_t>...>> const& __rfollow)
         {
             return 
             make_regex(
                 make_follow(
-                    __lalter.algo.algos 
-                  + __ralter.algo.algos));
+                    __lfollow.algo.algos 
+                  + __rfollow.algo.algos));
         }
 
 
@@ -206,8 +198,9 @@ namespace thodd
             return 
             make_word(
                 make_follow(
-                    __lword, 
-                    __rword));   
+                    make_tuple(
+                        __lword, 
+                        __rword)));   
         }
 
         
@@ -219,13 +212,13 @@ namespace thodd
             typename rcaster_t>
         constexpr auto
         operator >> (
-            word<follow<word<lcases_t, lcasters_t>...>, lcaster_t> const& __lalter,
+            word<follow<word<lcases_t, lcasters_t>...>, lcaster_t> const& __lfollow,
             word<rcase_t, rcaster_t> const& __rword)
         {
             return 
             make_word(
                 make_follow(
-                    __lalter.algo.algos 
+                    __lfollow.algo.algos 
                   + __rword));
         }
 
@@ -239,14 +232,14 @@ namespace thodd
             typename rcaster_t>
         constexpr auto
         operator >> (
-            word<follow<word<lcases_t, lcasters_t>...>, lcaster_t> const& __lalter,
-            word<follow<word<rcases_t, rcasters_t>...>, rcaster_t> const& __ralter)
+            word<follow<word<lcases_t, lcasters_t>...>, lcaster_t> const& __lfollow,
+            word<follow<word<rcases_t, rcasters_t>...>, rcaster_t> const& __rfollow)
         {
             return 
             make_word(
                 make_follow(
-                    __lalter.algo.algos 
-                  + __ralter.algo.algos));
+                    __lfollow.algo.algos 
+                  + __rfollow.algo.algos));
         }
     }
 }
