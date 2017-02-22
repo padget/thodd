@@ -20,7 +20,7 @@ namespace thodd
         {
             something_t something;
             size_t min{0u}, 
-                   max{10u};
+                   max{thodd::infinity};
 
             constexpr auto 
             operator() (
@@ -54,8 +54,11 @@ namespace thodd
             while(matches(__some.algo.something, __cursor, __end))
                 ++__cpt;
 
-            return __some.algo.min <= __cpt 
-                && __cpt <= __some.algo.max;
+            return 
+            thodd::between(
+                __cpt, 
+                __some.algo.min,
+                __some.algo.max);
         }
 
 
@@ -69,29 +72,45 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {     
-            using token_t = decltype(token(0u, __cursor, __cursor));
-
-            list<token_t> __subranges;
+            using token_t = decltype(token(false, 0u, __cursor, __cursor));
 
             auto __save = __cursor;            
-            auto __cpt = 0u;
-            token_t __subrange;
+            auto __cpt  = 0u;
+
+            token_t       __subrange;
+            list<token_t> __subranges;
             
             while((__subrange = matches(__some.algo.something, __cursor, __end)) 
                 && __cpt <= __some.algo.max)
             {
-                thodd::push_back(__subranges, thodd::rvalue(__subrange));
+                thodd::push_back(
+                    __subranges, 
+                    thodd::rvalue(__subrange));
+                
                 ++__cpt;
             }
 
-            if(!(__some.algo.min <= __cpt 
-                && __cpt <= __some.algo.max))
+            auto&& __valid = 
+                thodd::between(
+                    __cpt, 
+                    __some.algo.min,
+                    __some.algo.max);
+
+            std::cout << std::boolalpha << __valid << std::endl;    
+            
+            if(!__valid)
             {    
                 __subranges.clear();
                 __cursor = __save;
             }
 
-            return token(0u, __save, __cursor, thodd::rvalue(__subranges));
+            return 
+            token(
+                __valid, 
+                0u, 
+                __save, 
+                __cursor, 
+                thodd::rvalue(__subranges));
         }
 
 

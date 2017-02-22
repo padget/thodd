@@ -330,19 +330,20 @@ namespace thodd
 
         template<
             typename tuple_t,
-            typename ... tuples_t,
+            typename tuple1_t,
             typename func_t,
             size_t ... indexes_c>
         constexpr void
         foreach_join(
-            tuple_t&& _tuple,
-            func_t&& _func,
-            tuples_t&&... __tuples,
-            indexes<indexes_c...>)
+            indexes<indexes_c...>,
+
+            tuple_t&& __tuple,
+            func_t&& __func,
+            tuple1_t&& __tuple1)
         {
-            repeat{(perfect<func_t>(_func)(
-                        perfect<tuple_t>(_tuple).template get<indexes_c>(), 
-                        perfect<tuples_t>(__tuples).template get<indexes_c>()...), 0)...};
+            repeat{(perfect<func_t>(__func)(
+                        perfect<tuple_t>(__tuple).template get<indexes_c>(), 
+                        perfect<tuple1_t>(__tuple1).template get<indexes_c>()), 0)...};
         }
     }
 
@@ -513,10 +514,12 @@ namespace thodd
             func_t&& _func, 
             tuples_t&& ... __tuples)
         {
-            tuple_algorithm::foreach_join(this->indexed,
-                                     perfect<func_t>(_func),
-                                     perfect<tuples_t>(__tuples)...,
-                                     make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::
+            foreach_join(
+                make_indexes<sizeof...(items_t)>{}, 
+                this->indexed,
+                perfect<func_t>(_func),
+                perfect<tuples_t>(__tuples)...);
         }
 
         template<
@@ -527,10 +530,12 @@ namespace thodd
             func_t&& _func, 
             tuples_t&& ... __tuples) const
         {
-            tuple_algorithm::foreach_join(this->indexed,
-                                     perfect<func_t>(_func),
-                                     perfect<tuples_t>(__tuples)...,
-                                     make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::
+            foreach_join(
+                make_indexes<sizeof...(items_t)>{},
+                this->indexed,
+                perfect<func_t>(_func),
+                perfect<tuples_t>(__tuples)...);
         }
     };
 
@@ -560,7 +565,7 @@ namespace thodd
     /// only
     template<
         typename... items_t>
-    inline tuple<items_t&...>
+    constexpr tuple<items_t&...>
     tie(
         items_t&... _items)
     {
@@ -574,7 +579,7 @@ namespace thodd
     /// tuple (uref)
     template<
         typename ... items_t>
-    inline auto
+    constexpr auto
     perfect_as_tuple(
         items_t&&... _items)
     {
@@ -585,7 +590,7 @@ namespace thodd
     template<
         size_t index_c,
         typename ... items_t>
-    inline auto
+    constexpr auto
     get(
         tuple<items_t...>&& __tuple)
     -> decltype(auto)
@@ -597,7 +602,7 @@ namespace thodd
     template<
         size_t index_c,
         typename ... items_t>
-    inline auto
+    constexpr auto
     get(
         tuple<items_t...> const& __tuple)
     -> decltype(auto)
@@ -609,12 +614,48 @@ namespace thodd
     template<
         size_t index_c,
         typename ... items_t>
-    inline auto
+    constexpr auto
     get(
         tuple<items_t...>& __tuple)
     -> decltype(auto)
     {
         return __tuple.template get<index_c>();
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach(
+        tuple<items_t...>&& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return __tuple.template foreach(perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach(
+        tuple<items_t...> const& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return __tuple.template foreach(perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach(
+        tuple<items_t...>& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return __tuple.template foreach(perfect<decltype(__func)>(__func));
     }
 
 
@@ -664,7 +705,10 @@ namespace thodd
     {
         using tpl = tuple<item1_t, items2_t...>;
 
-        return tpl{make_tuple(perfect<item1_t>(__item1)).indexed + __tuple2.indexed};
+        return 
+        tpl {
+            make_tuple(perfect<item1_t>(__item1)).indexed 
+            + __tuple2.indexed};
     }
 
 
@@ -680,7 +724,8 @@ namespace thodd
     {
         using tpl = tuple<items1_t..., items2_t...>;
 
-        return  tpl{_tuple1.indexed + _tuple2.indexed};
+        return  tpl{_tuple1.indexed 
+                  + _tuple2.indexed};
     }
 
 

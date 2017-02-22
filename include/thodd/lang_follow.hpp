@@ -69,13 +69,13 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {   
-            list<decltype(token(0u, __cursor, __cursor))> __subranges;
+            list<decltype(token(false, 0u, __cursor, __cursor))> __subranges;
 
             auto __save = __cursor;
             auto __continue = true;
             auto __index = 0u;
 
-            __follow.algo.algos.template foreach(
+            thodd::foreach(__follow.algo.algos,
                 [&__continue, &__subranges, &__index, 
                  &__save, &__cursor, &__end] 
                 (auto&& __case)
@@ -101,7 +101,7 @@ namespace thodd
                     }     
                 });
         
-            return token(0u, __save, __cursor, thodd::rvalue(__subranges));
+            return token(__continue, 0u, __save, __cursor, thodd::rvalue(__subranges));
         }
 
 
@@ -132,6 +132,24 @@ namespace thodd
             word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
             auto&& __tree)
         {
+             tuple<meta::decay<
+                    decltype(
+                        interpret(
+                            thodd::declval<word<algos_t,  casters_t>>(), 
+                            __tree))>...> __tpl;
+
+            auto __subtree_it = __tree.sub_begin(); 
+
+            __follow.algo.algos.template foreach_join(
+                [&__subtree_it] 
+                (auto&& __case, 
+                 auto&& __tpl_item)
+                {
+                    __tpl_item = interpret(__case, *__subtree_it);
+                    ++__subtree_it;
+                }, __tpl);
+            
+            return __follow.caster(__tpl);
         }
 
 

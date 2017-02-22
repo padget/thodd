@@ -68,11 +68,12 @@ namespace thodd
             auto const& __end)
         {
             auto __save = __cursor;
+            auto __valid = true;
 
-            if(!matches(__word.algo , __cursor, __end))
+            if(!(__valid = matches(__word.algo , __cursor, __end)))
                 __cursor = __save;
                 
-            return token(0u, __save, __cursor);
+            return token(__valid, 0u, __save, __cursor);
         }
 
 

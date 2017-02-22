@@ -8,11 +8,6 @@ namespace thodd
 {
     namespace lang
     {
-        template<
-            typename type_t>
-        using __target = typename type_t::target;
-        
-
         namespace detail
         {
             template<
@@ -23,12 +18,13 @@ namespace thodd
                 using range_t = thodd::detail::range<iterator_t>;
 
                 size_t index{0u};
+                bool valid{false};
                 range_t range;
                 thodd::list<token> subranges;
                 
                 operator bool () const 
                 {
-                    return range.begin() != range.end();
+                    return valid;
                 }
             
                 token() = default;
@@ -40,19 +36,23 @@ namespace thodd
 
             public:
                 token(
+                    bool __valid, 
                     size_t __index,
                     iterator_t const& __begin, 
                     iterator_t const& __end) :
                     index(__index),
+                    valid(__valid),
                     range{thodd::range(__begin, __end)} {}
             
             
                 token(
+                    bool __valid, 
                     size_t __index,
                     iterator_t const& __begin, 
                     iterator_t const& __end, 
                     list<token> const& __subranges) :
-                    index(__index),
+                    index(__index), 
+                    valid(__valid),
                     range{thodd::range(__begin, __end)}, 
                     subranges{__subranges} {}
 
@@ -122,17 +122,19 @@ namespace thodd
 
         inline auto 
         token(
+            auto const& __valid,
             auto const& __index,
             auto const& __begin, 
             auto const& __end)
         {
             return 
             detail::token<meta::decay<decltype(__begin)>>
-            (__index, __begin, __end);
+            (__valid, __index, __begin, __end);
         }
 
         inline auto 
         token(
+            auto const& __valid,
             auto const& __index,
             auto const& __begin, 
             auto const& __end, 
@@ -140,7 +142,7 @@ namespace thodd
         {
             return 
             detail::token<meta::decay<decltype(__begin)>>
-            (__index, __begin, __end, perfect<decltype(__subranges)>(__subranges));
+            (__valid, __index, __begin, __end, perfect<decltype(__subranges)>(__subranges));
         }
     }
 }

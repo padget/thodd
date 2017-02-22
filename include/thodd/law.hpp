@@ -88,6 +88,17 @@ namespace thodd
 
 
     using repeat = std::initializer_list<int>;
+
+
+    constexpr auto 
+    between(
+        auto const& __value, 
+        auto const& __min, 
+        auto const& __max)
+    {
+        return __min <= __value
+            && __value <= __max;
+    }
 }
 
 #endif /* THODD_LAW_HPP_ */

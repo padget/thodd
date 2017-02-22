@@ -79,11 +79,11 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {              
-            auto&& __res = token(0u, __cursor, __cursor);
+            auto&& __res = token(false, 0u, __cursor, __cursor);
             auto __save = __cursor;
             auto __index = 0u;
 
-            __alter.algo.cases.template foreach(
+            thodd::foreach(__alter.algo.cases, 
                 [&__res, &__save, &__index, 
                  &__cursor, &__end] 
                 (auto&& __case)
@@ -104,6 +104,63 @@ namespace thodd
             __res.index = __index;
 
             return __res;
+        }
+
+
+        template<
+            typename ... cases_t, 
+            typename ... casters_t, 
+            typename caster_t, 
+            size_t ... indexes_c>
+        inline auto 
+        interpret(
+            word<alternative<word<cases_t,  casters_t>...>, caster_t> const& __alter,
+            auto&& __tree, 
+            indexes<indexes_c...> const&)
+        {
+            return 
+            thodd::make_tuple(
+                interpret(
+                    thodd::get<indexes_c>(__alter.algo.cases), 
+                    __tree)...);
+        }
+        
+        
+        template<
+            typename ... cases_t, 
+            typename ... casters_t, 
+            typename caster_t>
+        inline auto 
+        interpret(
+            word<alternative<word<cases_t,  casters_t>...>, caster_t> const& __alter,
+            auto&& __tree)
+        {
+             variant<meta::decay<
+                    decltype(
+                        interpret(
+                            thodd::declval<word<cases_t,  casters_t>>(), 
+                            __tree))>...> __var;
+
+            auto __subtree_it = __tree.sub_begin(); 
+            auto __index = 0u;
+
+            
+                thodd::foreach(__alter.algo.cases, 
+                    [&__subtree_it, 
+                    &__var, 
+                    &__index, 
+                    &__tree] 
+                    (auto&& __case)
+                    {
+                        if(__subtree_it != __tree.sub_end())
+                            if((*__subtree_it).index == __index)
+                                __var = interpret(__case, *__subtree_it);
+                        
+                        ++__subtree_it;
+                        ++__index;
+                    });
+            
+            return __alter.caster(__var);
         }
 
 

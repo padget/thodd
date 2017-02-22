@@ -102,11 +102,11 @@ namespace thodd
             wtype_t&& __wt) :
             holded(new holder<wtype_t>(perfect<wtype_t>(__wt)))
         {
-            static_assert(meta::contains_f(
+           /* static_assert(meta::contains_f(
                             type_<wtype_t>{}, 
                             meta::pack<type_t, types_t...>{}), 
                           "the type must be contained "
-                          "in variant possible type");
+                          "in variant possible types");*/
         }
 
         variant(
@@ -125,12 +125,12 @@ namespace thodd
         operator=(
             wtype_t&& __wt)
         {
-            static_assert(meta::contains_f(
+            /*static_assert(meta::contains_f(
                             type_<wtype_t>{}, 
                             meta::pack<type_t, types_t...>{}), 
                           "the type must be contained "
                           "in variant possible type !!");
-
+                          */
             holded.reset(new holder<wtype_t>(perfect<wtype_t>(__wt)));
             
             return *this;
