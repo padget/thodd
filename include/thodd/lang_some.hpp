@@ -31,6 +31,7 @@ namespace thodd
             }
         };
 
+
         constexpr auto
         make_some(
             auto&& __something)
@@ -38,6 +39,130 @@ namespace thodd
             return 
             some<meta::decay<decltype(__something)>>
             {perfect<decltype(__something)>(__something)};
+        }
+
+
+        template<
+            typename iterator_t, 
+            typename subtoken_t>
+        struct some_token
+        {
+            using range_t = thodd::detail::range<iterator_t>;
+
+            range_t range;
+            thodd::list<subtoken_t> subranges;
+            size_t min{0u}; 
+            size_t max{thodd::infinity};
+
+            constexpr
+            operator bool () const
+            {
+                return 
+                thodd::between(
+                    subranges.size(), 
+                    min, max);
+            }
+
+            inline auto const
+            begin() const
+            {
+                return range.begin();
+            }
+
+
+            inline auto
+            begin()
+            {
+                return range.begin();
+            }
+
+
+            inline auto const
+            end() const
+            {
+                return range.end();
+            }
+
+
+            inline auto
+            end()
+            {
+                return range.end();
+            }
+
+
+            inline auto const
+            subbegin() const
+            {
+                return subranges.begin();
+            }
+
+
+            inline auto
+            subbegin()
+            {
+                return subranges.begin();
+            }
+
+
+            inline auto const
+            subend() const
+            {
+                return subranges.end();
+            }
+
+
+            inline auto
+            subend()
+            {
+                return subranges.end();
+            }
+        };
+
+
+        template<
+            typename subtoken_t>
+        constexpr auto
+        make_some_token(
+            auto&& __begin, 
+            auto&& __end, 
+            thodd::list<subtoken_t> const& __subranges, 
+            size_t const& __min, 
+            size_t const& __max)
+        {
+            using iterator_t = meta::decay<decltype(__begin)>;
+
+            return 
+            some_token<iterator_t, subtoken_t>
+            { thodd::range(
+                perfect<decltype(__begin)>(__begin),
+                perfect<decltype(__end)>(__end)),
+              __subranges, 
+              __min, 
+              __max };
+        }
+
+
+        template<
+            typename subtoken_t>
+        constexpr auto
+        make_some_token(
+            auto&& __begin, 
+            auto&& __end, 
+            thodd::list<subtoken_t>&& __subranges, 
+            size_t const& __min, 
+            size_t const& __max)
+        {
+            using iterator_t = meta::decay<decltype(__begin)>;
+
+            return 
+            some_token<iterator_t, subtoken_t>
+            { thodd::range(
+                perfect<decltype(__begin)>(__begin),
+                perfect<decltype(__end)>(__end)),
+              thodd::rvalue(__subranges), 
+              __min, 
+              __max };
         }
 
 
@@ -72,13 +197,18 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {     
-            using token_t = decltype(token(false, 0u, __cursor, __cursor));
+            using subtoken_t = 
+                meta::decay<
+                decltype(
+                    matches(
+                        __some.algo.something, 
+                        __cursor, __end))>;
 
             auto __save = __cursor;            
             auto __cpt  = 0u;
 
-            token_t       __subrange;
-            list<token_t> __subranges;
+            subtoken_t       __subrange;
+            list<subtoken_t> __subranges;
             
             while((__subrange = matches(__some.algo.something, __cursor, __end)) 
                 && __cpt <= __some.algo.max)
@@ -90,27 +220,22 @@ namespace thodd
                 ++__cpt;
             }
 
-            auto&& __valid = 
-                thodd::between(
-                    __cpt, 
-                    __some.algo.min,
-                    __some.algo.max);
-
-            std::cout << std::boolalpha << __valid << std::endl;    
             
-            if(!__valid)
+            if(!thodd::between(
+                __cpt, 
+                __some.algo.min, 
+                __some.algo.max))
             {    
                 __subranges.clear();
                 __cursor = __save;
             }
 
             return 
-            token(
-                __valid, 
-                0u, 
-                __save, 
-                __cursor, 
-                thodd::rvalue(__subranges));
+            make_some_token(
+                __save, __cursor, 
+                thodd::rvalue(__subranges), 
+                __some.algo.min,
+                __some.algo.max);
         }
 
 
@@ -123,12 +248,12 @@ namespace thodd
             word<some<word<something_t,  caster_t>>, some_caster_t> const& __some,
             auto&& __tree)
         {
-            using item_t = decltype(
+            using target_t = decltype(
                             interpret(
                                 __some.algo.something, 
-                                *__tree.subranges.begin()));
+                                *__tree.subbegin()));
 
-            list<meta::decay<item_t>> __lst;
+            list<meta::decay<target_t>> __lst;
 
             for(auto const& __tk : __tree.subranges)
                 thodd::push_back(__lst, thodd::rvalue(interpret(__some.algo.something, __tk)));

@@ -8,141 +8,64 @@ namespace thodd
 {
     namespace lang
     {
-        namespace detail
+        /// Basic token with
+        /// no special information
+        template<
+            typename iterator_t>
+        struct basic_token
         {
-            template<
-                typename iterator_t>
-            class token final 
+            using range_t = thodd::detail::range<iterator_t>;
+
+            range_t range;
+
+            constexpr 
+            operator bool() const
             {
-            public:
-                using range_t = thodd::detail::range<iterator_t>;
+                return range.begin() != range.end();
+            }
+        
 
-                size_t index{0u};
-                bool valid{false};
-                range_t range;
-                thodd::list<token> subranges;
-                
-                operator bool () const 
-                {
-                    return valid;
-                }
-            
-                token() = default;
-                token(token const&) = default;
-                token(token&&) = default; 
-                ~token() = default;
-                token& operator=(token const&) = default;
-                token& operator=(token&&) = default;
+            inline auto const
+            begin() const
+            {
+                return range.begin();
+            }
 
-            public:
-                token(
-                    bool __valid, 
-                    size_t __index,
-                    iterator_t const& __begin, 
-                    iterator_t const& __end) :
-                    index(__index),
-                    valid(__valid),
-                    range{thodd::range(__begin, __end)} {}
-            
-            
-                token(
-                    bool __valid, 
-                    size_t __index,
-                    iterator_t const& __begin, 
-                    iterator_t const& __end, 
-                    list<token> const& __subranges) :
-                    index(__index), 
-                    valid(__valid),
-                    range{thodd::range(__begin, __end)}, 
-                    subranges{__subranges} {}
 
-            public:    
-                inline auto const
-                size()
-                {
-                    return range.size();
-                }
+            inline auto
+            begin()
+            {
+                return range.begin();
+            }
 
-                inline auto 
-                begin() 
-                {
-                    return range.begin();
-                }
 
-                inline auto const
-                begin() const
-                {
-                    return range.begin();
-                }
+            inline auto const
+            end() const
+            {
+                return range.end();
+            }
 
-                inline auto 
-                end() 
-                {
-                    return range.end();
-                }
 
-                inline auto const
-                end() const
-                {
-                    return range.end();
-                }    
+            inline auto
+            end()
+            {
+                return range.end();
+            }
+        };
 
-            public:
-                inline auto const
-                sub_size()
-                {
-                    return subranges.size();
-                }
-            
-                inline auto 
-                sub_begin() 
-                {
-                    return subranges.begin();
-                }
 
-                inline auto const
-                sub_begin() const
-                {
-                    return subranges.begin();
-                }
-
-                inline auto 
-                sub_end() 
-                {
-                    return subranges.end();
-                }
-
-                inline auto const
-                sub_end() const
-                {
-                    return subranges.end();
-                }
-            };
-        }
-
-        inline auto 
-        token(
-            auto const& __valid,
-            auto const& __index,
-            auto const& __begin, 
-            auto const& __end)
+        /// Make a basic token
+        constexpr auto
+        make_token(
+            auto&& __begin,
+            auto&& __end)
         {
-            return 
-            detail::token<meta::decay<decltype(__begin)>>
-            (__valid, __index, __begin, __end);
-        }
+            using iterator_t = meta::decay<decltype(__begin)>;
 
-        inline auto 
-        token(
-            auto const& __valid,
-            auto const& __index,
-            auto const& __begin, 
-            auto const& __end, 
-            auto&& __subranges)
-        {
-            return 
-            detail::token<meta::decay<decltype(__begin)>>
-            (__valid, __index, __begin, __end, perfect<decltype(__subranges)>(__subranges));
+            return
+            basic_token<iterator_t>
+            { thodd::range(perfect<decltype(__begin)>(__begin),
+                           perfect<decltype(__end)>(__end)) };
         }
     }
 }

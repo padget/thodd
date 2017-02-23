@@ -32,28 +32,45 @@ extern constexpr auto __letter =
                 false;
         });
 
+
+template<
+    typename ... params_t>
 inline void
-print_tokens(
-    auto&& __tree,
+print_token(
+    thodd::lang::basic_token<params_t...> const& __token, 
     auto&& __offset)
 {
-    std::cout << __offset 
-              << "index : "     
-              << __tree.index 
-              << ':'; 
+    if(static_cast<bool>(__token)) 
+    {    
+        std::cout << __offset << "|--> : ";
 
-    for(auto&& __c : __tree)
-        std::cout << __c;
+        for(auto&& __c : __token)
+            std::cout << __c;
 
-    std::cout << " (" 
-              << std::boolalpha 
-              << __tree.valid 
-              << ')';
+        std::cout << std::endl; 
+    }
+}
 
-    std::cout << std::endl;
 
-    for(auto&& __token : __tree.subranges)
-        print_tokens(__token, __offset + ' ');
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::some_token<params_t...> const& __token, 
+    auto&& __offset)
+{
+    if(static_cast<bool>(__token)) 
+    {    
+        std::cout << __offset << "|--> : ";
+
+        for(auto&& __c : __token)
+            std::cout << __c;
+
+        std::cout << std::endl;
+
+        for(auto&& __subtoken : __token.subranges)
+            print_token(__subtoken, __offset + "___"); 
+    }
 }
 
 int main(
@@ -64,7 +81,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"1"};
+    std::string __input{"111"};
     auto const __end = __input.end();
 
     constexpr auto 
@@ -85,7 +102,7 @@ try
             return __res;
         })];
 
-    constexpr auto __ds_word = __d_word | __d_word;
+    constexpr auto __ds_word = (~__d_word)(2, 4);
     
 
     auto __begin = __input.begin();
@@ -93,11 +110,9 @@ try
 
     std::cout << std::boolalpha << (bool) __token << std::endl;
     
-    variant<long long> __var = interpret(__ds_word, __token);
-
-    std::cout << static_cast<long long>(__var) << std::endl;
+   // list<long long> __var = interpret(__ds_word, __token);
     
-    print_tokens(__token, std::string());    
+    print_token(__token, std::string());    
 }
 catch(std::exception& __e)
 {

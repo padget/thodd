@@ -31,7 +31,9 @@ namespace thodd
                 auto&&... __params) const 
             -> decltype(auto)
             {
-                return word{algo(perfect<decltype(__params)>(__params)...)};
+                return 
+                word
+                { algo(perfect<decltype(__params)>(__params)...), caster };
             }
 
 
@@ -40,9 +42,11 @@ namespace thodd
                 auto&& __caster) const
             -> decltype(auto)
             {
+                using ocaster_t = meta::decay<decltype(__caster)>;
+
                 return 
-                word<algo_t, meta::decay<decltype(__caster)>>
-                {algo, perfect<decltype(__caster)>(__caster)};
+                word<algo_t, ocaster_t>
+                { algo, perfect<decltype(__caster)>(__caster) };
             }
         };
 
@@ -54,7 +58,7 @@ namespace thodd
 
             return 
             word<meta::decay<algo_t>>
-            {perfect<algo_t>(__algo)};
+            { perfect<algo_t>(__algo) };
         }
 
 
@@ -68,12 +72,11 @@ namespace thodd
             auto const& __end)
         {
             auto __save = __cursor;
-            auto __valid = true;
 
-            if(!(__valid = matches(__word.algo , __cursor, __end)))
+            if(!(matches(__word.algo, __cursor, __end)))
                 __cursor = __save;
                 
-            return token(__valid, 0u, __save, __cursor);
+            return make_token(__save, __cursor);
         }
 
 
@@ -85,7 +88,8 @@ namespace thodd
             auto& __cursor, 
             auto const& __end)
         {
-            return matches(__word.algo, __cursor, __end);
+            return 
+            matches(__word.algo, __cursor, __end);
         }
 
 
@@ -97,8 +101,7 @@ namespace thodd
             word<regex<algo_t>, caster_t> const& __word,
             auto const& __tree)
         {
-            if(static_cast<bool>(__tree) 
-            && __tree.subranges.size() == 0)
+            if(static_cast<bool>(__tree))
                 return __word.caster(__tree);
             else 
                 throw bad_caster_exception();
