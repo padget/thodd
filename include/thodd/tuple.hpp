@@ -315,7 +315,7 @@ namespace thodd
             tuple_t&& _tuple,
             func_t&& _func,
             indexes<indexes_c...>)
-        -> decltype(perfect<func_t>(_func)(perfect<tuple_t>(_tuple).template get<indexes_c>()...))
+        -> decltype(auto)
         {
             return perfect<func_t>(_func)(perfect<tuple_t>(_tuple).template get<indexes_c>()...);
         }
@@ -331,7 +331,7 @@ namespace thodd
 			func_t&& _func,
 			args_t&& ... _args,
 			indexes<indexes_c...>)
-		-> decltype(perfect<func_t>(_func)(perfect<tuple_t>(_tuple).template get<indexes_c>()(perfect<args_t>(_args)...)...))
+		-> decltype(auto)
 		{
 			return perfect<func_t>(_func)(perfect<tuple_t>(_tuple).template get<indexes_c>()(perfect<args_t>(_args)...)...);
 		}
@@ -478,7 +478,7 @@ namespace thodd
         constexpr auto
         apply(
             func_t&& _func)
-        -> decltype(tuple_algorithm::apply(this->indexed, perfect<func_t>(_func), make_indexes<sizeof...(items_t)>{}))
+        -> decltype(auto)
         {
             return tuple_algorithm::apply(this->indexed,
                                           perfect<func_t>(_func),
@@ -490,7 +490,7 @@ namespace thodd
         constexpr auto
         apply(
             func_t&& _func) const
-        -> decltype(tuple_algorithm::apply(this->indexed, perfect<func_t>(_func), make_indexes<sizeof...(items_t)>{}))
+        -> decltype(auto)
         {
             return tuple_algorithm::apply(this->indexed,
                                           perfect<func_t>(_func),
@@ -504,7 +504,7 @@ namespace thodd
 		functional_apply(
 			func_t&& _func,
 			args_t&&... _args)
-		-> decltype(tuple_algorithm::functional_apply(this->indexed, perfect<func_t>(_func), make_indexes<sizeof...(items_t)>{}))
+		-> decltype(auto)
 		{
 			return tuple_algorithm::functional_apply(this->indexed,
 										  perfect<func_t>(_func),
@@ -519,7 +519,7 @@ namespace thodd
 		functional_apply(
 			func_t&& _func,
 			args_t&&... _args) const
-		-> decltype(tuple_algorithm::functional_apply(this->indexed, perfect<func_t>(_func), make_indexes<sizeof...(items_t)>{}))
+		-> decltype(auto)
 		{
 			return tuple_algorithm::functional_apply(this->indexed,
 										  perfect<func_t>(_func),
