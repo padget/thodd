@@ -447,6 +447,151 @@ namespace thodd
             perfect<decltype(__func)>(__func), 
             perfect<decltype(__tuples)>(__tuples)...);
     }
+
+    inline auto 
+    make_dynamic_tuple(
+        auto&&... __items)
+    {
+        return 
+        dynamic_tuple<meta::decay<decltype(__items)>...>
+        { perfect<decltype(__items)>(__items)... };
+    }
+
+
+     /// Operator+ that concat
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename item2_t>
+    constexpr auto
+    operator + (
+        dynamic_tuple<items1_t...> const& __tuple1,
+        item2_t&& __item2)
+    {
+        using tpl = dynamic_tuple<items1_t..., item2_t>;
+
+        return 
+        tpl
+        { thodd::rvalue(__tuple1.storage + make_dynamic_tuple(perfect<item2_t>(__item2)).storage) };
+    }
+
+
+    /// Operator+ that concat
+    /// two tuples
+    template<
+        typename item1_t,
+        typename ... items2_t>
+    constexpr auto
+    operator + (
+        item1_t&& __item1,
+        dynamic_tuple<items2_t...> const& __tuple2)
+    {
+        using tpl = dynamic_tuple<item1_t, items2_t...>;
+
+        return 
+        tpl {
+            thodd::rvalue(make_dynamic_tuple(perfect<item1_t>(__item1)).storage 
+            + __tuple2.storage)};
+    }
+
+
+    /// Operator+ that concat
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr auto
+    operator + (
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        using tpl = dynamic_tuple<items1_t..., items2_t...>;
+
+        return  tpl{thodd::rvalue(_tuple1.storage 
+                  + _tuple2.storage)};
+    }
+
+
+
+    /// Operator== that compare
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator==(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage == _tuple2.storage;
+    }
+
+
+    /// Operator!= that compare
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator!=(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage != _tuple2.storage;
+    }
+
+
+    /// Operator< that compare
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator<(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage < _tuple2.storage;
+    }
+
+
+    /// Operator<= that compare
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator<=(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage <= _tuple2.storage;
+    }
+
+
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator>(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage > _tuple2.storage;
+    }
+
+
+    /// Operator>= that compare
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator>=(
+        dynamic_tuple<items1_t...> const& _tuple1,
+        dynamic_tuple<items2_t...> const& _tuple2)
+    {
+        return _tuple1.storage >= _tuple2.storage;
+    }
 }
 
 #endif 

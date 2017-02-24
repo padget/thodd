@@ -68,7 +68,6 @@ namespace thodd
         struct tuple_indexed<indexes<indexes_c...>, items_t...>:
             public tuple_element_pod<items_t, indexes_c>...
         {
-            static_assert(sizeof...(items_t) > 0, "");
             constexpr tuple_indexed() = default;
 
             template<
@@ -189,43 +188,61 @@ namespace thodd
             return _res_;
         }
 
+        /// Operator< that compare
+        /// two tuples
+        template<
+            size_t ... indexes_c,
+            typename ... items1_t,
+            size_t ... indexes2_c,
+            typename ... items2_t>
+        constexpr bool
+        operator<(
+            tuple_indexed<indexes<indexes_c...>, items1_t...> const& _tuple1,
+            tuple_indexed<indexes<indexes2_c...>, items2_t...> const& _tuple2)
+        {
+            return false;
+        }
+
         /// Operator<= that compare
         template<
-            std::size_t ... indexes_c,
+            size_t ... indexes_c,
             typename ... items1_t,
+            size_t ... indexes2_c,
             typename ... items2_t>
         constexpr bool
         operator<=(
             tuple_indexed<indexes<indexes_c...>, items1_t...> const& _tuple1,
-            tuple_indexed<indexes<indexes_c...>, items2_t...> const& _tuple2)
+            tuple_indexed<indexes<indexes2_c...>, items2_t...> const& _tuple2)
         {
             return !(_tuple2 < _tuple1);
         }
 
 
         template<
-            std::size_t ... indexes_c,
+            size_t ... indexes_c,
             typename ... items1_t,
+            size_t ... indexes2_c,
             typename ... items2_t>
         constexpr bool
         operator>(
             tuple_indexed<indexes<indexes_c...>, items1_t...> const& _tuple1,
-            tuple_indexed<indexes<indexes_c...>, items2_t...> const& _tuple2)
+            tuple_indexed<indexes<indexes2_c...>, items2_t...> const& _tuple2)
         {
-            return _tuple2 < _tuple1;
+            return !(_tuple2 <= _tuple1);
         }
 
 
         /// Operator>= that compare
         /// two tuples
         template<
-            std::size_t ... indexes_c,
+            size_t ... indexes_c,
             typename ... items1_t,
+            size_t ... indexes2_c,
             typename ... items2_t>
         constexpr bool
         operator>=(
             tuple_indexed<indexes<indexes_c...>, items1_t...> const& _tuple1,
-            tuple_indexed<indexes<indexes_c...>, items2_t...> const& _tuple2)
+            tuple_indexed<indexes<indexes2_c...>, items2_t...> const& _tuple2)
         {
             return !(_tuple1 < _tuple2);
         }
@@ -926,9 +943,8 @@ namespace thodd
     /// Operator== that compare
     /// two tuples
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator==(
         tuple<items1_t...> const& _tuple1,
@@ -941,9 +957,8 @@ namespace thodd
     /// Operator!= that compare
     /// two tuples
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator!=(
         tuple<items1_t...> const& _tuple1,
@@ -956,9 +971,8 @@ namespace thodd
     /// Operator< that compare
     /// two tuples
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator<(
         tuple<items1_t...> const& _tuple1,
@@ -970,9 +984,8 @@ namespace thodd
 
     /// Operator<= that compare
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator<=(
         tuple<items1_t...> const& _tuple1,
@@ -983,9 +996,8 @@ namespace thodd
 
 
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator>(
         tuple<items1_t...> const& _tuple1,
@@ -998,9 +1010,8 @@ namespace thodd
     /// Operator>= that compare
     /// two tuples
     template<
-        std::size_t ... indexes_c,
-        typename    ... items1_t,
-        typename    ... items2_t>
+        typename ... items1_t,
+        typename ... items2_t>
     constexpr bool
     operator>=(
         tuple<items1_t...> const& _tuple1,
