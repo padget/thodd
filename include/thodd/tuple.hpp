@@ -572,7 +572,7 @@ namespace thodd
         return {_items...};
     }
 
-
+ 
     /// Tuple factory
     /// that return
     /// a perfecting
@@ -625,13 +625,105 @@ namespace thodd
 
     template<
         typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...>&& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        __tuple.template apply(
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...> const& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        __tuple.template apply(
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...>& __tuple, 
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        __tuple.template apply(
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...>&& __tpl,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return 
+        __tpl.template functional_apply(
+            perfect<decltype(__func)>(__func),
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...> const& __tpl,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return 
+        __tpl.template functional_apply(
+            perfect<decltype(__func)>(__func),
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...>& __tpl,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return 
+        __tpl.template functional_apply(
+            perfect<decltype(__func)>(__func),
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
     constexpr auto 
     foreach(
         tuple<items_t...>&& __tuple, 
         auto&& __func)
     -> decltype(auto)
     {
-        return __tuple.template foreach(perfect<decltype(__func)>(__func));
+        return 
+        __tuple.template foreach(
+            perfect<decltype(__func)>(__func));
     }
 
 
@@ -643,7 +735,9 @@ namespace thodd
         auto&& __func)
     -> decltype(auto)
     {
-        return __tuple.template foreach(perfect<decltype(__func)>(__func));
+        return
+        __tuple.template foreach(
+            perfect<decltype(__func)>(__func));
     }
 
 
@@ -655,7 +749,57 @@ namespace thodd
         auto&& __func)
     -> decltype(auto)
     {
-        return __tuple.template foreach(perfect<decltype(__func)>(__func));
+        return 
+        __tuple.template foreach(
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach_join(
+        tuple<items_t...>&& __tuple, 
+        auto&& __func, 
+        auto&&... __tuples)
+    -> decltype(auto)
+    {
+        return 
+        __tuple.template foreach_join(
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__tuples)>(__tuples)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach_join(
+        tuple<items_t...> const& __tuple, 
+        auto&& __func, 
+        auto&&... __tuples)
+    -> decltype(auto)
+    {
+        return
+        __tuple.template foreach_join(
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__tuples)>(__tuples)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto 
+    foreach_join(
+        tuple<items_t...>& __tuple, 
+        auto&& __func, 
+        auto&&... __tuples)
+    -> decltype(auto)
+    {
+        return 
+        __tuple.template foreach_join(
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__tuples)>(__tuples)...);
     }
 
 

@@ -3,7 +3,7 @@
 
 namespace thodd
 {
-     namespace arrays
+    namespace arrays
     {
         THODD_EXCEPTION(zero_sized_array_exception, 
                        "zero_sized_array_exception : "

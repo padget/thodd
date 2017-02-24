@@ -539,7 +539,24 @@ namespace thodd
             });
         };
 
+    template<
+        typename type_t>
+    extern constexpr auto
+    new_ =
+        [] (auto&&... __args)
+        {
+            return 
+            new type_t(
+                perfect<decltype(__args)>(__args)...);
+        };
 
+    extern constexpr auto
+    delete_ = 
+        [] (auto* __ptr)
+        {
+            delete __ptr;
+            __ptr = nullptr;
+        };
 
 
     template<

@@ -11,7 +11,6 @@
 
 namespace thodd
 {
-
     template<
         typename key_t,
         typename value_t>
