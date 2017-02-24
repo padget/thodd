@@ -18,12 +18,10 @@ namespace thodd
 
             constexpr tuple_element_pod() = default;
 
-            template<
-                typename oitem_t>
             explicit constexpr
             tuple_element_pod(
-                oitem_t&& _oitem):
-                item{perfect<oitem_t>(_oitem)} {}
+                auto&& __oitem):
+                item{perfect<decltype(__oitem)>(__oitem)} {}
         };
 
 
@@ -74,21 +72,32 @@ namespace thodd
             constexpr tuple_indexed() = default;
 
             template<
-                typename ... oitem_t>
+                typename ... oitems_t>
             explicit constexpr
             tuple_indexed(
-                oitem_t&& ... _items) :
-                tuple_element_pod<items_t, indexes_c>{perfect<oitem_t>(_items)}... {}
+                oitems_t&&... _items) :
+                tuple_element_pod<items_t, indexes_c>{ perfect<oitems_t>(_items) }... {}
 
+            template<
+                typename ... oitems_t>
             explicit constexpr
             tuple_indexed(
-                tuple_indexed<items_t...>&& _other) :
-                tuple_element_pod<items_t, indexes_c>{rvalue(tuple_get<indexes_c>(_other))}... {}
+                tuple_indexed<oitems_t...>&& _other) :
+                tuple_element_pod<items_t, indexes_c>{ thodd::rvalue(tuple_get<indexes_c>(_other)) }... {}
 
+            template<
+                typename ... oitems_t>
             explicit constexpr
             tuple_indexed(
-                tuple_indexed<items_t...> const& _other) :
-                tuple_element_pod<items_t, indexes_c>{tuple_get<indexes_c>(_other)}... {}
+                tuple_indexed<oitems_t...> const& _other) :
+                tuple_element_pod<items_t, indexes_c>{ tuple_get<indexes_c>(_other) }... {}
+
+            template<
+                typename ... oitems_t>
+            explicit constexpr 
+            tuple_indexed(
+                tuple_indexed<oitems_t...>& __other) :
+                tuple_indexed<items_t...>{ const_cast<tuple_indexed<items_t...> const&>(__other) } {}
         };
 
 
@@ -233,21 +242,34 @@ namespace thodd
 
         constexpr tuple_indexed() = default;
 
+
         template<
-            typename ... oitem_t>
+            typename ... oitems_t>
         explicit constexpr
         tuple_indexed(
-            oitem_t&&... _items):
-            base_t{perfect<oitem_t>(_items)...} {}
-
+            oitems_t&&... __oitems) :
+            base_t{ perfect<oitems_t>(__oitems)... } {}
 
         template<
-            typename other_t,
-            typename = meta::enable_if<meta::is_same<meta::remove_all<other_t>, tuple_indexed>::value>>
-        constexpr
+            typename ... oitems_t>
+        explicit constexpr
         tuple_indexed(
-            other_t&& _other):
-            base_t{perfect<other_t>(_other)} {}
+            tuple_indexed<oitems_t...>&& __other) :
+            base_t{ thodd::rvalue(__other) } {}
+
+        template<
+            typename ... oitems_t>
+        explicit constexpr
+        tuple_indexed(
+            tuple_indexed<oitems_t...> const& __other) :
+            base_t{ __other } {}
+
+        template<
+            typename ... oitems_t>
+        explicit constexpr 
+        tuple_indexed(
+            tuple_indexed<oitems_t...>& __other) :
+            base_t{ const_cast<tuple_indexed<oitems_t...> const&>(__other) } {}
 
 
         template<
@@ -359,57 +381,78 @@ namespace thodd
 
     private:
         template<
-            typename other_t,
+            typename ... oitems_t,
             size_t ... indexes_c>
         explicit constexpr
         tuple(
-            other_t&& _other,
+            tuple<oitems_t...> const& __other,
             indexes<indexes_c...>) :
-            indexed{perfect<other_t>(_other).template get<indexes_c>()...} {}
+            indexed{ __other.template get<indexes_c>()... } {}
+
+        template<
+            typename ... oitems_t,
+            size_t ... indexes_c>
+        explicit constexpr
+        tuple(
+            tuple<oitems_t...>&& __other,
+            indexes<indexes_c...>) :
+            indexed{ thodd::rvalue(__other.template get<indexes_c>())... } {}
 
     public:
         constexpr tuple() = default;
 
         explicit constexpr tuple(
-		    items_t const&... _items): 
-            indexed{_items...} {}
-
-        template<
-            typename ... oitems_t>
-        explicit constexpr tuple(
-		    oitems_t&&... _oitems): 
-            indexed{perfect<oitems_t>(_oitems)...} {}
+            auto const&... __oitems) : 
+            indexed{ perfect<decltype(__oitems)>(__oitems)... } {}
 
     public:
         template<
             typename ... oitems_t>
         constexpr tuple(
-            tuple<oitems_t...> const& _other) :
-            tuple{_other, make_indexes<sizeof...(items_t)>{}}{}
+            tuple<oitems_t...> const& __other) :
+            tuple{__other, make_indexes<sizeof...(items_t)>{}} {}
 
         template<
             typename ... oitems_t>
         constexpr tuple(
-            tuple<oitems_t...>&& _other) :
-            tuple{_other, make_indexes<sizeof...(items_t)>{}}{}
+            tuple<oitems_t...>&& __other) :
+            tuple{__other, make_indexes<sizeof...(items_t)>{}} {}
 
-    public:
         template<
             typename ... oitems_t>
-        constexpr tuple&
-        operator=(
+        constexpr tuple(
+            tuple<oitems_t...>& __other) :
+            tuple{ const_cast<tuple<oitems_t...> const&>(__other) } {}    
+
+    public:
+        template<    
+            typename ... oitems_t>
+        inline tuple&
+        operator = (
             tuple<oitems_t...> const& _other)
         {
             tuple_algorithm::assign(this->indexed, _other.indexed, make_indexes<sizeof...(items_t)>{});
+            return *this;
         }
 
         template<
             typename ... oitems_t>
-        constexpr tuple&
-        operator=(
+        inline tuple&
+        operator = (
             tuple<oitems_t...>&& _other)
         {
             tuple_algorithm::assign(this->indexed, _other.indexed, make_indexes<sizeof...(items_t)>{});
+            return *this;
+        }
+
+        template<
+            typename ... oitems_t>
+        inline tuple&
+        operator = (
+            tuple<oitems_t...>& _other)
+        {
+            tuple_algorithm::assign(this->indexed, _other.indexed, make_indexes<sizeof...(items_t)>{});
+            return *this;
         }
 
         template<
@@ -556,7 +599,9 @@ namespace thodd
     make_tuple(
         items_t&&... _items)
     {
-        return tuple<items_t...>{perfect<items_t>(_items)...};
+        return 
+        tuple<items_t...>{
+            perfect<items_t>(_items)...};
     }
 
 
@@ -583,7 +628,9 @@ namespace thodd
     perfect_as_tuple(
         items_t&&... _items)
     {
-        return tuple<items_t&&...>(perfect<items_t>(_items)...);
+        return 
+        tuple<items_t&&...>(
+            perfect<items_t>(_items)...);
     }
 
 
@@ -595,7 +642,8 @@ namespace thodd
         tuple<items_t...>&& __tuple)
     -> decltype(auto)
     {
-        return __tuple.template get<index_c>();
+        return 
+        __tuple.template get<index_c>();
     }
 
 
@@ -607,7 +655,8 @@ namespace thodd
         tuple<items_t...> const& __tuple)
     -> decltype(auto)
     {
-        return __tuple.template get<index_c>();
+        return 
+        __tuple.template get<index_c>();
     }
     
 
@@ -619,7 +668,8 @@ namespace thodd
         tuple<items_t...>& __tuple)
     -> decltype(auto)
     {
-        return __tuple.template get<index_c>();
+        return 
+        __tuple.template get<index_c>();
     }
 
 

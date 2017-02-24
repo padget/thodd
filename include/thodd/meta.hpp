@@ -1018,6 +1018,60 @@ namespace thodd
         THODD_IS_XXXX_F(is_reference)
 
 
+        namespace lazy
+        {
+            template<
+                typename _From, 
+                typename _To,
+                bool = or_<
+                        is_void<_From>, 
+                        is_function<_To>,
+                        is_array<_To>>::value>
+            struct __is_convertible_helper
+            { 
+                typedef typename is_void<_To>::type type; 
+            };
+
+            template<typename _From, typename _To>
+            class __is_convertible_helper<_From, _To, false>
+            {
+                template<
+                    typename _To1>
+                static void __test_aux(_To1);
+
+                template<
+                    typename _From1, 
+                    typename _To1,
+                    typename = decltype(__test_aux<_To1>(std::declval<_From1>()))>
+                static true_
+                __test(int);
+
+                template<
+                    typename, 
+                    typename>
+                static false_
+                __test(...);
+
+                public:
+                    typedef decltype(__test<_From, _To>(0)) type;
+            };
+
+
+            /// is_convertible
+            template<typename _From, typename _To>
+            struct is_convertible : 
+                public __is_convertible_helper<_From, _To>::type
+            {
+            };
+        }
+
+
+        template<
+            typename from_t, 
+            typename to_t>
+        using is_convertible = __type<lazy::is_convertible<from_t, to_t>>;
+
+
 
 
 #  define THODD_ADD_XXXX_F(name)                \

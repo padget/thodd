@@ -10,20 +10,36 @@ namespace thodd
 {
     template<
         typename ... items_t>
-    class dynamic_tuple
+    struct dynamic_tuple
     {
+        using tuple_t   = thodd::tuple<items_t*...>; 
+
+        tuple_t storage{(items_t*)nullptr...};
+
+    private:
         template<
-            typename item_t>
-        using pointer_t = item_t*;
-        using tuple_t   = thodd::tuple<pointer_t<items_t>...>; 
-
-        tuple_t storage;
-
+            typename ... oitems_t,
+            size_t ... indexes_c>
+        dynamic_tuple(
+            dynamic_tuple<oitems_t...>&& __other,
+            indexes<indexes_c...>) :
+            storage( (thodd::rvalue(__other).template get<indexes_c>() != nullptr ? 
+                      new oitems_t{ thodd::rvalue(*thodd::rvalue(__other).template get<indexes_c>()) } : 
+                      (oitems_t*) nullptr)... ) {}
+        
+        template<
+            typename ... oitems_t,
+            size_t ... indexes_c>
+        dynamic_tuple(
+            dynamic_tuple<oitems_t...> const& __other,
+            indexes<indexes_c...>) :
+            storage( (__other.template get<indexes_c>() != nullptr ? 
+                      new oitems_t{ *__other.template get<indexes_c>() } : 
+                      (oitems_t*) nullptr)... ) {}
+        
     public:
         dynamic_tuple() = default; 
 
-        dynamic_tuple(dynamic_tuple&&) = default;
-        dynamic_tuple(dynamic_tuple const&) = default;
 
         ~dynamic_tuple()
         {
@@ -31,40 +47,85 @@ namespace thodd
                 storage, 
                 thodd::delete_);
         }
+         
+        explicit 
+        dynamic_tuple(
+		    auto&&... __oitems) : 
+            storage( new meta::remove_pointer<meta::decay<decltype(__oitems)>>{perfect<decltype(__oitems)>(__oitems)}... ) {}
+
+        template<
+            typename ... oitems_t>
+        dynamic_tuple(
+            dynamic_tuple<oitems_t...> const& __other) :
+            dynamic_tuple( __other, make_indexes<sizeof...(oitems_t)>{} ) {}
+
+        template<
+            typename ... oitems_t>
+        dynamic_tuple(
+            dynamic_tuple<oitems_t...>&& __other) :
+            dynamic_tuple( thodd::rvalue(__other), make_indexes<sizeof...(oitems_t)>{} ) {}
+
+        template<
+            typename ... oitems_t>
+        dynamic_tuple(
+            dynamic_tuple<oitems_t...>& __other) :
+            dynamic_tuple( const_cast<dynamic_tuple<oitems_t...> const&>(__other) ) {}
 
     public:
-        dynamic_tuple& 
+        template<
+            typename ... oitems_t>
+        inline dynamic_tuple&
         operator = (
-            dynamic_tuple&&) = default;
-        
-        dynamic_tuple& 
+            dynamic_tuple<oitems_t...> const& __other)
+        {
+            storage = __other.storage;
+            return *this;
+        }
+
+        template<
+            typename ... oitems_t>
+        inline dynamic_tuple&
         operator = (
-            dynamic_tuple const&) = default;
+            dynamic_tuple<oitems_t...>&& __other)
+        {
+            storage = __other.storage;
+            return *this;
+        }
+
+        template<
+            typename ... oitems_t>
+        inline dynamic_tuple&
+        operator = (
+            dynamic_tuple<oitems_t...>& __other)
+        {
+            storage = __other.storage;
+            return *this;
+        }
 
     
     public:
         template<
             size_t index_c>
-        constexpr auto
+        inline auto
         get()
         -> decltype(auto)
         {
             return 
-            *thodd::get<index_c>(storage);
+            thodd::get<index_c>(storage);
         }
         
         template<
             size_t index_c>
-        constexpr auto
+        inline auto
         get() const
         -> decltype(auto)
         {
             return 
-            *thodd::get<index_c>(storage);
+            thodd::get<index_c>(storage);
         }
 
 
-        constexpr auto
+        inline auto
         apply(
             auto&& __func)
         -> decltype(auto)
@@ -76,7 +137,7 @@ namespace thodd
         }
 
 
-        constexpr auto
+        inline auto
         apply(
             auto&& __func) const
         -> decltype(auto)
@@ -88,7 +149,7 @@ namespace thodd
         }
 
 
-		constexpr auto
+		inline auto
 		functional_apply(
 			auto&& __func,
 			auto&&... __args)
@@ -102,7 +163,7 @@ namespace thodd
 		}
 
         
-        constexpr auto
+        inline auto
 		functional_apply(
 			auto&& __func,
 			auto&&... __args) const
@@ -116,7 +177,7 @@ namespace thodd
 		}
 
 
-        constexpr auto
+        inline auto
         foreach(
             auto&& __func)
         -> decltype(auto)
@@ -128,7 +189,7 @@ namespace thodd
         }
 
 
-        constexpr auto
+        inline auto
         foreach(
             auto&& __func) const
         -> decltype(auto)
@@ -140,7 +201,7 @@ namespace thodd
         }
 
 
-        constexpr auto
+        inline auto
         foreach_join(
             auto&& __func, 
             auto&& ... __tuples)
@@ -154,7 +215,7 @@ namespace thodd
         }
 
         
-        constexpr auto
+        inline auto
         foreach_join(
             auto&& __func, 
             auto&& ... __tuples) const 
@@ -178,7 +239,7 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        *__dt.template get<index_c>();
+        __dt.template get<index_c>();
     }
 
     
@@ -191,7 +252,7 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        *__dt.template get<index_c>();
+        __dt.template get<index_c>();
     }
 
     
@@ -204,13 +265,13 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        *__dt.template get<index_c>();
+        __dt.template get<index_c>();
     }
     
     
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     apply(
         dynamic_tuple<items_t...>&& __dt, 
         auto&& __func)
@@ -224,7 +285,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     apply(
         dynamic_tuple<items_t...> const& __dt, 
         auto&& __func)
@@ -238,7 +299,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     apply(
         dynamic_tuple<items_t...>& __dt, 
         auto&& __func)
@@ -252,7 +313,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     functional_apply(
         dynamic_tuple<items_t...>&& __tpl,
         auto&& __func,
@@ -268,7 +329,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     functional_apply(
         dynamic_tuple<items_t...> const& __tpl,
         auto&& __func,
@@ -284,7 +345,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto
+    inline auto
     functional_apply(
         dynamic_tuple<items_t...>& __tpl,
         auto&& __func,
@@ -300,7 +361,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach(
         dynamic_tuple<items_t...>&& __dt, 
         auto&& __func)
@@ -314,7 +375,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach(
         dynamic_tuple<items_t...> const& __dt, 
         auto&& __func)
@@ -328,7 +389,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach(
         dynamic_tuple<items_t...>& __dt, 
         auto&& __func)
@@ -342,7 +403,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach_join(
         dynamic_tuple<items_t...>&& __dt, 
         auto&& __func, 
@@ -358,7 +419,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach_join(
         dynamic_tuple<items_t...> const& __dt, 
         auto&& __func, 
@@ -374,7 +435,7 @@ namespace thodd
 
     template<
         typename ... items_t>
-    constexpr auto 
+    inline auto 
     foreach_join(
         dynamic_tuple<items_t...>& __dt, 
         auto&& __func, 
