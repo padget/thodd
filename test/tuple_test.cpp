@@ -8,12 +8,9 @@
 
 struct testref
 {
-    testref(){ std::cout << "constructor" << std::endl; }
-    ~testref(){ std::cout << "destructor" << std::endl; }
-    testref(testref const&){ std::cout << "copy constructor" << std::endl; }
-    testref(testref&&){ std::cout << "move constructor" << std::endl; }
-    testref& operator = (testref const&){ std::cout << "copy assignement" << std::endl; return *this; }
-    testref& operator = (testref&&){ std::cout << "move assignement" << std::endl;  return *this; }
+    constexpr testref(){  }
+    constexpr testref(testref const&){}
+    constexpr testref(testref&&){ }
 };
 
 inline auto
@@ -32,19 +29,19 @@ try
     using namespace thodd;
     
     {
-        tuple<testref, testref, testref> __t{testref{}, testref{}, testref{}};
-        decltype(__t) __t2(rvalue(__t));
-        auto t = __t2 + __t2;
+        constexpr tuple<testref, testref, testref> __t{testref{}, testref{}, testref{}};
+        constexpr decltype(__t) __t2(rvalue(__t));
+        constexpr auto t = __t2 + __t2;
         thodd::foreach(t, cout_ << $0 << endl_);
     }
 
     std::cout << std::endl;
 
     {
-        dynamic_tuple<testref, testref, testref> __dt(testref{}, testref{}, testref{});
-        decltype(__dt) __dt2(rvalue(__dt));
-        __dt2 = __dt;
-        __dt2 = rvalue(__dt);
+        // dynamic_tuple<testref, testref, testref> __dt(testref{}, testref{}, testref{});
+        // decltype(__dt) __dt2(rvalue(__dt));
+        // __dt2 = __dt;
+        // __dt2 = rvalue(__dt);
     }
 }
 catch(std::exception& __e)

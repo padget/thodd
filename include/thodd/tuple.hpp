@@ -83,21 +83,21 @@ namespace thodd
     public:
         template<
             typename ... oitems_t>
-        explicit constexpr
+        constexpr
         tuple_indexed(
             tuple_indexed<oitems_t...>&& __other) :
             tuple_element_pod<items_t, indexes_c>{ thodd::rvalue(thodd::get<indexes_c>(__other)) }... {}
 
         template<
             typename ... oitems_t>
-        explicit constexpr
+        constexpr
         tuple_indexed(
             tuple_indexed<oitems_t...> const& __other) :
             tuple_element_pod<items_t, indexes_c>{ thodd::get<indexes_c>(__other) }... {}
 
         template<
             typename ... oitems_t>
-        explicit constexpr
+        constexpr
         tuple_indexed(
             tuple_indexed<oitems_t...>& __other) :
             tuple_indexed<items_t...>{ const_cast<tuple_indexed<items_t...> const&>(__other) } {}
@@ -172,6 +172,7 @@ namespace thodd
         return _res_;
     }
 
+
     /// Operator< that compare
     /// two tuples
     template<
@@ -186,6 +187,7 @@ namespace thodd
     {
         return false;
     }
+
 
     /// Operator<= that compare
     template<
@@ -229,6 +231,70 @@ namespace thodd
         tuple_indexed<indexes<indexes2_c...>, items2_t...> const& __tuple2)
     {
         return !(__tuple1 < __tuple2);
+    }
+
+
+    template<
+        typename ... litems_t, 
+        size_t ... lindexes_c, 
+        typename ... ritems_t, 
+        size_t ... rindexes_c>
+    constexpr auto
+    operator + (
+        tuple_indexed<indexes<lindexes_c...>, litems_t...> const& __ltuple, 
+        tuple_indexed<indexes<rindexes_c...>, ritems_t...> const& __rtuple)
+    {
+        return 
+        tuple_indexed<make_indexes<(sizeof...(litems_t) + sizeof...(ritems_t))>, litems_t..., ritems_t...>
+        { thodd::get<lindexes_c>(__ltuple)..., thodd::get<rindexes_c>(__rtuple)... };
+    }
+
+
+    template<
+        typename ... litems_t, 
+        size_t ... lindexes_c, 
+        typename ... ritems_t, 
+        size_t ... rindexes_c>
+    constexpr auto
+    operator + (
+        tuple_indexed<indexes<lindexes_c...>, litems_t...> const& __ltuple, 
+        tuple_indexed<indexes<rindexes_c...>, ritems_t...>&& __rtuple)
+    {
+        return 
+        tuple_indexed<make_indexes<(sizeof...(litems_t) + sizeof...(ritems_t))>, litems_t..., ritems_t...>
+        { thodd::get<lindexes_c>(__ltuple)..., thodd::rvalue(thodd::get<rindexes_c>(__rtuple))... };
+    }
+
+
+    template<
+        typename ... litems_t, 
+        size_t ... lindexes_c, 
+        typename ... ritems_t, 
+        size_t ... rindexes_c>
+    constexpr auto
+    operator + (
+        tuple_indexed<indexes<lindexes_c...>, litems_t...>&& __ltuple, 
+        tuple_indexed<indexes<rindexes_c...>, ritems_t...> const& __rtuple)
+    {
+        return 
+        tuple_indexed<make_indexes<(sizeof...(litems_t) + sizeof...(ritems_t))>, litems_t..., ritems_t...>
+        { thodd::rvalue(thodd::get<lindexes_c>(__ltuple))..., thodd::get<rindexes_c>(__rtuple)... };
+    }
+
+
+    template<
+        typename ... litems_t, 
+        size_t ... lindexes_c, 
+        typename ... ritems_t, 
+        size_t ... rindexes_c>
+    constexpr auto
+    operator + (
+        tuple_indexed<indexes<lindexes_c...>, litems_t...>&& __ltuple, 
+        tuple_indexed<indexes<rindexes_c...>, ritems_t...>&& __rtuple)
+    {
+        return 
+        tuple_indexed<make_indexes<(sizeof...(litems_t) + sizeof...(ritems_t))>, litems_t..., ritems_t...>
+        { thodd::rvalue(thodd::get<lindexes_c>(__ltuple))..., thodd::rvalue(thodd::get<rindexes_c>(__rtuple))... };
     }
 
 
@@ -431,12 +497,12 @@ namespace thodd
 
     template<
         typename ... items_t>
-    struct tuple:
-       public tuple_indexed<thodd::make_indexes<sizeof...(items_t)>, items_t...>
+    struct tuple
     {
-    private:
+    
         using base_t = tuple_indexed<thodd::make_indexes<sizeof...(items_t)>, items_t...>;
-
+        base_t storage;
+    private:    
         template<
             typename ... oitems_t,
             size_t ... indexes_c>
@@ -444,7 +510,7 @@ namespace thodd
         tuple(
             tuple<oitems_t...> const& __other,
             indexes<indexes_c...>) :
-            base_t{ thodd::get<indexes_c>(__other)... } {}
+            storage{ thodd::get<indexes_c>(__other.storage)... } {}
 
         template<
             typename ... oitems_t,
@@ -453,14 +519,18 @@ namespace thodd
         tuple(
             tuple<oitems_t...>&& __other,
             indexes<indexes_c...>) :
-            base_t{ thodd::rvalue(thodd::get<indexes_c>(__other))... } {}
+            storage{ thodd::rvalue(thodd::get<indexes_c>(__other.storage))... } {}
 
     public:
         constexpr tuple() = default;
 
+
+        template<
+            typename ... oitems_t>
         explicit constexpr tuple(
-            auto&&... __oitems) :
-            base_t{ perfect<decltype(__oitems)>(__oitems)... } {}
+            oitems_t const&... __oitems) :
+            storage{ __oitems... } {}
+
 
     public:
         template<
@@ -469,17 +539,20 @@ namespace thodd
             tuple<oitems_t...> const& __other) :
             tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
 
+
         template<
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...>&& __other) :
             tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
 
+
         template<
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...>& __other) :
             tuple{ const_cast<tuple<oitems_t...> const&>(__other) } {}
+
 
     public:
         template<
@@ -488,9 +561,10 @@ namespace thodd
         operator = (
             tuple<oitems_t...> const& __other)
         {
-            tuple_algorithm::assign(*this, __other, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
             return *this;
         }
+
 
         template<
             typename ... oitems_t>
@@ -498,9 +572,10 @@ namespace thodd
         operator = (
             tuple<oitems_t...>&& __other)
         {
-            tuple_algorithm::assign(*this, __other, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
             return *this;
         }
+
 
         template<
             typename ... oitems_t>
@@ -508,7 +583,7 @@ namespace thodd
         operator = (
             tuple<oitems_t...>& __other)
         {
-            tuple_algorithm::assign(*this, __other, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
             return *this;
         }
     };
@@ -521,6 +596,47 @@ namespace thodd
     public:
         constexpr tuple() = default;
     };
+
+
+
+
+    template<
+        size_t index_c,
+        typename ... items_t>
+    constexpr auto
+    get(
+        tuple<items_t...>& __tpl)
+    -> decltype(auto)
+    {
+        return 
+        thodd::get<index_c>(__tpl.storage);
+    }
+
+
+    template<
+        size_t index_c,
+        typename ... items_t>
+    constexpr auto
+    get(
+        tuple<items_t...> const& __tpl)
+    -> decltype(auto)
+    {
+        return 
+        thodd::get<index_c>(__tpl.storage);
+    }
+
+
+    template<
+        size_t index_c,
+        typename ... items_t>
+    constexpr auto
+    get(
+        tuple<items_t...>&& __tpl)
+    -> decltype(auto)
+    {
+        return 
+        thodd::get<index_c>(__tpl.storage);
+    }
 
 
     template<
@@ -604,71 +720,329 @@ namespace thodd
     constexpr auto tuple_size = detail::tuple_size_impl{};
 
 
+     /// Operator== that compare
+    /// two tuples
     template<
-        typename ... litems_t, 
-        size_t ... lindexes_c, 
-        typename ... ritems_t, 
-        size_t ... rindexes_c>
-    constexpr auto
-    operator + (
-        tuple_indexed<indexes<lindexes_c...>, litems_t...> const& __ltuple, 
-        tuple_indexed<indexes<rindexes_c...>, ritems_t...> const& __rtuple)
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator == (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
     {
         return 
-        make_tuple(
-            thodd::get<lindexes_c>(__ltuple)..., 
-            thodd::get<rindexes_c>(__rtuple)...);
+        __tuple1.storage 
+        == __tuple2.storage;
+    }
+
+
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator != (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
+    {
+        return 
+        __tuple1.storage 
+        != __tuple2.storage ;
+    }
+
+    /// Operator< that compare
+    /// two tuples
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator < (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
+    {
+        return 
+        __tuple1.storage
+        < __tuple2.storage;
+    }
+
+
+    /// Operator<= that compare
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator <= (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
+    {  
+        return 
+        __tuple1.storage
+        <= __tuple2.storage;
+    }
+
+
+    /// Operator<= that compare
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator > (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
+    {  
+        return 
+        __tuple1.storage
+        > __tuple2.storage;
+    }
+
+
+     /// Operator<= that compare
+    template<
+        typename ... items1_t,
+        typename ... items2_t>
+    constexpr bool
+    operator >= (
+        tuple<items1_t...> const& __tuple1,
+        tuple<items2_t...> const& __tuple2)
+    {
+        return 
+        __tuple1.storage
+        >= __tuple2.storage;
+    }
+
+
+     template<
+        typename ... litems_t, 
+        typename ... ritems_t>
+    constexpr auto
+    operator + (
+        tuple<litems_t...> const& __ltuple, 
+        tuple<ritems_t...> const& __rtuple)
+    {
+        return 
+        tuple<litems_t..., ritems_t...>
+        { __ltuple.storage + __rtuple.storage };
     }
 
 
     template<
         typename ... litems_t, 
-        size_t ... lindexes_c, 
-        typename ... ritems_t, 
-        size_t ... rindexes_c>
+        typename ... ritems_t>
     constexpr auto
     operator + (
-        tuple_indexed<indexes<lindexes_c...>, litems_t...> const& __ltuple, 
-        tuple_indexed<indexes<rindexes_c...>, ritems_t...>&& __rtuple)
+        tuple<litems_t...> const& __ltuple, 
+        tuple<ritems_t...>&& __rtuple)
     {
         return 
-        make_tuple(
-            thodd::get<lindexes_c>(__ltuple)..., 
-            thodd::rvalue(thodd::get<rindexes_c>(__rtuple))...);
+        tuple<litems_t..., ritems_t...>
+        { __ltuple.storage + thodd::rvalue(__rtuple.storage) };
     }
 
 
     template<
         typename ... litems_t, 
-        size_t ... lindexes_c, 
-        typename ... ritems_t, 
-        size_t ... rindexes_c>
+        typename ... ritems_t>
     constexpr auto
     operator + (
-        tuple_indexed<indexes<lindexes_c...>, litems_t...>&& __ltuple, 
-        tuple_indexed<indexes<rindexes_c...>, ritems_t...> const& __rtuple)
+        tuple<litems_t...>&& __ltuple, 
+        tuple<ritems_t...> const& __rtuple)
     {
         return 
-        make_tuple(
-            thodd::rvalue(thodd::get<lindexes_c>(__ltuple))..., 
-            thodd::get<rindexes_c>(__rtuple)...);
+        tuple<litems_t..., ritems_t...>
+        { thodd::rvalue(__ltuple.storage) + __rtuple.storage };
     }
 
 
     template<
         typename ... litems_t, 
-        size_t ... lindexes_c, 
-        typename ... ritems_t, 
-        size_t ... rindexes_c>
+        typename ... ritems_t>
     constexpr auto
     operator + (
-        tuple_indexed<indexes<lindexes_c...>, litems_t...>&& __ltuple, 
-        tuple_indexed<indexes<rindexes_c...>, ritems_t...>&& __rtuple)
+        tuple<litems_t...>&& __ltuple, 
+        tuple<ritems_t...>&& __rtuple)
     {
         return 
-        make_tuple(
-            thodd::rvalue(thodd::get<lindexes_c>(__ltuple))..., 
-            thodd::rvalue(thodd::get<rindexes_c>(__rtuple))...);
+        tuple<litems_t..., ritems_t...>
+        { thodd::rvalue(__ltuple.storage) + thodd::rvalue(__rtuple.storage) };
+    }
+
+
+     template<
+        typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...>& __tuple,
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        thodd::apply(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...> const& __tuple,
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        thodd::apply(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    apply(
+        tuple<items_t...>&& __tuple,
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        thodd::apply(
+            thodd::rvalue(__tuple.storage), 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach(
+        tuple<items_t...>& __tuple,
+        auto&& __func)
+    {
+        thodd::foreach(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach(
+        tuple<items_t...> const& __tuple,
+        auto&& __func)
+    {
+        thodd::foreach(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach(
+        tuple<items_t...>&& __tuple,
+        auto&& __func)
+    {
+        thodd::foreach(
+            thodd::rvalue(__tuple.storage), 
+            perfect<decltype(__func)>(__func));
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...>& __tuple,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return         
+        thodd::functional_apply(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...> const& __tuple,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return         
+        thodd::functional_apply(
+            __tuple.storage, 
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr auto
+    functional_apply(
+        tuple<items_t...>&& __tuple,
+        auto&& __func,
+        auto&&... __args)
+    -> decltype(auto)
+    {
+        return 
+        thodd::functional_apply(
+            thodd::rvalue(__tuple.storage), 
+            perfect<decltype(__func)>(__func), 
+            perfect<decltype(__args)>(__args)...);
+    }
+
+
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach_join(
+        tuple<items_t...>& __tuple,
+        auto&& __func,
+        auto&& __tuple1)
+    {
+       thodd::foreach_join(
+           __tuple.storage, 
+           perfect<decltype(__func)>(__func), 
+           perfect<decltype(__tuple1)>(__tuple1));
+    }
+
+     
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach_join(
+        tuple<items_t...> const& __tuple,
+        auto&& __func,
+        auto&& __tuple1)
+    {
+       thodd::foreach_join(
+           __tuple.storage, 
+           perfect<decltype(__func)>(__func), 
+           perfect<decltype(__tuple1)>(__tuple1));
+    }
+
+    
+    template<
+        typename ... items_t>
+    constexpr void
+    foreach_join(
+        tuple<items_t...>&& __tuple,
+        auto&& __func,
+        auto&& __tuple1)
+    {
+       thodd::foreach_join(
+           thodd::rvalue(__tuple.storage), 
+           perfect<decltype(__func)>(__func), 
+           perfect<decltype(__tuple1)>(__tuple1));
     }
 }
 

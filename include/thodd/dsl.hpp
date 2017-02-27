@@ -128,7 +128,7 @@ namespace thodd
         dsl_expression<nodes_t...> const& __cdsl,
         dsl_node<node_t> const& __node)
     {
-        return dsl_expression<nodes_t..., meta::decay<node_t>>{__cdsl.nodes + __node.node};
+        return dsl_expression<nodes_t..., meta::decay<node_t>>{__cdsl.nodes + make_tuple(__node.node)};
     }
 
     /// #(operator) >
@@ -154,7 +154,7 @@ namespace thodd
         dsl_node<node_t> const& __node, 
         dsl_expression<nodes_t...> const& __cdsl)
     {
-        return dsl_expression<meta::decay<node_t>, nodes_t...>{__node.node + __cdsl.nodes};
+        return dsl_expression<meta::decay<node_t>, nodes_t...>{make_tuple(__node.node) + __cdsl.nodes};
     }
 
     /// #(operator) >
