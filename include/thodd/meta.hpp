@@ -1691,7 +1691,7 @@ namespace thodd
         template<
             bool bool_c, 
             typename type_t = void>
-        using enable_if = lazy::enable_if<bool_c, type_t>;
+        using enable_if = __type<lazy::enable_if<bool_c, type_t>>;
     }
 }
 
