@@ -16,6 +16,14 @@ struct testref
     testref& operator = (testref&&){ std::cout << "move assignement" << std::endl;  return *this; }
 };
 
+inline auto
+operator << (auto& __out, testref const&)
+-> decltype(auto)
+{
+    __out << "coucou";
+    return __out;
+}
+
 int main(
     int argc,
     char* args[])
@@ -26,9 +34,8 @@ try
     {
         tuple<testref, testref, testref> __t{testref{}, testref{}, testref{}};
         decltype(__t) __t2(rvalue(__t));
-        __t2 = __t;
-        __t2 = rvalue(__t);
-        auto t = __t2 +__t2;
+        auto t = __t2 + __t2;
+        thodd::foreach(t, cout_ << $0 << endl_);
     }
 
     std::cout << std::endl;
@@ -38,14 +45,6 @@ try
         decltype(__dt) __dt2(rvalue(__dt));
         __dt2 = __dt;
         __dt2 = rvalue(__dt);
-    }
-
-    std::cout << std::endl;
-
-    {
-        dynamic_tuple<testref> __dt{testref{}};
-        dynamic_tuple<int> __dt2{2};
-        auto __sum = __dt + __dt2;
     }
 }
 catch(std::exception& __e)
