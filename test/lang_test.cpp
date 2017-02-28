@@ -103,7 +103,7 @@ try
             return __res;
         })];
 
-    constexpr auto __ds_word = (~__d_word)(2, 4);
+    constexpr auto __ds_word = __d_word >> __d_word;
     
 
     auto __begin = __input.begin();

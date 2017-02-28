@@ -40,14 +40,18 @@ namespace thodd::lang
         auto __res = true;
         auto __save = __cursor;
 
-        __follow.algo.algos.template foreach(
-            [&__res, &__save, &__cursor, &__end] (auto&& __algo)
+        thodd::foreach(
+            __follow.algo.algos,
+            [&__res, &__save, 
+             &__cursor, &__end] 
+            (auto&& __algo)
             {
                 if(__res) 
-                    __res &= matches(
-                                perfect<decltype(__algo)>(__algo),
-                                __cursor, 
-                                __end);
+                    __res &= 
+                    matches(
+                        perfect<decltype(__algo)>(__algo),
+                        __cursor, 
+                        __end);
             });
 
         if(!__res)
@@ -130,15 +134,13 @@ namespace thodd::lang
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree)
     {
-            tuple<meta::decay<
-                decltype(
-                    interpret(
-                        thodd::declval<word<algos_t,  casters_t>>(), 
-                        __tree))>...> __tpl;
+        tuple<meta::decay<
+            decltype(interpret(thodd::declval<word<algos_t,  casters_t>>(), 
+                     __tree))>...> __tpl;
 
         auto __subtree_it = __tree.sub_begin(); 
 
-        __follow.algo.algos.template foreach_join(
+        thodd::foreach_join(__follow.algo.algos, 
             [&__subtree_it] 
             (auto&& __case, 
                 auto&& __tpl_item)

@@ -38,10 +38,11 @@ try
     std::cout << std::endl;
 
     {
-        // dynamic_tuple<testref, testref, testref> __dt(testref{}, testref{}, testref{});
-        // decltype(__dt) __dt2(rvalue(__dt));
-        // __dt2 = __dt;
-        // __dt2 = rvalue(__dt);
+        dynamic_tuple<testref, testref, testref> __dt(testref{}, testref{}, testref{});
+        decltype(__dt) __dt2(rvalue(__dt));
+        __dt2 = __dt;
+        __dt2 = rvalue(__dt);
+        thodd::foreach(__dt2, cout_ << *$0 << endl_);
     }
 }
 catch(std::exception& __e)
