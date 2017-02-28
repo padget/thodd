@@ -44,6 +44,8 @@ try
         __dt2 = rvalue(__dt);
         thodd::foreach(__dt2, cout_ << *$0 << endl_);
     }
+
+    std::cout << std::endl;
 }
 catch(std::exception& __e)
 {

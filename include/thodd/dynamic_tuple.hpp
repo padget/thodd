@@ -10,8 +10,8 @@ namespace thodd
 {
     template<
         typename ... items_t>
-    struct dynamic_tuple:
-        thodd::tuple<items_t*...>
+    struct dynamic_tuple : 
+        public thodd::tuple<items_t*...>
     {
     public:
         using base_t = thodd::tuple<items_t*...>;
@@ -76,9 +76,6 @@ namespace thodd
         dynamic_tuple(
             dynamic_tuple<oitems_t...>& __other) :
             dynamic_tuple( const_cast<dynamic_tuple<oitems_t...> const&>(__other) ) {}
-
-    public:
-  
 
     public:
         template<

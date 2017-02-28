@@ -99,6 +99,17 @@ namespace thodd
         return __min <= __value
             && __value <= __max;
     }
+
+    template<
+        size_t index_c>
+    constexpr auto
+    get(auto&& __t) 
+    -> decltype(perfect<decltype(__t)>(__t).template get<index_c>())
+    {
+        return 
+        perfect<decltype(__t)>(__t)
+        .template get<index_c>();
+    }
 }
 
 #endif /* THODD_LAW_HPP_ */

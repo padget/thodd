@@ -27,10 +27,10 @@ namespace thodd
         typename item_t>
     constexpr item_t&
     get(
-        tuple_element_pod<item_t, index_c>& _pod)
+        tuple_element_pod<item_t, index_c>& __pod)
     {
         return 
-        _pod.item;
+        __pod.item;
     }
 
 
@@ -39,10 +39,10 @@ namespace thodd
         typename item_t>
     constexpr item_t const&
     get(
-        tuple_element_pod<item_t, index_c> const& _pod)
+        tuple_element_pod<item_t, index_c> const& __pod)
     {
         return 
-        _pod.item;
+        __pod.item;
     }
 
 
@@ -51,10 +51,10 @@ namespace thodd
         typename item_t>
     constexpr item_t&&
     get(
-        tuple_element_pod<item_t, index_c>&& _pod)
+        tuple_element_pod<item_t, index_c>&& __pod)
     {
         return 
-        thodd::rvalue(_pod.item);
+        thodd::rvalue(__pod.item);
     }
 
 
@@ -100,7 +100,7 @@ namespace thodd
         constexpr
         tuple_indexed(
             tuple_indexed<oitems_t...>& __other) :
-            tuple_indexed<items_t...>{ const_cast<tuple_indexed<items_t...> const&>(__other) } {}
+            tuple_indexed<items_t...>{ const_cast<tuple_indexed<items_t...> const&>(__other) } {}        
     };
 
 
@@ -111,7 +111,7 @@ namespace thodd
         typename ... items1_t,
         typename ... items2_t>
     constexpr bool
-    operator==(
+    operator == (
         tuple_indexed<indexes<indexes_c...>, items1_t...> const& __tuple1,
         tuple_indexed<indexes<indexes_c...>, items2_t...> const& __tuple2)
     {
@@ -167,9 +167,9 @@ namespace thodd
         if(&__tuple1 == &__tuple2)
             return false;
 
-        bool _res_{true};
-        repeat{(_res_ &= thodd::get<indexes_c>(__tuple1) < thodd::get<indexes_c>(__tuple2), 0)...};
-        return _res_;
+        bool __res{true};
+        repeat{(__res &= thodd::get<indexes_c>(__tuple1) < thodd::get<indexes_c>(__tuple2), 0)...};
+        return __res;
     }
 
 
@@ -499,7 +499,6 @@ namespace thodd
         typename ... items_t>
     struct tuple
     {
-    
         using base_t = tuple_indexed<thodd::make_indexes<sizeof...(items_t)>, items_t...>;
         base_t storage;
     private:    
@@ -586,6 +585,26 @@ namespace thodd
             tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
             return *this;
         }
+
+    public:
+        template<
+            size_t index_c>
+        constexpr auto
+        get() const 
+        -> decltype(auto)
+        {
+            return thodd::get<index_c>(this->storage);
+        }
+
+
+        template<
+            size_t index_c>
+        constexpr auto
+        get()  
+        -> decltype(auto)
+        {
+            return thodd::get<index_c>(this->storage);
+        }
     };
 
 
@@ -609,7 +628,8 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        thodd::get<index_c>(__tpl.storage);
+        thodd::get<index_c>(
+            __tpl.storage);
     }
 
 
@@ -622,7 +642,8 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        thodd::get<index_c>(__tpl.storage);
+        thodd::get<index_c>(
+            __tpl.storage);
     }
 
 
@@ -635,8 +656,20 @@ namespace thodd
     -> decltype(auto)
     {
         return 
-        thodd::get<index_c>(__tpl.storage);
+        thodd::get<index_c>(
+            thodd::rvalue(
+                __tpl.storage));
     }
+
+
+
+
+
+
+
+
+
+
 
 
     template<
@@ -866,7 +899,7 @@ namespace thodd
     }
 
 
-     template<
+    template<
         typename ... items_t>
     constexpr auto
     apply(

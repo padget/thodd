@@ -2,6 +2,7 @@
 #  define __THODD_LANG_FOLLOW_HPP__
 
 #  include <thodd/tuple.hpp>
+#  include <thodd/dynamic_tuple.hpp>
 #  include <thodd/law.hpp>
 #  include <thodd/variant.hpp>
 
@@ -28,6 +29,112 @@ namespace thodd::lang
         follow<meta::decay<algos_t>...>
         {__algos};
     }
+
+
+    template<
+        typename iterator_t, 
+        typename ... subtokens_t>
+    struct follow_token
+    {
+        using range_t = thodd::detail::range<iterator_t>;
+
+        range_t range;
+        thodd::dynamic_tuple<subtokens_t...> subranges;
+
+        constexpr
+        operator bool () const
+        {
+            auto __res = true;
+
+            thodd::foreach(
+                subranges, 
+                thodd::ref(__res) = 
+                    thodd::cref(__res) 
+                    && ($0 != val(nullptr)));
+
+            if(__res)
+                thodd::foreach(
+                    subranges,
+                    thodd::ref(__res) = 
+                        thodd::cref(__res) 
+                        && thodd::bind(thodd::cast_<bool>, *$0));
+
+            return __res; 
+        }
+
+        inline auto const
+        begin() const
+        {
+            return range.begin();
+        }
+
+
+        inline auto
+        begin()
+        {
+            return range.begin();
+        }
+
+
+        inline auto const
+        end() const
+        {
+            return range.end();
+        }
+
+
+        inline auto
+        end()
+        {
+            return range.end();
+        }
+
+
+        inline auto const
+        subbegin() const
+        {
+            return subranges.begin();
+        }
+
+
+        inline auto
+        subbegin()
+        {
+            return subranges.begin();
+        }
+
+
+        inline auto const
+        subend() const
+        {
+            return subranges.end();
+        }
+
+
+        inline auto
+        subend()
+        {
+            return subranges.end();
+        }
+    };
+
+    template<
+        typename ... subtokens_t>
+    constexpr auto 
+    make_follow_token(
+        auto&& __begin, 
+        auto&& __end,
+        thodd::dynamic_tuple<subtokens_t...>&& __subranges)
+    {
+        return 
+        follow_token<
+            meta::decay<decltype(__begin)>, 
+            subtokens_t...>
+        { { decltype(__begin)(__begin), 
+            decltype(__end)(__end) }, 
+          thodd::rvalue(__subranges) };
+    }
+
 
     template<
         typename ... algos_t>
@@ -71,39 +178,50 @@ namespace thodd::lang
         auto& __cursor, 
         auto const& __end)
     {   
-        list<decltype(token(false, 0u, __cursor, __cursor))> __subranges;
-
+        using subranges_t = 
+            thodd::dynamic_tuple<
+                meta::decay<
+                    decltype(
+                        matches(
+                            declval<word<cases_t, casters_t>>(), 
+                            __cursor, __end))>...>;
+        
         auto __save = __cursor;
         auto __continue = true;
-        auto __index = 0u;
+        subranges_t __subranges;
 
-        thodd::foreach(__follow.algo.algos,
-            [&__continue, &__subranges, &__index, 
-                &__save, &__cursor, &__end] 
-            (auto&& __case)
+        thodd::foreach_join(
+            __follow.algo.algos,
+            [&__continue, &__save, &__cursor, &__end] 
+            (auto&& __case, auto& __subrange)
             {
                 using case_t = decltype(__case);
+                using subrange_t = 
+                    meta::remove_pointer<
+                        meta::decay<decltype(__subrange)>>;
 
                 if(__continue)
                 {
-                    auto __subrange = 
-                        matches(perfect<case_t>(__case), __cursor, __end);
+                    __subrange = 
+                        new subrange_t(
+                            thodd::rvalue(
+                                matches(
+                                    perfect<case_t>(__case), 
+                                    __cursor, 
+                                    __end)));
 
-                    if((__continue = (bool) __subrange))
-                    {
-                        __subrange.index = __index;
-                        thodd::push_back(__subranges, thodd::rvalue(__subrange)); 
-                        ++__index;
-                    }
-                    else 
-                    {  
-                        __subranges.clear();
+                    if(!(__continue &= (bool) __subrange)) 
                         __cursor = __save;
-                    }   
                 }     
-            });
+            }, 
+            __subranges);
+
+        if(!__continue)
+            thodd::foreach(
+                __subranges, 
+                thodd::delete_);
     
-        return token(__continue, 0u, __save, __cursor, thodd::rvalue(__subranges));
+        return make_follow_token(__save, __cursor, thodd::rvalue(__subranges));
     }
 
 
@@ -134,7 +252,7 @@ namespace thodd::lang
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree)
     {
-        tuple<meta::decay<
+        /*tuple<meta::decay<
             decltype(interpret(thodd::declval<word<algos_t,  casters_t>>(), 
                      __tree))>...> __tpl;
 
@@ -149,7 +267,7 @@ namespace thodd::lang
                 ++__subtree_it;
             }, __tpl);
         
-        return __follow.caster(__tpl);
+        return __follow.caster(__tpl);*/
     }
 
 
@@ -181,7 +299,7 @@ namespace thodd::lang
         make_regex(
             make_follow(
                 __lfollow.algo.algos 
-                + __rregex));
+                + make_tuple(__rregex)));
     }
 
 
@@ -237,7 +355,7 @@ namespace thodd::lang
         make_word(
             make_follow(
                 __lfollow.algo.algos 
-                + __rword));
+                + make_tuple(__rword)));
     }
 
 

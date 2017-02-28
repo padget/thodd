@@ -74,6 +74,29 @@ print_token(
     }
 }
 
+
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::follow_token<params_t...> const __token, 
+    auto&& __offset)
+{
+    
+
+    if(static_cast<bool>(__token))
+    {    
+        std::cout << __offset << "|--> : ";
+
+        for(auto&& __c : __token)
+            std::cout << __c;
+
+        std::cout << std::endl;
+        
+        thodd::foreach(__token.subranges, [&__offset](auto&& __sub) {if(__sub != nullptr) print_token(*__sub, __offset + "___");});
+    }
+}
+
 int main(
     int argc, 
     char* args[])
@@ -82,7 +105,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"111"};
+    std::string __input{"1116546545646"};
     auto const __end = __input.end();
    
     constexpr auto 
@@ -103,13 +126,14 @@ try
             return __res;
         })];
 
-    constexpr auto __ds_word = __d_word >> __d_word;
+    constexpr auto __ds_word = __d_word >> __d_word >> *__d_word;
     
 
     auto __begin = __input.begin();
     auto __token = matches(__ds_word, __begin, __end);
 
     std::cout << std::boolalpha << (bool) __token << std::endl;
+
     
    // list<long long> __var = interpret(__ds_word, __token);
     
