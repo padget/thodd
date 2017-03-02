@@ -86,7 +86,8 @@ namespace thodd
                 return true;
 
             bool __res{true};
-            repeat{(__res &= thodd::get<indexes_c>(*this) == thodd::get<indexes_c>(__other), 0)...};
+            repeat{(__res &= thodd::get<indexes_c>(*this) 
+                             == thodd::get<indexes_c>(__other), 0)...};
             
             return __res;
         }
@@ -113,7 +114,8 @@ namespace thodd
                 return false;
 
             bool __res{true};
-            repeat{ (__res &= thodd::get<indexes_c>(*this) < thodd::get<indexes_c>(__other), 0)... };
+            repeat{ (__res &= thodd::get<indexes_c>(*this) 
+                              < thodd::get<indexes_c>(__other), 0)... };
             
             return __res;
         }
@@ -253,6 +255,45 @@ namespace thodd
 
 
         constexpr auto
+        functional_apply(
+            auto&& __func,
+            auto&& ... __args) &
+        -> decltype(auto)
+        {
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this)(
+                    perfect<decltype(__args)>(__args)...)...);
+        }
+
+        
+        constexpr auto
+        functional_apply(
+            auto&& __func,
+            auto&& ... __args) const &
+        -> decltype(auto)
+        {
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this)(
+                    perfect<decltype(__args)>(__args)...)...);
+        }
+
+
+        constexpr auto
+        functional_apply(
+            auto&& __func,
+            auto&& ... __args) &&
+        -> decltype(auto)
+        {
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::rvalue(thodd::get<indexes_c>(*this))(
+                    perfect<decltype(__args)>(__args)...)...);
+        }
+
+
+        constexpr auto
         foreach(
             auto&& __func) &
         -> decltype(auto)
@@ -282,107 +323,45 @@ namespace thodd
                     thodd::get<indexes_c>(*this))), 0)... };
         }
 
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&& __other) &
+        -> decltype(auto)
+        {
+            repeat{(perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this),
+                thodd::get<indexes_c>(
+                    perfect<decltype(__other)>(__other))), 0)...};
+        }
+
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&& __other) const &
+        -> decltype(auto)
+        {
+            repeat{(perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this),
+                thodd::get<indexes_c>(
+                    perfect<decltype(__other)>(__other))), 0)...};
+        }
+
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&& __other) &&
+        -> decltype(auto)
+        {
+            repeat{(perfect<decltype(__func)>(__func)(
+                thodd::rvalue(thodd::get<indexes_c>(*this)),
+                thodd::get<indexes_c>(
+                    perfect<decltype(__other)>(__other))), 0)...};
+        }
     };
-
-
-    template<
-        typename ... items_t,
-        typename func_t,
-        size_t ... indexes_c,
-        typename ... args_t>
-    constexpr auto
-    functional_apply(
-        tuple_indexed<indexes<indexes_c...>, items_t...>& __tuple,
-        func_t&& __func,
-        args_t&&... _args)
-    -> decltype(auto)
-    {
-        return perfect<func_t>(__func)(thodd::get<indexes_c>(__tuple)(perfect<args_t>(_args)...)...);
-    }
-
-
-    template<
-        typename ... items_t,
-        typename func_t,
-        size_t ... indexes_c,
-        typename ... args_t>
-    constexpr auto
-    functional_apply(
-        tuple_indexed<indexes<indexes_c...>, items_t...> const& __tuple,
-        func_t&& __func,
-        args_t&&... _args)
-    -> decltype(auto)
-    {
-        return perfect<func_t>(__func)(thodd::get<indexes_c>(__tuple)(perfect<args_t>(_args)...)...);
-    }
-
-
-    template<
-        typename ... items_t,
-        typename func_t,
-        size_t ... indexes_c,
-        typename ... args_t>
-    constexpr auto
-    functional_apply(
-        tuple_indexed<indexes<indexes_c...>, items_t...>&& __tuple,
-        func_t&& __func,
-        args_t&&... _args)
-    -> decltype(auto)
-    {
-        return perfect<func_t>(__func)(thodd::get<indexes_c>(__tuple)(perfect<args_t>(_args)...)...);
-    }
-
-
-    template<
-        typename ... items_t,
-        typename tuple1_t,
-        typename func_t,
-        size_t ... indexes_c>
-    constexpr void
-    foreach_join(
-        tuple_indexed<indexes<indexes_c...>, items_t...>& __tuple,
-        func_t&& __func,
-        tuple1_t&& __tuple1)
-    {
-        repeat{(perfect<func_t>(__func)(
-                    thodd::get<indexes_c>(__tuple),
-                    thodd::get<indexes_c>(perfect<tuple1_t>(__tuple1))), 0)...};
-    }
-
-     
-    template<
-        typename ... items_t,
-        typename tuple1_t,
-        typename func_t,
-        size_t ... indexes_c>
-    constexpr void
-    foreach_join(
-        tuple_indexed<indexes<indexes_c...>, items_t...> const& __tuple,
-        func_t&& __func,
-        tuple1_t&& __tuple1)
-    {
-        repeat{(perfect<func_t>(__func)(
-                    thodd::get<indexes_c>(__tuple),
-                    thodd::get<indexes_c>(perfect<tuple1_t>(__tuple1))), 0)...};
-    }
-
-    
-    template<
-        typename ... items_t,
-        typename tuple1_t,
-        typename func_t,
-        size_t ... indexes_c>
-    constexpr void
-    foreach_join(
-        tuple_indexed<indexes<indexes_c...>, items_t...>&& __tuple,
-        func_t&& __func,
-        tuple1_t&& __tuple1)
-    {
-        repeat{(perfect<func_t>(__func)(
-                    thodd::get<indexes_c>(__tuple),
-                    thodd::get<indexes_c>(perfect<tuple1_t>(__tuple1))), 0)...};
-    }
 }
-
 
 #endif

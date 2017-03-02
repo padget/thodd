@@ -18,20 +18,6 @@ namespace thodd
 
 
     constexpr auto
-    foreach(
-        auto&& __t,
-        auto&& __func)
-    -> decltype(auto)
-    {
-        return 
-        perfect<decltype(__t)>(__t)
-        .template
-         foreach(
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    constexpr auto
     functional_apply(
         auto&& __t,
         auto&& __func,
@@ -44,6 +30,20 @@ namespace thodd
          functional_apply(
             perfect<decltype(__func)>(__func), 
             perfect<decltype(__args)>(__args)...);   
+    }
+
+
+    constexpr auto
+    foreach(
+        auto&& __t,
+        auto&& __func)
+    -> decltype(auto)
+    {
+        return 
+        perfect<decltype(__t)>(__t)
+        .template
+         foreach(
+            perfect<decltype(__func)>(__func));
     }
 
 
@@ -61,6 +61,21 @@ namespace thodd
             perfect<decltype(__func)>(__func),
             perfect<decltype(__tuple1)>(__tuple1));
 
+    }
+
+
+    template<
+        size_t from_c, 
+        size_t to_c>
+    constexpr auto
+    extract(
+        auto&& __t)
+    -> decltype(auto)
+    {
+        return 
+        perfect<decltype(__t)>(__t)
+        .template
+         extract<from_c, to_c>();
     }
 }
 

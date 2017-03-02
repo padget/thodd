@@ -31,6 +31,27 @@ namespace thodd
     {
         using base_t = tuple_indexed<thodd::make_indexes<sizeof...(items_t)>, items_t...>;
         base_t storage;
+
+    private:
+        constexpr base_t&
+        pstorage() & 
+        {
+            return storage;
+        }
+
+        constexpr base_t const&
+        pstorage() const&
+        {
+            return storage;
+        }
+
+        constexpr base_t&&
+        pstorage() &&
+        {
+            return thodd::rvalue(storage);
+        }
+
+
     private:    
         template<
             typename ... oitems_t,
@@ -135,91 +156,115 @@ namespace thodd
         {
             return thodd::get<index_c>(this->storage);
         }
-    };
 
-
-
-    template<>
-    struct tuple<>
-    {
     public:
-        constexpr tuple() = default;
+        constexpr auto
+        apply(
+            auto&& __func)
+        -> decltype(auto)
+        {
+            return
+            thodd::apply(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func));
+        }
+
+        constexpr auto
+        apply(
+            auto&& __func) const
+        -> decltype(auto)
+        {
+            return
+            thodd::apply(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func));
+        }
+
+        constexpr auto
+        functional_apply(
+            auto&& __func,
+            auto&& ... __args)
+        -> decltype(auto)
+        {
+            return 
+            thodd::functional_apply(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func),
+                perfect<decltype(__args)>(__args)...);
+        }
+
+        constexpr auto
+        functional_apply(
+            auto&& __func,
+            auto&& ... __args) const
+        -> decltype(auto)
+        {
+            return 
+            thodd::functional_apply(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func),
+                perfect<decltype(__args)>(__args)...);
+        }
+
+
+        constexpr auto
+        foreach(
+            auto&& __func)
+        -> decltype(auto)
+        {
+            return 
+            thodd::foreach(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func));
+        }
+
+        constexpr auto
+        foreach(
+            auto&& __func) const
+        -> decltype(auto)
+        {
+            return 
+            thodd::foreach(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func));
+        }
+
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&& __other)
+        -> decltype(auto)
+        {
+            return 
+            thodd::foreach_join(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func), 
+                perfect<decltype(__other)>(__other));
+        }
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&& __other) const
+        -> decltype(auto)
+        {
+            return 
+            thodd::foreach_join(
+                this->pstorage(),
+                perfect<decltype(__func)>(__func), 
+                perfect<decltype(__other)>(__other));
+        }
     };
 
 
 
-
-    template<
-        size_t index_c,
-        typename ... items_t>
-    constexpr auto
-    get(
-        tuple<items_t...>& __tpl)
-    -> decltype(auto)
-    {
-        return 
-        thodd::get<index_c>(
-            __tpl.storage);
-    }
-
-
-    template<
-        size_t index_c,
-        typename ... items_t>
-    constexpr auto
-    get(
-        tuple<items_t...> const& __tpl)
-    -> decltype(auto)
-    {
-        return 
-        thodd::get<index_c>(
-            __tpl.storage);
-    }
-
-
-    template<
-        size_t index_c,
-        typename ... items_t>
-    constexpr auto
-    get(
-        tuple<items_t...>&& __tpl)
-    -> decltype(auto)
-    {
-        return 
-        thodd::get<index_c>(
-            thodd::rvalue(
-                __tpl.storage));
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    template<
-        typename type_t>
-    constexpr auto
-    is_tuple(
-        type_<type_t> const&)
-    {
-        return false;
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    is_tuple(
-        type_<tuple<items_t...>> const&)
-    {
-        return true;
-    }
+    // template<>
+    // struct tuple<>
+    // {
+    // public:
+    //     constexpr tuple() = default;
+    // };
 
 
     /// Tuple factory
@@ -426,186 +471,6 @@ namespace thodd
         return 
         tuple<litems_t..., ritems_t...>
         { thodd::rvalue(__ltuple.storage) + thodd::rvalue(__rtuple.storage) };
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    apply(
-        tuple<items_t...>& __tuple,
-        auto&& __func)
-    -> decltype(auto)
-    {
-        return 
-        thodd::apply(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    apply(
-        tuple<items_t...> const& __tuple,
-        auto&& __func)
-    -> decltype(auto)
-    {
-        return 
-        thodd::apply(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    apply(
-        tuple<items_t...>&& __tuple,
-        auto&& __func)
-    -> decltype(auto)
-    {
-        return 
-        thodd::apply(
-            thodd::rvalue(__tuple.storage), 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach(
-        tuple<items_t...>& __tuple,
-        auto&& __func)
-    {
-        thodd::foreach(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach(
-        tuple<items_t...> const& __tuple,
-        auto&& __func)
-    {
-        thodd::foreach(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach(
-        tuple<items_t...>&& __tuple,
-        auto&& __func)
-    {
-        thodd::foreach(
-            thodd::rvalue(__tuple.storage), 
-            perfect<decltype(__func)>(__func));
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    functional_apply(
-        tuple<items_t...>& __tuple,
-        auto&& __func,
-        auto&&... __args)
-    -> decltype(auto)
-    {
-        return         
-        thodd::functional_apply(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func), 
-            perfect<decltype(__args)>(__args)...);
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    functional_apply(
-        tuple<items_t...> const& __tuple,
-        auto&& __func,
-        auto&&... __args)
-    -> decltype(auto)
-    {
-        return         
-        thodd::functional_apply(
-            __tuple.storage, 
-            perfect<decltype(__func)>(__func), 
-            perfect<decltype(__args)>(__args)...);
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr auto
-    functional_apply(
-        tuple<items_t...>&& __tuple,
-        auto&& __func,
-        auto&&... __args)
-    -> decltype(auto)
-    {
-        return 
-        thodd::functional_apply(
-            thodd::rvalue(__tuple.storage), 
-            perfect<decltype(__func)>(__func), 
-            perfect<decltype(__args)>(__args)...);
-    }
-
-
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach_join(
-        tuple<items_t...>& __tuple,
-        auto&& __func,
-        auto&& __tuple1)
-    {
-       thodd::foreach_join(
-           __tuple.storage, 
-           perfect<decltype(__func)>(__func), 
-           perfect<decltype(__tuple1)>(__tuple1));
-    }
-
-     
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach_join(
-        tuple<items_t...> const& __tuple,
-        auto&& __func,
-        auto&& __tuple1)
-    {
-       thodd::foreach_join(
-           __tuple.storage, 
-           perfect<decltype(__func)>(__func), 
-           perfect<decltype(__tuple1)>(__tuple1));
-    }
-
-    
-    template<
-        typename ... items_t>
-    constexpr void
-    foreach_join(
-        tuple<items_t...>&& __tuple,
-        auto&& __func,
-        auto&& __tuple1)
-    {
-       thodd::foreach_join(
-           thodd::rvalue(__tuple.storage), 
-           perfect<decltype(__func)>(__func), 
-           perfect<decltype(__tuple1)>(__tuple1));
     }
 }
 
