@@ -69,18 +69,16 @@ namespace thodd
     using __next = typename type_t::next;
 
 
+  
 
     /// indexes represents
     /// a sequence of unsigned_t
     template<
-        unsigned_t... _indexes>
+        unsigned_t... indexes_c>
     struct indexes final
     {
-        using next = indexes<_indexes..., sizeof...(_indexes)>;
+        using next = indexes<indexes_c..., sizeof...(indexes_c)>;
     };
-
-
-
 
     namespace detail
     {
