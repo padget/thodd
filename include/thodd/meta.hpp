@@ -1,6 +1,8 @@
 #ifndef THODD_META_HPP_
 #  define THODD_META_HPP_
 
+#  include <thodd/meta_sequence.hpp>
+
 namespace thodd
 {
 
@@ -69,77 +71,14 @@ namespace thodd
     using __next = typename type_t::next;
 
 
-  
 
-    /// indexes represents
-    /// a sequence of unsigned_t
-    template<
-        unsigned_t... indexes_c>
-    struct indexes final
-    {
-        using next = indexes<indexes_c..., sizeof...(indexes_c)>;
-    };
-
-    namespace detail
-    {
-        /// returns a indexes
-        /// builded from 0
-        /// up to max - 1
-        template<
-            unsigned_t _max>
-        struct build_indexes final:
-            type_<__next<__type<build_indexes<_max - 1>>>> {};
-
-        /// 0 case for build_indexes
-        template<>
-        struct build_indexes<0> final:
-            type_<indexes<>> {};
-    }
-
-
-
-
-    /// shortcut for
-    /// build_indexes
-    template<
-        unsigned_t _max>
-    using make_indexes = typename detail::build_indexes<_max>::type;
-
-
-
-    namespace detail
-    {
-        /// build a reversed
-        /// indexes from
-        /// max - 1 to 0
-        template<
-            typename indexes_t>
-        struct build_rindexes;
-
-        /// expand indexes_c
-        /// into the reversed
-        /// structure
-        template<
-            unsigned_t... indexes_c>
-        struct build_rindexes<indexes<indexes_c...>>:
-                type_<indexes<(sizeof...(indexes_c) - 1 - indexes_c)...>> {};
-    }
-
-
-
-
-    /// shortcut for
-    /// build_rindexes
-    template<
-        unsigned_t max_c>
-    using make_rindexes = __type<detail::build_rindexes<make_indexes<max_c>>>;
 
     template<
         typename type_t,
         type_t _value>
     struct integral_constant:
-            type_<integral_constant<type_t, _value>>,
-            value_<type_t, _value> {};
+        type_<integral_constant<type_t, _value>>,
+        value_<type_t, _value> {};
 
 
     template<
@@ -245,64 +184,6 @@ namespace thodd
 
     namespace meta
     {
-        constexpr bool 
-        or_f()
-        {
-            return false;
-        }
-
-        constexpr bool
-        or_f(bool const& __v)
-        {
-            return __v;
-        }
-
-        template<
-            typename cond_t, 
-            typename ... conds_t>
-        constexpr bool
-        or_f(
-            cond_t const& __v,
-            conds_t const&... __vs)
-        {
-            return __v or or_f(__vs...);
-        }
-
-          template<
-            typename ... conds_t>
-        using or_ = ibool_<or_f(conds_t::value...)>;
-
-
-        constexpr bool 
-        and_f()
-        {
-            return true;
-        }
-
-        constexpr bool
-        and_f(
-            bool const& __v)
-        {
-            return __v;
-        }
-
-        template<
-            typename cond_t, 
-            typename ... conds_t>
-        constexpr bool
-        and_f(
-            cond_t const& __v,
-            conds_t const&... __vs)
-        {
-            return __v and and_f(__vs...);
-        }
-
-       
-        template<
-            typename ... conds_t>
-        using and_ = ibool_<and_f(conds_t::value...)>;
-
-
         constexpr bool
         not_f(
             bool const& __v)
