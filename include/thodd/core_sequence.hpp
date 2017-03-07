@@ -112,8 +112,6 @@ thodd
     }
 
 
-
-
     template<
         size_t ... indexes_c>
     constexpr auto 
@@ -208,8 +206,6 @@ thodd
     {
         return {};
     }
-
-    
 
 
     template<
