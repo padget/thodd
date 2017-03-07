@@ -345,84 +345,6 @@ namespace thodd
 
 
 
-            template<
-                typename tmp_t>
-            struct is_pointer : false_ {};
-
-            template<
-                typename tmp_t>
-            struct is_pointer<tmp_t*> : true_{};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_lvalue_reference:
-                    false_ {};
-
-            template<
-                typename type_t>
-            struct is_lvalue_reference<type_t&>:
-                    true_ {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_rvalue_reference:
-                    false_ {};
-
-            template<
-                typename type_t>
-            struct is_rvalue_reference<type_t&&>:
-                    true_ {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_member_object_pointer:
-                    false_ {};
-
-            template<
-                typename type_t,
-                typename class_t>
-            struct is_member_object_pointer<type_t class_t::*>:
-                    not_<is_function<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_member_function_pointer:
-                    false_ {};
-
-            template<
-                typename type_t,
-                typename class_t>
-            struct is_member_function_pointer<type_t class_t::*>:
-                    is_function<type_t> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_member_pointer:
-                    false_ {};
-
-            template<
-                typename type_t,
-                typename class_t>
-            struct is_member_pointer<type_t class_t::*>:
-                    true_ {};
-
-
-
 
             template<
                 typename type_t>
@@ -470,15 +392,6 @@ namespace thodd
                 typename type_t>
             struct is_compound:
                     not_<is_fundamental<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_reference:
-                    or_<is_lvalue_reference<type_t>,
-                        is_rvalue_reference<type_t>> {};
 
 
 
