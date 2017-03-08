@@ -2,20 +2,21 @@
 #  define __THODD_META_TRAITS_IS_FLOATING_POINT_HPP__
 
 #  include <thodd/meta/traits/is_same.hpp>
-#  include <thodd/core_or.hpp>
+#  include <thodd/meta/type.hpp>
 
 namespace 
 thodd::meta
 {
+    template<
+        typename type_t>
     constexpr auto
-    is_integral(
-       auto const& __ltype) 
+    is_floating_point(
+       type_<type_t> const& __ltype) 
     {
        return
-       thodd::or_(
-            is_same(__ltype, float{}),
-            is_same(__ltype, double{}),
-            is_same(__ltype, long double{}));
+       is_same(type_<type_t>{}, type_<float>{})
+       || is_same(type_<type_t>{}, type_<double>{})
+       || is_same(type_<type_t>{}, type_<long double>{});
     }
 }
 

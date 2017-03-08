@@ -1,14 +1,18 @@
 #ifndef __THODD_META_TRAITS_ADD_CV_HPP__
 #  define __THODD_META_TRAITS_ADD_CV_HPP__
 
+#  include <thodd/meta/type.hpp>
+
 namespace
 thodd::meta
 {
-    constexpr auto const volatile
-    add_cv(
-        auto __t)
+    template<
+        typename type_t const volatile>
+    constexpr auto
+    add_const(
+        type_<type_t> const&)
     {
-        return __t;
+        return {};
     }
 }
 

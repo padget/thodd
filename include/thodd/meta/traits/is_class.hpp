@@ -1,6 +1,7 @@
 #ifndef __THODD_META_TRAITS_IS_CLASS_HPP__
 #  define __THODD_META_TRAITS_IS_CLASS_HPP__
 
+#  include <thodd/meta/type.hpp>
 
 namespace 
 thodd::meta
@@ -9,7 +10,7 @@ thodd::meta
         typename type_t>
     constexpr auto
     is_class(
-       type_t const&) 
+       type_<type_t> const&) 
     {
         return
         __is_class(type_t);
