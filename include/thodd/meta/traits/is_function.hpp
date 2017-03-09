@@ -8,152 +8,276 @@ thodd::meta
 {
     template<
         typename type_t>
-    struct is_function:
-            false_ {};
+    constexpr auto 
+    is_function(
+        type_<type_t> const&)
+    {
+        return false;
+    }
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...)>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...)> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...)&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...)&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...)&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...)&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......)>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......)> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......)&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......)&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......)&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......)&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) volatile>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) volatile> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) volatile&>:
-            true_ {};
+    constexpr auto
+    is_function(
+        type_<res_t(args_t...) volatile&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) volatile&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) volatile&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) volatile>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) volatile> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) volatile&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) volatile&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) volatile &&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) volatile &&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const volatile>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const volatile> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const volatile&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const volatile&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t...) const volatile&&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t...) const volatile&&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const volatile>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const volatile> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const volatile&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const volatile&> const&)
+    {
+        return true;
+    }
+           
 
     template<
         typename res_t,
         typename ... args_t>
-    struct is_function<res_t(args_t......) const volatile &&>:
-            true_ {};
+    constexpr auto 
+    is_function(
+        type_<res_t(args_t......) const volatile &&> const&)
+    {
+        return true;
+    }
+           
 }
 
 #endif

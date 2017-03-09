@@ -1,16 +1,28 @@
 #ifndef __THODD_META_TRAITS_REMOVE_CONST_HPP__
-#  define __THODD_META_TRAITS_ADD_REMOVE_CONST_HPP__
+#  define __THODD_META_TRAITS_REMOVE_CONST_HPP__
 
 #  include <thodd/meta/type.hpp>
 
 namespace
 thodd::meta
 {
-    constexpr auto&
-    add_volatile(
-        auto __t)
+    template<
+        typename type_t>
+    constexpr type_<type_t>
+    remove_const(
+        type_<type_t const> const&)
     {
-        return __t;
+        return {};
+    }
+
+
+    template<
+        typename type_t>
+    constexpr type_<type_t>
+    remove_const(
+        type_<type_t> const&)
+    {
+        return {};
     }
 }
 

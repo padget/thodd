@@ -1,6 +1,6 @@
 g++ "-IF:\\project\\thodd\\include" -lstdc++ -O0 -g3 -Wall -c -fmessage-length=0 -std=c++17 -o "debug\\test\\meta_test.o" "test\\meta_test.cpp" 
-g++ -o "debug\\meta_test.exe" "debug\\test\\meta_test.o"
-debug\\meta_test.exe 
+REM g++ -o "debug\\meta_test.exe" "debug\\test\\meta_test.o"
+REM debug\\meta_test.exe 
 
 
 

@@ -11,9 +11,7 @@ thodd::meta
     template<
         typename type_t>
     struct type_
-    {
-        using type = type_t;
-    };
+    { using type = type_t; };
 }
 
 #endif

@@ -198,53 +198,6 @@ namespace thodd
 
 
 
-            template<
-                typename type_t>
-            struct is_arithmetic:
-                    or_<is_floating_point<type_t>,
-                        is_integral<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_fundamental:
-                    or_<is_arithmetic<type_t>,
-                        is_void<type_t>,
-                        is_null_ptr<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_scalar:
-                    or_<is_arithmetic<type_t>,
-                        is_enum<type_t>,
-                        is_pointer<type_t>,
-                        is_member_pointer<type_t>,
-                        is_null_ptr<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_object:
-                    or_<is_scalar<type_t>,
-                        is_array<type_t>,
-                        is_union<type_t>,
-                        is_class<type_t>> {};
-
-
-
-
-            template<
-                typename type_t>
-            struct is_compound:
-                    not_<is_fundamental<type_t>> {};
-
 
 
 

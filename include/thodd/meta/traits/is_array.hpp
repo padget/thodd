@@ -1,5 +1,5 @@
-#ifndef __THODD_META_TRAITS_ARRAY_HPP_
-#  define __THODD_META_TRAITS_ARRAY_HPP_
+#ifndef __THODD_META_TRAITS_IS_ARRAY_HPP_
+#  define __THODD_META_TRAITS_IS_ARRAY_HPP_
 
 #  include <thodd/meta/traits/is_same.hpp>
 #  include <thodd/meta/type.hpp>

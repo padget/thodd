@@ -9,7 +9,7 @@ thodd::meta
     template<
         typename type_t>
     constexpr auto 
-    is_member_function_pointer(
+    is_member_pointer(
         type_<type_t> const&)
     {
         return false;
@@ -19,7 +19,7 @@ thodd::meta
         typename type_t, 
         typename class_t>
     constexpr auto 
-    is_member_function_pointer(
+    is_member_pointer(
         type_<type_t class_t::*> const&) 
     {
         return true;

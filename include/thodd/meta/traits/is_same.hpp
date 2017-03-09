@@ -18,7 +18,7 @@ thodd::meta
     }
 
     template<
-        typename ltype_t>
+        typename type_t>
     constexpr auto 
     is_same(
         type_<type_t> const&,

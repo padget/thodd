@@ -7,8 +7,8 @@ namespace
 thodd::meta
 {
     template<
-        typename type_t const volatile>
-    constexpr auto
+        typename type_t>
+    constexpr type_<type_t const volatile>
     add_const(
         type_<type_t> const&)
     {
