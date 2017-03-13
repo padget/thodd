@@ -1,8 +1,11 @@
-#ifndef __THODD_META_SEQUENCE_HPP__
-#  define __THODD_META_SEQUENCE_HPP__
+#ifndef __THODD_CORE_SEQUENCE_HPP__
+#  define __THODD_CORE_SEQUENCE_HPP__
 
-#  include <thodd/core_expand.hpp>
-#  include <thodd/core_minmax.hpp>
+#  include <thodd/core/expand.hpp>
+#  include <thodd/core/minmax.hpp>
+#  include <thodd/core/size_t.hpp>
+
+// FIXME Unused size_t and do it more generics.
 
 namespace
 thodd
