@@ -34,6 +34,12 @@ thodd::meta
     {
         return {};
     }
+
+
+    template<
+        typename type_t>
+    using remove_reference_t = 
+        __type<decltype(remove_reference(type_<type_t>{}))>;
 }
 
 #endif

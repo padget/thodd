@@ -14,6 +14,13 @@ thodd::meta
     {
         return {};
     }
+
+
+    template<
+        typename type_t>
+    using add_rvalue_reference_t = 
+        __type<decltype(
+            add_rvalue_reference(type_<type_t>{}))>;
 }
 
 #endif
