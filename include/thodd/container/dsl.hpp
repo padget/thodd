@@ -1,11 +1,9 @@
 #ifndef __THODD_CONTAINER_DSL_HPP__
 #  define __THODD_CONTAINER_DSL_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/law.hpp>
 #  include <thodd/dsl.hpp>
 #  include <thodd/functional.hpp>
-#  include <thodd/container_func.hpp>
+#  include <thodd/container/functional.hpp>
 
 namespace thodd
 {
