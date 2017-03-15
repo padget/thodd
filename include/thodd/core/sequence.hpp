@@ -70,7 +70,7 @@ thodd::sequence_detail
     make_sequence(
         igral<type_t, min_c>, 
         igral<type_t, max_c>, 
-        sequence<index_c, nexts_c...>, 
+        sequence<type_t, index_c, nexts_c...>, 
         auto __step)
     {
         return 
@@ -87,7 +87,7 @@ thodd::sequence_detail
         type_t ... indexes_c>
     constexpr sequence<type_t, (sizeof(indexes_c) - 1 - indexes_c)...>
     simple_reverse_sequence(
-        sequence<type_tindexes_c...>)
+        sequence<type_t, indexes_c...>)
     {
         return {};
     }
@@ -98,36 +98,39 @@ namespace
 thodd
 {
     template<
-        size_t ... indexes_c>
+        typename type_t,
+        type_t ... indexes_c>
     constexpr auto 
     max(
-        sequence<indexes_c...>)
+        sequence<type_t, indexes_c...>)
     {
         return 
         thodd::max(
-            size_t{indexes_c}...);
+            indexes_c...);
     }
 
 
     template<
-        size_t ... indexes_c>
+        typename type_t,
+        type_t ... indexes_c>
     constexpr auto 
     min(
-        sequence<indexes_c...>)
+        sequence<type_t, indexes_c...>)
     {
         return 
         thodd::min(
-            size_t{indexes_c}...);
+            indexes_c...);
     }
 
 
     template<
-        size_t min_c, 
-        size_t max_c>
+        typename type_t,
+        type_t min_c, 
+        type_t max_c>
     constexpr auto 
     make_sequence(
-        lowerbound<min_c>, 
-        upperbound<max_c>,
+        igral<type_t, min_c>, 
+        igral<type_t, max_c>,
         auto __step)
     {
         static_assert(
@@ -138,84 +141,91 @@ thodd
         return 
         sequence_detail::
         make_sequence(
-            lowerbound<min_c>{}, 
-            upperbound<max_c>{},
-            sequence<min_c>{}, 
+            igral<type_t, min_c>{}, 
+            igral<type_t, max_c>{},
+            sequence<type_t, min_c>{}, 
             __step);
     }
 
 
     template<
-        size_t min_c, 
-        size_t max_c>
+        typename type_t,
+        type_t min_c, 
+        type_t max_c>
     constexpr auto 
     make_sequence(
-        lowerbound<min_c>, 
-        upperbound<max_c>)
+        igral<type_t, min_c>, 
+        igral<type_t, max_c>)
     {
         return 
         sequence_detail::
         make_sequence(
-            lowerbound<min_c>{}, 
-            upperbound<max_c>{},
-            sequence<min_c>{}, 
-            [] (auto __item) { return __item + 1; });
+            igral<type_t, min_c>{}, 
+            igral<type_t, max_c>{},
+            sequence<type_t, min_c>{}, 
+            [] (auto __item) 
+            { return __item + 1; });
     }
 
 
     template<
-        size_t max_c>
+        typename type_t, 
+        type_t max_c>
     constexpr auto 
     make_sequence(
-        upperbound<max_c>,
+        igral<type_t, max_c>,
         auto __step)
     {
         return 
         make_sequence(
-            lowerbound<0>{}, 
-            upperbound<max_c>{}, 
+            igral<type_t, 0>{}, 
+            igral<type_t, max_c>{}, 
             __step);
     }
 
 
     template<
-        size_t max_c>
+        typename type_t,
+        type_t max_c>
     constexpr auto 
     make_sequence(
-        upperbound<max_c>)
+        igral<type_t, max_c>)
     {
         return 
         make_sequence(
-            lowerbound<0>{}, 
-            upperbound<max_c>{}, 
-            [] (auto __item) { return __item + 1; });
+            igral<type_t, 0>{}, 
+            igral<type_t, max_c>{}, 
+            [] (auto __item) 
+            { return __item + 1; });
     }
 
 
     template<
-        size_t ... indexes_c, 
-        size_t ... items_c>
-    constexpr sequence<sequence_detail::at_c(sizeof(indexes_c) - 1 - indexes_c, size_t{items_c}...)...>
+        typename type_t,
+        type_t ... indexes_c, 
+        type_t ... items_c>
+    constexpr sequence<type_t, sequence_detail::at_c(sizeof(indexes_c) - 1 - indexes_c, items_c...)...>
     reverse_sequence(
-        sequence<items_c...>, 
-        sequence<indexes_c...>)
+        sequence<type_t, items_c...>, 
+        sequence<type_t, indexes_c...>)
     {
         return {};
     }
 
 
     template<
-        size_t ... indexes_c>
+        typename type_t,
+        type_t ... indexes_c>
     constexpr auto 
     reverse_sequence(
-        sequence<indexes_c...>)
+        sequence<type_t, indexes_c...>)
     {
         return 
         reverse_sequence(
-            sequence<indexes_c...>{}, 
+            sequence<type_t, indexes_c...>{}, 
             sequence_detail::simple_reverse_sequence(
                 make_sequence(
-                    upperbound<sizeof...(indexes_c) - 1>{})));
+                    igral<type_t, sizeof...(indexes_c) - 1>{})));
     }
 }
 

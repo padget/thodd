@@ -2,7 +2,7 @@
 #  define __THODD_META_VALUE_HPP__
 
 namespace 
-thodd
+thodd::meta
 {
     template<
         typename value_t,
@@ -13,7 +13,7 @@ thodd
         static constexpr value_t value{value_c};
 
         constexpr auto
-        operator()() const
+        operator () () const
         {
             return value;
         }
@@ -24,3 +24,5 @@ thodd
         typename type_t>
     using __value_type = typename type_t::value_type;
 }
+
+#endif

@@ -3,6 +3,8 @@
 
 #  include <thodd/core/expand.hpp>
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/meta/type.hpp>
+#  include <thodd/meta/traits/add_pointer.hpp>
 
 namespace 
 thodd
@@ -13,10 +15,11 @@ thodd
         auto const&... __indexes)
     -> decltype(auto)
     {
+        using namespace meta;
         using decayed_ptr_t = 
             __type<decltype(
-                meta::add_pointer(
-                    meta::decay(__type<decltype(__index)>{})))>;
+                add_pointer(
+                    decay(__type<decltype(__index)>{})))>;
 
         decayed_ptr_t __res{&__index};
         expand((__res = *__res < __indexes ? &__indexes : __res)...);
@@ -30,6 +33,7 @@ thodd
         auto&&... __indexes)
     -> decltype(auto)
     {
+        using namespace meta;
         using decayed_ptr_t = 
             __type<decltype(
                 meta::add_pointer(

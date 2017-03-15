@@ -3,6 +3,8 @@
 
 #  include <thodd/meta/value.hpp>
 #  include <thodd/meta/type.hpp> 
+#  include <thodd/core/size_t.hpp>
+
 namespace 
 thodd
 {
@@ -10,8 +12,8 @@ thodd
         typename type_t,
         type_t value_c>
     struct integral_constant:
-        type_<integral_constant<type_t, value_c>>,
-        value_<type_t, value_c> {};
+        meta::type_<integral_constant<type_t, value_c>>,
+        meta::value_<type_t, value_c> {};
 
 
     template<
@@ -86,9 +88,9 @@ thodd
         igral<unsigned long long, _ull>;
 
     /// Wrapper for unsigned_t
-    template<unsigned_t _s>
+    template<size_t _s>
     using isize_t_ =
-        igral<unsigned_t, _s>;
+        igral<size_t, _s>;
 
 
     using true_ = ibool_<true>;
