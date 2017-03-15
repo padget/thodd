@@ -15,6 +15,10 @@ thodd::meta
         return
         __is_enum(type_t);
     }
+
+    template<
+        typename type_t>
+    using is_enum_t = __type<decltype(is_enum(type_<type_t>{}))>;
 }
 
 #endif

@@ -9,7 +9,7 @@ thodd::meta
     template<
         typename type_t>
     constexpr auto
-    remove_const(
+    remove_all(
         type_<type_t> const&)
     {
         return 
@@ -18,6 +18,10 @@ thodd::meta
                 remove_pointer(
                     type_<type_t>)));
     }
+
+    template<
+        typename type_t>
+    using remove_all_t = __type<decltype(remove_all(type_<type_t>{}))>;
 }
 
 #endif

@@ -22,6 +22,10 @@ thodd::meta
        || is_union(type_<type_t>{})
        || is_class(type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_object_t = __type<decltype(is_object(type_<type_t>{}))>;
 }
 
 #endif

@@ -24,6 +24,11 @@ thodd::meta
     {
         return true;
     }
+
+
+    template<
+        typename type_t>
+    using is_array_t = __type<decltype(is_array(type_<type_t>{}))>;
 }
 
 #endif

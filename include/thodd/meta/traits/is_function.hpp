@@ -277,7 +277,11 @@ thodd::meta
     {
         return true;
     }
-           
+
+
+    template<
+        typename type_t>
+    using is_function_t = __type<decltype(is_function(type_<type_t>{}))>;      
 }
 
 #endif

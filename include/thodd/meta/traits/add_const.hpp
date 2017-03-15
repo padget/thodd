@@ -14,6 +14,11 @@ thodd::meta
     {
         return {};
     }
+
+
+    template<
+        typename type_t>
+    using add_const_t = __type<decltype(add_const(type_<type_t>{}))>;
 }
 
 #endif

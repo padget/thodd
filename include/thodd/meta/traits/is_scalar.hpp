@@ -24,6 +24,10 @@ thodd::meta
        || is_member_pointer(type_<type_t>{})
        || is_nullptr(type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_scalar_t = __type<decltype(is_scalar(type_<type_t>{}))>;
 }
 
 #endif

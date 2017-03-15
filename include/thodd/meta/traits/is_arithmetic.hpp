@@ -18,6 +18,10 @@ thodd::meta
         is_floating_point(type_<type_t>{})
         || is_integral(type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_arithmetic_t = __type<decltype(is_arithmetic(type_<type_t>{}))>;
 }
 
 #endif 

@@ -24,6 +24,11 @@ thodd::meta
     {
         return {};
     }
+
+
+    template<
+        typename type_t>
+    using remove_pointer_t = __type<decltype(remove_pointer(type_<type_t>{}))>;
 }
 
 #endif

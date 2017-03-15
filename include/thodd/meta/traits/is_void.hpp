@@ -18,6 +18,10 @@ thodd::meta
             type_<type_t>{}, 
             type_<void>{});
     }
+
+    template<
+        typename type_t>
+    using is_void_t = __type<decltype(is_void(type_<type_t>{}))>;
 }
 
 #endif

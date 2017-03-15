@@ -24,5 +24,9 @@ thodd::meta
     {
         return true;
     }
+
+    template<
+        typename type_t>
+    using is_member_pointer_t = __type<decltype(is_member_pointer(type_<type_t>{}))>;
 }
 #endif

@@ -19,6 +19,10 @@ thodd::meta
            base_t, 
            derived_t);
     }
+
+    template<
+        typename type_t>
+    using is_base_of_t = __type<decltype(is_base_of(type_<type_t>{}))>;
 }
 
 #endif

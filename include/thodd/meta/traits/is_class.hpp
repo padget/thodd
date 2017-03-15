@@ -15,6 +15,11 @@ thodd::meta
         return
         __is_class(type_t);
     }
+
+
+    template<
+        typename type_t>
+    using is_class_t = __type<decltype(is_class(type_<type_t>{}))>;
 }
 
 #endif

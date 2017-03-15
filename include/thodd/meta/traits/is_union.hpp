@@ -15,6 +15,10 @@ thodd::meta
         return
         __is_union(type_t);
     }
+
+    template<
+        typename type_t>
+    using is_union_t = __type<decltype(is_union(type_<type_t>{}))>;
 }
 
 #endif

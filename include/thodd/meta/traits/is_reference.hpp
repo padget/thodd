@@ -18,6 +18,10 @@ thodd::meta
         is_lvalue_reference(type_<type_t>{})
         || is_rvalue_reference(type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_reference_t = __type<decltype(is_reference(type_<type_t>{}))>;
 }
 
 #endif

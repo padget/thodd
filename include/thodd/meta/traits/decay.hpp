@@ -19,6 +19,11 @@ thodd::meta
             remove_cv(
                 type_<type_t>{}));
     }
+
+
+    template<
+        typename type_t>
+    using decay_t = __type<decltype(decay(type_<type_t>{}))>;
 }
 
 #endif

@@ -24,6 +24,10 @@ thodd::meta
     {
         return {};
     }
+
+    template<
+        typename type_t>
+    using remove_volatile_t = __type<decltype(remove_volatile(type_<type_t>{}))>;
 }
 
 #endif

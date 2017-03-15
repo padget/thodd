@@ -18,6 +18,11 @@ thodd::meta
            type_<type_t>{}, 
            type_<std::nullptr_t>{});
     }
+
+
+    template<
+        typename type_t>
+    using is_nullptr_t = __type<decltype(is_nullptr(type_<type_t>{}))>;
 }
 
 #endif

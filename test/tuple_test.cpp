@@ -1,7 +1,7 @@
 #include <iostream>
 #include <exception>
 
-#include <thodd/functional.hpp>
+#include <thodd/functional/functional.hpp>
 
 #include <thodd/tuple.hpp>
 #include <thodd/dynamic_tuple.hpp>

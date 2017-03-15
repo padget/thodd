@@ -26,6 +26,10 @@ thodd::meta
         is_function(
             type_<type_t class_t::*>{});
     }
+
+    template<
+        typename type_t>
+    using is_member_function_pointer_t = __type<decltype(is_member_function_pointer(type_<type_t>{}))>;
 }
 
 #endif

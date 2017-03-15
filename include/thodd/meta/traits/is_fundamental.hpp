@@ -20,6 +20,10 @@ thodd::meta
         || is_nullptr(type_<type_t>{})
         || is_void(type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_fundamental_t = __type<decltype(is_fundamental(type_<type_t>{}))>;
 }
 
 #endif

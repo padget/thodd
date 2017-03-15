@@ -15,6 +15,10 @@ thodd::meta
         return
         __is_empty(type_t);
     }
+
+    template<
+        typename type_t>
+    using is_empty_t = __type<decltype(is_empty(type_<type_t>{}))>;
 }
 
 #endif

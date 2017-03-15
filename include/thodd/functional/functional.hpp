@@ -8,9 +8,8 @@
 #ifndef THODD_FUNCTIONAL_HPP_
 #  define THODD_FUNCTIONAL_HPP_
 
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/tuple.hpp>
+#  include <thodd/functional/functional.hpp>
+#  include <thodd/tuple/tuple.hpp>
 #  include <iostream>
 
 namespace thodd

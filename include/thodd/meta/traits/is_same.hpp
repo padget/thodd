@@ -26,6 +26,10 @@ thodd::meta
     {
         return true;
     }
+
+    template<
+        typename type_t>
+    using is_samec_t = __type<decltype(is_same(type_<type_t>{}))>;
 }
 
 #endif

@@ -17,6 +17,10 @@ thodd::meta
         ! is_fundamental(
             type_<type_t>{});
     }
+
+    template<
+        typename type_t>
+    using is_compound_t = __type<decltype(is_compound(type_<type_t>{}))>;
 }
 
 #endif

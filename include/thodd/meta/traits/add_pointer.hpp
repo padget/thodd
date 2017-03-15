@@ -14,6 +14,10 @@ thodd::meta
     {
         return {};
     }
+
+    template<
+        typename type_t>
+    using add_pointer_t = __type<decltype(add_pointer(type_<type_t>{}))>;
 }
 
 #endif

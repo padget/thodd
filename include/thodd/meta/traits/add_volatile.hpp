@@ -14,6 +14,11 @@ thodd::meta
     {
         return {};
     }
+
+
+    template<
+        typename type_t>
+    using add_volatile_t = __type<decltype(add_volatile(type_<type_t>{}))>;
 }
 
 #endif

@@ -9,11 +9,15 @@ thodd::meta
     template<
         typename type_t>
     constexpr type_<type_t const volatile>
-    add_const(
+    add_cv(
         type_<type_t> const&)
     {
         return {};
     }
+
+    template<
+        typename type_t>
+    using add_cv_t = __type<decltype(add_cv(type_<type_t>{}))>;
 }
 
 #endif
