@@ -1,6 +1,8 @@
 #ifndef __THODD_TUPLE_FUNCTIONAL_HPP__
 #  define __THODD_TUPLE_FUNCTIONAL_HPP__
 
+#  include <thodd/core/perfect.hpp>
+
 namespace thodd
 {
     constexpr auto

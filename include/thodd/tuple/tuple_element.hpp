@@ -1,7 +1,8 @@
 #ifndef __THODD_TUPLE_ELEMENT_HPP__
 #  define __THODD_TUPLE_ELEMENT_HPP__
 
-#  include <thodd/law.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/core/rvalue.hpp>
 
 namespace thodd
 {
@@ -53,7 +54,7 @@ namespace thodd
         tuple_element<item_t, index_c>&& __pod)
     {
         return 
-        thodd::rvalue(__pod.item);
+        rvalue(__pod.item);
     }
 }
 

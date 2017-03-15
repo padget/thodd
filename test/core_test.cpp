@@ -3,6 +3,7 @@
 
 #include <thodd/core/rvalue.hpp>
 #include <thodd/core/perfect.hpp>
+#include <thodd/core/sequence.hpp>
 
 struct test
 {

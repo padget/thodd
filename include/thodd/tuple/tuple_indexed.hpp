@@ -3,8 +3,8 @@
 
 #  include <thodd/meta.hpp>
 #  include <thodd/law.hpp>
-#  include <thodd/tuple_element.hpp>
-#  include <thodd/tuple_functional.hpp>
+#  include <thodd/tuple/tuple_element.hpp>
+#  include <thodd/tuple/functional.hpp>
 
 /**
     template<

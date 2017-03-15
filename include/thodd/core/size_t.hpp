@@ -1,5 +1,5 @@
 #ifndef __THODD_CORE_SIZE_T_HPP__
-#  define
+#  define __THODD_CORE_SIZE_T_HPP__
 
 namespace 
 thodd 
