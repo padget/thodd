@@ -35,7 +35,7 @@ try
     using namespace thodd;
 
     test __t2{perfect(test{})};
-    foreach(reverse_sequence(make_sequence(iint_<12>{})), [](auto&& __item){ std::cout << __item; });   
+    foreach(reverse_sequence(make_sequence(iint_<-5>{}, iint_<12>{})), [](auto&& __item){ std::cout << __item; });   
 }
 catch (std::exception& e)
 {
