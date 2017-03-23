@@ -1,8 +1,6 @@
 #ifndef THODD_META_HPP_
 #  define THODD_META_HPP_
 
-#  include <thodd/meta_sequence.hpp>
-
 namespace thodd
 {
 

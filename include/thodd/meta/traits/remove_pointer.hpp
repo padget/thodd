@@ -9,7 +9,7 @@ thodd::meta
     template<
         typename type_t>
     constexpr type_<type_t>
-    remove_volatile(
+    remove_pointer(
         type_<type_t *> const&)
     {
         return {};
@@ -19,7 +19,7 @@ thodd::meta
     template<
         typename type_t>
     constexpr type_<type_t>
-    remove_volatile(
+    remove_pointer(
         type_<type_t> const&)
     {
         return {};

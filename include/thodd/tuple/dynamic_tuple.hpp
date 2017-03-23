@@ -1,10 +1,8 @@
 #ifndef __THODD_DYNAMIC_TUPLE_HPP__
 #  define __THODD_DYNAMIC_TUPLE_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/law.hpp>
-#  include <thodd/tuple.hpp>
-#  include <thodd/functional.hpp>
+#  include <thodd/tuple/tuple.hpp>
+#  include <thodd/functional/functional.hpp>
 
 namespace thodd
 {

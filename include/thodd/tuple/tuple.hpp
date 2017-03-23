@@ -1,10 +1,9 @@
 #ifndef __THODD_TUPLE_HPP__
 #  define __THODD_TUPLE_HPP__
 
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
+#  include <thodd/tuple/tuple_indexed.hpp>
 
-#  include <thodd/tuple_indexed.hpp>
+#  include <thodd/core/get.hpp>
 
 namespace thodd
 {

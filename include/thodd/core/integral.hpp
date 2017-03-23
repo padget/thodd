@@ -112,7 +112,6 @@ thodd
     constexpr auto iint_12 = iint_<12>{};
     constexpr auto iint_13 = iint_<13>{};
     constexpr auto iint_14 = iint_<14>{};
-
 }
 
 #endif

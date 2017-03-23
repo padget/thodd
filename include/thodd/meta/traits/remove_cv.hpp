@@ -11,7 +11,7 @@ thodd::meta
     template<
         typename type_t>
     constexpr auto
-    remove_volatile(
+    remove_cv(
         type_<type_t> const&)
     {
         return

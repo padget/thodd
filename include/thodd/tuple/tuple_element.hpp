@@ -18,7 +18,7 @@ namespace thodd
         explicit constexpr
         tuple_element(
             auto&& __oitem):
-            item{ perfect<decltype(__oitem)>(__oitem) } {}
+            item{ thodd::perfect<decltype(__oitem)>(__oitem) } {}
     };
 
 

@@ -1,24 +1,8 @@
 #ifndef __THODD_TUPLE_INDEXED_HPP__
 #  define __THODD_TUPLE_INDEXED_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/law.hpp>
 #  include <thodd/tuple/tuple_element.hpp>
 #  include <thodd/tuple/functional.hpp>
-
-/**
-    template<
-        size_t min_c, 
-        size_t max_c, 
-        size_t ... indexes_c, 
-        typename ... items_t>
-    constexpr auto
-    extract(tuple_indexed<indexes<indexes_c...>, items_t...> const& __t)
-    {
-        return make_tuple(thodd::get<min_c>(__t), ..., thodd::get<max_c>(__t));
-    }
-
-*/
 
 namespace thodd
 {

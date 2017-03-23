@@ -1,16 +1,9 @@
-/*
- * functional.hpp
- *
- *  Created on: 13 sept. 2016
- *      Author: Benjamin
- */
- 
 #ifndef THODD_FUNCTIONAL_HPP_
 #  define THODD_FUNCTIONAL_HPP_
 
-#  include <thodd/functional/functional.hpp>
-#  include <thodd/tuple/tuple.hpp>
-#  include <iostream>
+#  include <thodd/meta/traits/remove_all.hpp>
+#  include <thodd/meta/traits/remove_pointer.hpp>
+#  include <thodd/core/perfect.hpp>
 
 namespace thodd
 {
@@ -20,8 +13,8 @@ namespace thodd
         typename right_t>
     struct statements
     {
-        meta::remove_all<left_t> left;
-        meta::remove_all<right_t> right;
+        meta::remove_all_t<left_t> left;
+        meta::remove_all_t<right_t> right;
 
         template<
             typename ... args_t>
@@ -48,13 +41,11 @@ namespace thodd
     /// The only requirement is
     /// that base_t class has
     /// the ()(args_t&&...) method
-    template<
-        typename base_t>
-    constexpr functor<base_t>
+    constexpr auto
     as_functor(
-        base_t&& _base)
+        auto&& __base)
     {
-        return {perfect<base_t>(_base)};
+        return functor<decltype(__base)>{perfect<decltype(__base)>(__base)};
     }
 
 
@@ -68,7 +59,7 @@ namespace thodd
         typename base_t>
     struct functor
     {
-        meta::remove_all<base_t> base;
+        meta::remove_all_t<base_t> base;
 
         /// Main function of an
         /// actor. It takes some
@@ -79,9 +70,9 @@ namespace thodd
             typename ... args_t>
         constexpr decltype(auto)
         operator()(
-            args_t&&... _args) const
+            args_t&&... __args) const
         {
-            return base(perfect<args_t>(_args)...);
+            return base(perfect<args_t>(__args)...);
         }
 
 
@@ -174,12 +165,13 @@ namespace thodd
     always = 
         [] (auto&& __arg)
         {
-            return as_functor(
-            [__arg](auto&&... __args)
-            -> decltype(auto)
-            {
-                return __arg;
-            });
+            return 
+            as_functor(
+                [__arg] (auto&&... __args)
+                -> decltype(auto)
+                {
+                    return __arg;
+                });
         };
 
     extern constexpr auto 
