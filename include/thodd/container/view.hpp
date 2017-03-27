@@ -1,17 +1,7 @@
 #ifndef __THODD_CONTAINER_VIEW_HPP__
 #  define __THODD_CONTAINER_VIEW_HPP__
 
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/functional.hpp>
-#  include <thodd/require.hpp>
-
-#  include <thodd/container_iterator_traits.hpp>
-#  include <thodd/container_range.hpp>
-#  include <thodd/container_dsl.hpp>
-#  include <thodd/container_func.hpp>
-
-#  include <thodd/container_list.hpp>
+#  include <thodd/container/list.hpp>
 
 namespace thodd
 {
@@ -278,7 +268,7 @@ namespace thodd
     view(
         auto&& __container)
     {
-        using item_t = typename meta::decay<decltype(__container)>::value_type;
+        using item_t = typename meta::decay_t<decltype(__container)>::value_type;
 
         auto __begin = perfect<decltype(__container)>(__container).begin();
         auto __end   = perfect<decltype(__container)>(__container).end();

@@ -1,8 +1,10 @@
 #ifndef __THODD_DSL_HPP__
 #  define __THODD_DSL_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/tuple.hpp>
+#  include <thodd/tuple/tuple.hpp>
+#  include <thodd/core/get.hpp>
+#  include <thodd/core/expand.hpp>
+#  include <thodd/meta/traits/decay.hpp>
 
 namespace thodd
 {
@@ -128,7 +130,7 @@ namespace thodd
         dsl_expression<nodes_t...> const& __cdsl,
         dsl_node<node_t> const& __node)
     {
-        return dsl_expression<nodes_t..., meta::decay<node_t>>{__cdsl.nodes + make_tuple(__node.node)};
+        return dsl_expression<nodes_t..., meta::decay_t<node_t>>{__cdsl.nodes + make_tuple(__node.node)};
     }
 
     /// #(operator) >
@@ -154,7 +156,7 @@ namespace thodd
         dsl_node<node_t> const& __node, 
         dsl_expression<nodes_t...> const& __cdsl)
     {
-        return dsl_expression<meta::decay<node_t>, nodes_t...>{make_tuple(__node.node) + __cdsl.nodes};
+        return dsl_expression<meta::decay_t<node_t>, nodes_t...>{make_tuple(__node.node) + __cdsl.nodes};
     }
 
     /// #(operator) >
@@ -267,12 +269,12 @@ namespace thodd
                 size_t ... indexes_c>
             constexpr void 
             operator()(
-                indexes<indexes_c...> const&, 
+                sequence<size_t, indexes_c...> const&, 
                 dsl_expressions<expressions_t...> const& __dsls,
                 args_t&&... __args) const
             {
-                repeat{(go_launcher<dsl_t>{}(get<indexes_c>(__dsls), 
-                        perfect<args_t>(__args)...), 0)...};
+                expand((go_launcher<dsl_t>{}(get<indexes_c>(__dsls), 
+                        perfect<args_t>(__args)...), 0)...);
             }
 
 
@@ -303,7 +305,7 @@ namespace thodd
     make_node(
         funcs_t&&... __funcs)
     {
-        return dsl_node<node_t<meta::decay<funcs_t>...>>
+        return dsl_node<node_t<meta::decay_t<funcs_t>...>>
                 {{perfect<funcs_t>(__funcs)...}};
     }
 

@@ -1,13 +1,7 @@
 #ifndef __THODD_CONTAINER_MAP_HPP__
 #  define __THODD_CONTAINER_MAP_HPP__
 
-
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/functional.hpp>
-#  include <thodd/require.hpp>
-
-#  include <thodd/container_set.hpp>
+#  include <thodd/container/set.hpp>
 
 namespace thodd
 {

@@ -2,8 +2,9 @@
 #  define __THODD_CONTAINER_DSL_HPP__
 
 #  include <thodd/dsl.hpp>
-#  include <thodd/functional.hpp>
+#  include <thodd/functional/functional.hpp>
 #  include <thodd/container/functional.hpp>
+#  include <thodd/core/perfect.hpp>
 
 namespace thodd
 {

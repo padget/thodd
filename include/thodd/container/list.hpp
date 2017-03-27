@@ -2,15 +2,12 @@
 #ifndef __THODD_CONTAINER_LIST_HPP__
 #  define __THODD_CONTAINER_LIST_HPP__
 
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/functional.hpp>
+#  include <thodd/core/exception.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/container/range.hpp>
 #  include <thodd/require.hpp>
-
-#  include <thodd/container_iterator_traits.hpp>
-#  include <thodd/container_range.hpp>
-#  include <thodd/container_dsl.hpp>
-#  include <thodd/container_func.hpp>
+#  include <thodd/container/functional.hpp>
 
 namespace thodd
 {

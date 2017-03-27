@@ -8,7 +8,10 @@
 #ifndef THODD_REQUIRE_HPP_
 #  define THODD_REQUIRE_HPP_
 
-#  include <thodd/law.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/get.hpp>
+
 #  include <thodd/dsl.hpp>
 
 namespace thodd

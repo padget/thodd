@@ -1,9 +1,14 @@
 #ifndef __THODD_CONTAINER_RANGE_HPP__
 #  define __THODD_CONTAINER_RANGE_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/law.hpp>
-#  include <thodd/container_iterator_traits.hpp>
+#  include <thodd/container/iterator_traits.hpp>
+#  include <thodd/meta/value.hpp>
+
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/meta/traits/decay.hpp>
+
+#  include <initializer_list>
 
 namespace thodd
 {
@@ -17,7 +22,7 @@ namespace thodd
             iterator_t m_end;
 
             using iterator_type = iterator_t;
-            using value_type = __value_type<iterator_traits<iterator_t>>;
+            using value_type = meta::__value_type<iterator_traits<iterator_t>>;
 
         public:
             inline auto const
@@ -90,7 +95,7 @@ namespace thodd
         auto __end)
     {
         return detail::range<
-                meta::decay<decltype(__begin)>>
+                meta::decay_t<decltype(__begin)>>
                 {__begin, __end};
     }
 

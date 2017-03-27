@@ -3,7 +3,7 @@
 
 #  include <thodd/container/iterator_traits.hpp>
 #  include <thodd/container/dsl.hpp>
-#  include <thodd/container/func.hpp>
+#  include <thodd/container/functional.hpp>
 
 #  include <thodd/container/range.hpp>
 #  include <thodd/container/list.hpp>
