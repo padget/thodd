@@ -136,7 +136,7 @@ thodd
         static_assert(
             min_c <= max_c,
             "(min_c <= max_c) not" 
-            "respected for make_seqence");
+            "respected for make_sequence");
 
         return 
         sequence_detail::
@@ -199,6 +199,16 @@ thodd
             { return __item + 1; });
     }
 
+    
+    template<
+        typename type_t, 
+        type_t min_c,
+        type_t max_c>
+    using make_sequence_t = 
+        decltype(
+            make_sequence(
+                igral<type_t, min_c>{}, 
+                igral<type_t, max_c>{}));
 
     template<
         typename type_t,

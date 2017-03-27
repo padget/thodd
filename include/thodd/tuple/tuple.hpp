@@ -1,3 +1,4 @@
+
 #ifndef __THODD_TUPLE_HPP__
 #  define __THODD_TUPLE_HPP__
 
@@ -17,9 +18,11 @@ namespace thodd
         assign(
             left_t& _left,
             right_t&& _right,
-            indexes<indexes_c...>)
+            sequence<size_t, indexes_c...>)
         {
-            repeat{(thodd::get<indexes_c>(_left) = thodd::get<indexes_c>(perfect<right_t>(_right)), 0)... };
+            expand(
+                (thodd::get<indexes_c>(_left) = 
+                    thodd::get<indexes_c>(perfect<right_t>(_right)))...);
         }
     }
 
@@ -28,7 +31,7 @@ namespace thodd
         typename ... items_t>
     struct tuple
     {
-        using base_t = tuple_indexed<thodd::make_indexes<sizeof...(items_t)>, items_t...>;
+        using base_t = tuple_indexed<make_sequence_t<size_t, 0, sizeof...(items_t) - 1u>, items_t...>;
         base_t storage;
 
     private:
@@ -47,7 +50,8 @@ namespace thodd
         constexpr base_t&&
         pstorage() &&
         {
-            return thodd::rvalue(storage);
+            return 
+            thodd::rvalue(storage);
         }
 
 
@@ -58,7 +62,7 @@ namespace thodd
         explicit constexpr
         tuple(
             tuple<oitems_t...> const& __other,
-            indexes<indexes_c...>) :
+            sequence<size_t, indexes_c...>) :
             storage{ thodd::get<indexes_c>(__other.storage)... } {}
 
         template<
@@ -67,7 +71,7 @@ namespace thodd
         explicit constexpr
         tuple(
             tuple<oitems_t...>&& __other,
-            indexes<indexes_c...>) :
+            sequence<size_t, indexes_c...>) :
             storage{ thodd::rvalue(thodd::get<indexes_c>(__other.storage))... } {}
 
     public:
@@ -86,14 +90,14 @@ namespace thodd
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...> const& __other) :
-            tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
+            tuple{ __other, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}) } {}
 
 
         template<
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...>&& __other) :
-            tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
+            tuple{ __other, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}) } {}
 
 
         template<
@@ -110,7 +114,7 @@ namespace thodd
         operator = (
             tuple<oitems_t...> const& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
             return *this;
         }
 
@@ -121,7 +125,7 @@ namespace thodd
         operator = (
             tuple<oitems_t...>&& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
             return *this;
         }
 
@@ -132,7 +136,7 @@ namespace thodd
         operator = (
             tuple<oitems_t...>& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_indexes<sizeof...(items_t)>{});
+            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
             return *this;
         }
 
@@ -258,12 +262,12 @@ namespace thodd
 
 
 
-    // template<>
-    // struct tuple<>
-    // {
-    // public:
-    //     constexpr tuple() = default;
-    // };
+    template<>
+    struct tuple<>
+    {
+    public:
+        constexpr tuple() = default;
+    };
 
 
     /// Tuple factory

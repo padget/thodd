@@ -1,8 +1,9 @@
 #ifndef THODD_FUNCTIONAL_HPP_
 #  define THODD_FUNCTIONAL_HPP_
 
-#  include <thodd/meta/traits/remove_all.hpp>
 #  include <thodd/meta/traits/remove_pointer.hpp>
+#  include <thodd/meta/traits/decay.hpp>
+
 #  include <thodd/core/perfect.hpp>
 
 namespace thodd
@@ -13,8 +14,8 @@ namespace thodd
         typename right_t>
     struct statements
     {
-        meta::remove_all_t<left_t> left;
-        meta::remove_all_t<right_t> right;
+        meta::decay_t<left_t> left;
+        meta::decay_t<right_t> right;
 
         template<
             typename ... args_t>
@@ -59,7 +60,7 @@ namespace thodd
         typename base_t>
     struct functor
     {
-        meta::remove_all_t<base_t> base;
+        meta::decay_t<base_t> base;
 
         /// Main function of an
         /// actor. It takes some
@@ -96,19 +97,19 @@ namespace thodd
         template<
             typename obase_t>
         constexpr auto
-        operator=(
-            functor<obase_t> const& _other) const
+        operator = (
+            functor<obase_t> const& __other) const
         {
-            return as_functor(assignement<obase_t>{*this, _other});
+            return as_functor(assignement<obase_t>{*this, __other});
         }
 
         template<
             typename obase_t>
         constexpr auto
-        operator=(
-            functor<obase_t> && _other) const
+        operator = (
+            functor<obase_t> && __other) const
         {
-            return as_functor(assignement<obase_t>{*this, _other});
+            return as_functor(assignement<obase_t>{*this, __other});
         }
     };
 
@@ -450,7 +451,7 @@ namespace thodd
     as_statement(
         auto&& __builder)
     {
-        return statement<meta::decay<decltype(__builder)>>{__builder}; 
+        return statement<meta::decay_t<decltype(__builder)>>{__builder}; 
     }
 
     extern constexpr auto

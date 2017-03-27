@@ -1,8 +1,14 @@
 #ifndef __THODD_DYNAMIC_TUPLE_HPP__
 #  define __THODD_DYNAMIC_TUPLE_HPP__
 
+#  include <thodd/meta/traits/decay.hpp>
+
 #  include <thodd/tuple/tuple.hpp>
 #  include <thodd/functional/functional.hpp>
+
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+
 
 namespace thodd
 {
@@ -19,7 +25,7 @@ namespace thodd
             size_t ... indexes_c>
         dynamic_tuple(
             dynamic_tuple<oitems_t...>&& __other,
-            indexes<indexes_c...>) :
+            sequence<size_t, indexes_c...>) :
             base_t( (thodd::get<indexes_c>(thodd::rvalue(__other)) != nullptr ? 
                       new oitems_t{ thodd::rvalue(*thodd::get<indexes_c>(thodd::rvalue(__other))) } : 
                       (oitems_t*) nullptr)... ) {}
@@ -29,7 +35,7 @@ namespace thodd
             size_t ... indexes_c>
         dynamic_tuple(
             dynamic_tuple<oitems_t...> const& __other,
-            indexes<indexes_c...>) :
+            sequence<size_t, indexes_c...>) :
             base_t( (thodd::get<indexes_c>(__other) != nullptr ? 
                       new oitems_t{ *thodd::get<indexes_c>(__other) } : 
                       (oitems_t*) nullptr)... ) {}
@@ -51,7 +57,7 @@ namespace thodd
         explicit 
         dynamic_tuple(
 		    auto&&... __oitems) : 
-            base_t( new meta::decay<decltype(__oitems)>{ perfect<decltype(__oitems)>(__oitems) }... ) {}
+            base_t( new meta::decay_t<decltype(__oitems)>{ perfect<decltype(__oitems)>(__oitems) }... ) {}
     
     
     public:
@@ -59,14 +65,14 @@ namespace thodd
             typename ... oitems_t>
         dynamic_tuple(
             dynamic_tuple<oitems_t...> const& __other) :
-            dynamic_tuple( __other, make_indexes<sizeof...(oitems_t)>{} ) {}
+            dynamic_tuple( __other, make_sequence_t<size_t, 0u, sizeof...(oitems_t) - 1u>{} ) {}
 
 
         template<
             typename ... oitems_t>
         dynamic_tuple(
             dynamic_tuple<oitems_t...>&& __other) :
-            dynamic_tuple( thodd::rvalue(__other), make_indexes<sizeof...(oitems_t)>{} ) {}
+            dynamic_tuple( thodd::rvalue(__other), make_sequence_t<size_t,  0u, sizeof...(oitems_t) - 1u>{} ) {}
 
 
         template<
@@ -113,7 +119,7 @@ namespace thodd
         typename type_t>
     constexpr auto 
     is_dynamic_tuple(
-        type_<type_t> const&)
+        meta::type_<type_t> const&)
     {
         return false;
     }
@@ -123,7 +129,7 @@ namespace thodd
         typename ... items_t>
     constexpr auto
     is_dynamic_tuple(
-        type_<dynamic_tuple<items_t...>> const&)
+        meta::type_<dynamic_tuple<items_t...>> const&)
     {
         return true;
     }
@@ -134,7 +140,7 @@ namespace thodd
         auto&&... __items)
     {
         return 
-        dynamic_tuple<meta::decay<decltype(__items)>...>
+        dynamic_tuple<meta::decay_t<decltype(__items)>...>
         { perfect<decltype(__items)>(__items)... };
     }
 }

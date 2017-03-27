@@ -1,5 +1,6 @@
 #include <iostream>
 #include <exception>
+#include <utility>
 
 #include <thodd/core/rvalue.hpp>
 #include <thodd/core/perfect.hpp>
@@ -34,8 +35,14 @@ try
 {
     using namespace thodd;
 
-    test __t2{perfect(test{})};
-    foreach(reverse_sequence(make_sequence(iint_<-5>{}, iint_<12>{})), [](auto&& __item){ std::cout << __item; });   
+    test __t2{rvalue(test())};
+    test __t3{__t2};
+    foreach(
+        reverse_sequence(
+            make_sequence(
+                iint_<-5>{}, 
+                iint_<12>{})), 
+                [](auto&& __item){ std::cout << __item << std::endl; });   
 }
 catch (std::exception& e)
 {
