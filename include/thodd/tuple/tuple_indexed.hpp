@@ -17,6 +17,12 @@ namespace thodd
 
 
     template<
+        size_t max_c>
+    using make_indexes = 
+        thodd::make_sequence_t<size_t, 0u, max_c - 1u>;
+
+
+    template<
         size_t ... indexes_c,
         typename ... items_t>
     struct tuple_indexed<sequence<size_t, indexes_c...>, items_t...>:
@@ -153,10 +159,9 @@ namespace thodd
             tuple_indexed<sequence<size_t, oindexes_c...>, oitems_t...> const& __other) const &
         {
             using indexes_t = 
-                make_sequence_t<
-                    size_t, 0u,
+                make_indexes<
                     sizeof...(items_t) 
-                    + sizeof...(oitems_t) - 1u>;
+                    + sizeof...(oitems_t)>;
 
             return 
             tuple_indexed<indexes_t, items_t..., oitems_t...>
@@ -173,10 +178,9 @@ namespace thodd
             tuple_indexed<sequence<size_t, oindexes_c...>, oitems_t...>&& __other) const &
         {
             using indexes_t = 
-                make_sequence_t<
-                    size_t, 0u,
+                make_indexes<
                     sizeof...(items_t) 
-                    + sizeof...(oitems_t) - 1u>;
+                    + sizeof...(oitems_t)>;
 
             return 
             tuple_indexed<indexes_t, items_t..., oitems_t...>
@@ -193,10 +197,9 @@ namespace thodd
             tuple_indexed<sequence<size_t, oindexes_c...>, oitems_t...> const& __other) &&
         {
             using indexes_t = 
-                make_sequence_t<
-                    size_t, 0u,
+                make_indexes<
                     sizeof...(items_t) 
-                    + sizeof...(oitems_t) - 1u>;
+                    + sizeof...(oitems_t)>;
 
             return 
             tuple_indexed<indexes_t, items_t..., oitems_t...>
@@ -213,10 +216,9 @@ namespace thodd
             tuple_indexed<sequence<size_t, oindexes_c...>, oitems_t...> && __other) &&
         {
             using indexes_t = 
-                make_sequence_t<
-                    size_t, 0u,
+                make_indexes<
                     sizeof...(items_t) 
-                    + sizeof...(oitems_t) - 1u>;
+                    + sizeof...(oitems_t)>;
 
             return 
             tuple_indexed<indexes_t, items_t..., oitems_t...>

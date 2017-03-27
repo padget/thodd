@@ -31,7 +31,7 @@ namespace thodd
         typename ... items_t>
     struct tuple
     {
-        using base_t = tuple_indexed<make_sequence_t<size_t, 0, sizeof...(items_t) - 1u>, items_t...>;
+        using base_t = tuple_indexed<make_indexes<sizeof...(items_t)>, items_t...>;
         base_t storage;
 
     private:
@@ -90,14 +90,14 @@ namespace thodd
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...> const& __other) :
-            tuple{ __other, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}) } {}
+            tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
 
 
         template<
             typename ... oitems_t>
         constexpr tuple(
             tuple<oitems_t...>&& __other) :
-            tuple{ __other, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}) } {}
+            tuple{ __other, make_indexes<sizeof...(items_t)>{} } {}
 
 
         template<
@@ -114,7 +114,10 @@ namespace thodd
         operator = (
             tuple<oitems_t...> const& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
+            tuple_algorithm::assign(
+                this->storage, 
+                __other.storage, 
+                make_indexes<sizeof...(items_t)>{});
             return *this;
         }
 
@@ -125,7 +128,10 @@ namespace thodd
         operator = (
             tuple<oitems_t...>&& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
+            tuple_algorithm::assign(
+                this->storage, 
+                __other.storage, 
+                make_indexes<sizeof...(items_t)>{});
             return *this;
         }
 
@@ -136,7 +142,10 @@ namespace thodd
         operator = (
             tuple<oitems_t...>& __other)
         {
-            tuple_algorithm::assign(this->storage, __other.storage, make_sequence(isize_t_<sizeof...(items_t) - 1u>{}));
+            tuple_algorithm::assign(
+                this->storage, 
+                __other.storage, 
+                make_indexes<sizeof...(items_t)>{});
             return *this;
         }
 
@@ -292,7 +301,8 @@ namespace thodd
     tie(
         items_t&... __items)
     {
-        return {__items...};
+        return 
+        {__items...};
     }
 
 
@@ -328,7 +338,9 @@ namespace thodd
         };
     }
 
-    constexpr auto tuple_size = detail::tuple_size_impl{};
+    extern 
+    constexpr auto 
+    tuple_size = detail::tuple_size_impl{};
 
 
      /// Operator== that compare
@@ -360,8 +372,7 @@ namespace thodd
         != __tuple2.storage ;
     }
 
-    /// Operator< that compare
-    /// two tuples
+
     template<
         typename ... items1_t,
         typename ... items2_t>
@@ -376,7 +387,6 @@ namespace thodd
     }
 
 
-    /// Operator<= that compare
     template<
         typename ... items1_t,
         typename ... items2_t>
@@ -391,7 +401,6 @@ namespace thodd
     }
 
 
-    /// Operator<= that compare
     template<
         typename ... items1_t,
         typename ... items2_t>
@@ -406,7 +415,6 @@ namespace thodd
     }
 
 
-    /// Operator<= that compare
     template<
         typename ... items1_t,
         typename ... items2_t>
