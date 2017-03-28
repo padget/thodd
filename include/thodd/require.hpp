@@ -12,7 +12,7 @@
 #  include <thodd/core/rvalue.hpp>
 #  include <thodd/core/get.hpp>
 
-#  include <thodd/dsl.hpp>
+#  include <thodd/core/dsl.hpp>
 
 namespace thodd
 {
