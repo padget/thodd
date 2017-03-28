@@ -27,7 +27,7 @@ foreach(
 {
     using namespace thodd;
 
-    expand((__func(indexes_t), 0)...);
+    expand{((__func(indexes_t), 0)...};
 }
 
 int main()
@@ -37,6 +37,7 @@ try
 
     test __t2{rvalue(test())};
     test __t3{__t2};
+    
     foreach(
         reverse_sequence(
             make_sequence(

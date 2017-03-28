@@ -1,7 +1,7 @@
 #ifndef __THODD_VARIANT_HPP__
 #  define __THODD_VARIANT_HPP__
 
-#  include <thodd/law.hpp>
+#  include <thodd/core/expand.hpp>
 #  include <thodd/meta.hpp>
 #  include <thodd/pointers.hpp>
 
@@ -19,7 +19,7 @@ namespace thodd
         pack_t<type_t, types_t...> const&)
     {
         size_t __biggest{sizeof(type_t)};
-        repeat{(__biggest = (sizeof(types_t) > __biggest ? sizeof(types_t) : __biggest), 0)...};
+        expand{((__biggest = (sizeof(types_t) > __biggest ? sizeof(types_t) : __biggest)), 0)...};
 
         return __biggest;
     }

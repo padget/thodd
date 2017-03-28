@@ -62,7 +62,6 @@ namespace thodd
          foreach_join(
             perfect<decltype(__func)>(__func),
             perfect<decltype(__tuple1)>(__tuple1));
-
     }
 
 

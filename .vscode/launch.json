@@ -6,7 +6,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/debug/lang_test.exe",
+            "program": "${workspaceRoot}/debug/tuple_test.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -21,7 +21,7 @@
             "name": "C++ Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "${workspaceRoot}/debug/thodd.exe",
+            "program": "${workspaceRoot}/debug/tuple_test.exe",
             "processId": "${command.pickProcess}",
             "linux": {
                 "MIMode": "gdb",

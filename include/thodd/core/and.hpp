@@ -5,14 +5,14 @@ namespace
 thodd
 {
     constexpr bool 
-    and_()
+    and_c()
     {
         return true;
     }
 
 
     constexpr auto
-    and_(
+    and_c(
         auto&& __v)
     {
         return 
@@ -21,13 +21,13 @@ thodd
 
 
     constexpr auto
-    and_(
+    and_c(
         auto&& __v,
         auto&&... __vs)
     {
         return 
          static_cast<decltype(__v)>(__v) 
-         && and_( static_cast<decltype(__vs)>(__vs)...);
+         && and_c( static_cast<decltype(__vs)>(__vs)...);
     }
 }
 

@@ -237,6 +237,18 @@ thodd
                 make_sequence(
                     igral<type_t, sizeof...(indexes_c) - 1>{})));
     }
+
+
+    template<
+        typename type_t, 
+        type_t min_c,
+        type_t max_c>
+    using make_rsequence_t = 
+        decltype(
+            reverse_sequence(
+                make_sequence(
+                    igral<type_t, min_c>{}, 
+                    igral<type_t, max_c>{})));
 }
 
 #endif  

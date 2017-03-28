@@ -6,6 +6,8 @@
 
 #  include <thodd/core/get.hpp>
 
+#  include <thodd/meta/traits/decay.hpp>
+
 namespace thodd
 {
     namespace tuple_algorithm
@@ -20,9 +22,9 @@ namespace thodd
             right_t&& _right,
             sequence<size_t, indexes_c...>)
         {
-            expand(
-                (thodd::get<indexes_c>(_left) = 
-                    thodd::get<indexes_c>(perfect<right_t>(_right)))...);
+            expand{
+                ((thodd::get<indexes_c>(_left) = 
+                    thodd::get<indexes_c>(perfect<right_t>(_right))), 0)...};
         }
     }
 
@@ -170,6 +172,39 @@ namespace thodd
         }
 
     public:
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() &
+        {
+            return 
+            thodd::extract<min_c, max_c>(this->storage);
+        }
+
+
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() const &
+        {
+            return 
+            thodd::extract<min_c, max_c>(this->storage);
+        }
+
+
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() &&
+        {
+            return 
+            thodd::extract<min_c, max_c>(this->storage);
+        }
+
+
         constexpr auto
         apply(
             auto&& __func)
@@ -287,8 +322,8 @@ namespace thodd
         items_t&&... __items)
     {
         return
-        tuple<items_t...>{
-            perfect<items_t>(__items)...};
+        tuple<meta::decay_t<items_t>...>
+        { perfect<items_t>(__items)... };
     }
 
 
@@ -302,7 +337,7 @@ namespace thodd
         items_t&... __items)
     {
         return 
-        {__items...};
+        { __items... };
     }
 
 

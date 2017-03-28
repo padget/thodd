@@ -7,6 +7,8 @@
 #  include <thodd/core/sequence.hpp>
 #  include <thodd/core/expand.hpp>
 #  include <thodd/core/get.hpp>
+#  include <thodd/core/integral.hpp>
+#  include <thodd/core/and.hpp>
 
 namespace thodd
 {
@@ -19,7 +21,7 @@ namespace thodd
     template<
         size_t max_c>
     using make_indexes = 
-        thodd::make_sequence_t<size_t, 0u, max_c - 1u>;
+        thodd::make_rsequence_t<size_t, 0u, max_c - 1u>;
 
 
     template<
@@ -69,7 +71,9 @@ namespace thodd
             { const_cast<tuple_indexed<items_t...> const&>(__other) } {}        
 
 
+
     public:
+        
         template<
             typename ... oitems_t>
         constexpr bool
@@ -80,9 +84,9 @@ namespace thodd
                 return true;
 
             bool __res{true};
-            expand(
-                (__res &= thodd::get<indexes_c>(*this) 
-                       == thodd::get<indexes_c>(__other))...);
+            expand{
+                ((__res &= thodd::get<indexes_c>(*this) 
+                       == thodd::get<indexes_c>(__other)), 0)...};
             
             return __res;
         }
@@ -109,9 +113,9 @@ namespace thodd
                 return false;
 
             bool __res{true};
-            expand( 
-                (__res &= thodd::get<indexes_c>(*this) 
-                        < thodd::get<indexes_c>(__other))...);
+            expand{ 
+                ((__res &= thodd::get<indexes_c>(*this) 
+                        < thodd::get<indexes_c>(__other)), 0)...};
             
             return __res;
         }
@@ -228,6 +232,76 @@ namespace thodd
 
 
     public:
+        template<
+            size_t ... oindexes_c>
+        constexpr auto 
+        extract(
+            sequence<size_t, oindexes_c...>) const
+        {
+            static_assert(
+                sizeof...(oindexes_c) <= sizeof...(items_t), 
+                "The size of the extracted set of items can't "
+                "be bigger than the number items in the origin");
+
+
+            static_assert(
+                and_c((oindexes_c < sizeof...(items_t))...),
+                "Each index must be inferior than the max " 
+                "index of the container");
+            
+
+            constexpr 
+            tuple_indexed<
+                make_indexes<
+                    sizeof...(indexes_c)>, 
+                meta::type_<items_t>...> __types; 
+         
+            return
+            tuple_indexed<
+                make_indexes<sizeof...(oindexes_c)>, 
+                meta::__type<
+                    meta::decay_t<
+                        decltype(thodd::get<oindexes_c>(__types))>>...>
+            { thodd::get<oindexes_c>(*this)... };
+        }
+
+
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() &
+        {
+            return 
+            extract(
+                make_rsequence_t<size_t, min_c, max_c>{});
+        }
+
+
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() const &
+        {
+            return 
+            extract(
+                make_rsequence_t<size_t, min_c, max_c>{});
+        }
+
+
+        template<
+            size_t min_c, 
+            size_t max_c>
+        constexpr auto 
+        extract() &&
+        {
+            return 
+            extract(
+                make_rsequence_t<size_t, min_c, max_c>{});
+        }
+
+
         constexpr auto
         apply(
             auto&& __func) &
@@ -305,8 +379,8 @@ namespace thodd
             auto&& __func) &
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
-                thodd::get<indexes_c>(*this)), 0)...);
+            expand{(perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this)), 0)...};
         }
 
 
@@ -315,8 +389,8 @@ namespace thodd
             auto&& __func) const &
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
-                thodd::get<indexes_c>(*this)), 0)...);
+            expand{(perfect<decltype(__func)>(__func)(
+                thodd::get<indexes_c>(*this)), 0)...};
         }
 
         
@@ -325,9 +399,9 @@ namespace thodd
             auto&& __func) &&
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
+            expand{(perfect<decltype(__func)>(__func)(
                 thodd::rvalue(
-                    thodd::get<indexes_c>(*this))), 0)...);
+                    thodd::get<indexes_c>(*this))), 0)...};
         }
 
 
@@ -337,10 +411,10 @@ namespace thodd
             auto&& __other) &
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
+            expand{(perfect<decltype(__func)>(__func)(
                 thodd::get<indexes_c>(*this),
                 thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...);
+                    perfect<decltype(__other)>(__other))), 0)...};
         }
 
 
@@ -350,10 +424,10 @@ namespace thodd
             auto&& __other) const &
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
+            expand{(perfect<decltype(__func)>(__func)(
                 thodd::get<indexes_c>(*this),
                 thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...);
+                    perfect<decltype(__other)>(__other))), 0)...};
         }
 
 
@@ -363,10 +437,10 @@ namespace thodd
             auto&& __other) &&
         -> decltype(auto)
         {
-            expand((perfect<decltype(__func)>(__func)(
+            expand{(perfect<decltype(__func)>(__func)(
                 thodd::rvalue(thodd::get<indexes_c>(*this)),
                 thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...);
+                    perfect<decltype(__other)>(__other))), 0)...};
         }
     };
 }

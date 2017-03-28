@@ -273,8 +273,8 @@ namespace thodd
                 dsl_expressions<expressions_t...> const& __dsls,
                 args_t&&... __args) const
             {
-                expand((go_launcher<dsl_t>{}(get<indexes_c>(__dsls), 
-                        perfect<args_t>(__args)...), 0)...);
+                expand{(go_launcher<dsl_t>{}(get<indexes_c>(__dsls), 
+                        perfect<args_t>(__args)...), 0)...};
             }
 
 

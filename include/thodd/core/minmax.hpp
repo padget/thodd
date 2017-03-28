@@ -22,7 +22,7 @@ thodd
                     decay(__type<decltype(__index)>{})))>;
 
         decayed_ptr_t __res{&__index};
-        expand((__res = *__res < __indexes ? &__indexes : __res)...);
+        expand{((__res = *__res < __indexes ? &__indexes : __res), 0)...};
         return *__res;
     }
 
@@ -40,7 +40,7 @@ thodd
                     meta::decay(__type<decltype(__index)>{})))>;
 
         decayed_ptr_t __res{&__index};
-        expand((__res = *__res < __indexes ? __res : &__indexes)...);
+        expand{((__res = *__res < __indexes ? __res : &__indexes), 0)...};
         return *__res;
     }
 }
