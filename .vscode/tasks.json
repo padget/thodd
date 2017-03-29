@@ -4,11 +4,38 @@
     "version": "0.1.0",
     "tasks": [
         {
+            "taskName": "build meta",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/meta_test"
+            ],
+            "isShellCommand": true
+        },
+        {
             "taskName": "build container",
             "command": "${workspaceRoot}/make.bat",
             "args": [
                 "${workspaceRoot}",
                 "test/container_test"
+            ],
+            "isShellCommand": true
+        },
+        {
+            "taskName": "build tuple",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/tuple_test"
+            ],
+            "isShellCommand": true
+        },
+        {
+            "taskName": "build lang",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/lang_test"
             ],
             "isShellCommand": true
         },

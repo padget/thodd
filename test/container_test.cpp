@@ -3,6 +3,7 @@
 
 
 #include <thodd/container/list.hpp>
+#include <thodd/container/view.hpp>
 
 class something
 {

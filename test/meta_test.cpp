@@ -26,6 +26,8 @@
 #include <thodd/meta/traits/is_union.hpp>
 #include <thodd/meta/traits/is_void.hpp>
 
+#include <thodd/meta/traits/decay.hpp>
+
 using namespace thodd::meta;
 
 static_assert(is_array(type_<int[]>{}));
@@ -75,4 +77,6 @@ static_assert(!is_nullptr(type_<int>{}));
 static_assert(is_pointer(type_<int*>{}));
 static_assert(!is_pointer(type_<int>{}));
 
+static_assert(is_same(decay(type_<int const &&>{}), type_<int>{}));
 
+main() {}

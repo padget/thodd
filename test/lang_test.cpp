@@ -59,6 +59,7 @@ print_token(
     thodd::lang::some_token<params_t...> const& __token, 
     auto&& __offset)
 {
+    std::cout << "some_token" << std::endl;
     if(static_cast<bool>(__token)) 
     {    
         std::cout << __offset << "|--> : ";
@@ -104,7 +105,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"1116546545646"};
+    std::string __input{"123"};
     auto const __end = __input.end();
    
     constexpr auto 
@@ -112,18 +113,18 @@ try
         make_word(__digit)
         [
             ([](auto const& __token)
-        {
-            auto __unit = 1u;
-            long long __res{0};
-
-            for(auto&& __c : __token)
             {
-                __res += (__c - '0') * __unit;
-                __unit *= 10;
-            }
+                auto __unit = 1u;
+                long long __res{0};
 
-            return __res;
-        })];
+                for(auto&& __c : __token)
+                {
+                    __res += (__c - '0') * __unit;
+                    __unit *= 10;
+                }
+
+                return __res;
+            })];
 
     constexpr auto __ds_word = __d_word >> __d_word >> *__d_word;
     
@@ -132,6 +133,9 @@ try
     auto __token = matches(__ds_word, __begin, __end);
 
     std::cout << std::boolalpha << (bool) __token << std::endl;
+
+    auto __t = make_tuple(1,2,3);
+    thodd::foreach(__t, cout_ << $0 << endl_);
 
     
    // list<long long> __var = interpret(__ds_word, __token);

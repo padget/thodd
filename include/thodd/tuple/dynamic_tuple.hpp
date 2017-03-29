@@ -65,14 +65,14 @@ namespace thodd
             typename ... oitems_t>
         dynamic_tuple(
             dynamic_tuple<oitems_t...> const& __other) :
-            dynamic_tuple( __other, make_sequence_t<size_t, 0u, sizeof...(oitems_t) - 1u>{} ) {}
+            dynamic_tuple( __other, make_rsequence_t<size_t, 0u, sizeof...(oitems_t) - 1u>{} ) {}
 
 
         template<
             typename ... oitems_t>
         dynamic_tuple(
             dynamic_tuple<oitems_t...>&& __other) :
-            dynamic_tuple( thodd::rvalue(__other), make_sequence_t<size_t,  0u, sizeof...(oitems_t) - 1u>{} ) {}
+            dynamic_tuple( thodd::rvalue(__other), make_rsequence_t<size_t,  0u, sizeof...(oitems_t) - 1u>{} ) {}
 
 
         template<

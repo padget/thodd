@@ -3,6 +3,10 @@
 
 #  include <thodd/tuple/tuple.hpp>
 
+#  include <thodd/core/between.hpp>
+
+#  include <thodd/container/list.hpp>
+
 #  include <thodd/lang/core.hpp>
 #  include <thodd/lang/regex.hpp>
 #  include <thodd/lang/word.hpp> 
@@ -33,7 +37,7 @@ thodd::lang
         auto&& __something)
     {
         return 
-        some<meta::decay<decltype(__something)>>
+        some<meta::decay_t<decltype(__something)>>
         {perfect<decltype(__something)>(__something)};
     }
 
@@ -126,7 +130,7 @@ thodd::lang
         size_t const& __min, 
         size_t const& __max)
     {
-        using iterator_t = meta::decay<decltype(__begin)>;
+        using iterator_t = meta::decay_t<decltype(__begin)>;
 
         return 
         some_token<iterator_t, subtoken_t>
@@ -149,7 +153,7 @@ thodd::lang
         size_t const& __min, 
         size_t const& __max)
     {
-        using iterator_t = meta::decay<decltype(__begin)>;
+        using iterator_t = meta::decay_t<decltype(__begin)>;
 
         return 
         some_token<iterator_t, subtoken_t>
@@ -194,7 +198,7 @@ thodd::lang
         auto const& __end)
     {     
         using subtoken_t = 
-            meta::decay<
+            meta::decay_t<
             decltype(
                 matches(
                     __some.algo.something, 
@@ -249,7 +253,7 @@ thodd::lang
                             __some.algo.something, 
                             *__tree.subbegin()));
 
-        list<meta::decay<target_t>> __lst;
+        list<meta::decay_t<target_t>> __lst;
 
         for(auto const& __tk : __tree.subranges)
             thodd::push_back(__lst, thodd::rvalue(interpret(__some.algo.something, __tk)));

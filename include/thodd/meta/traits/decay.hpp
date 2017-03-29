@@ -15,8 +15,8 @@ thodd::meta
         type_<type_t> const&)
     {
         return 
-        remove_reference(
-            remove_cv(
+        remove_cv(
+            remove_reference(
                 type_<type_t>{}));
     }
 

@@ -7,6 +7,9 @@
 #  include <thodd/meta/traits/decay.hpp>
 #  include <thodd/meta/traits/remove_pointer.hpp>
 #  include <thodd/core/declval.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/sequence.hpp>
+#  include <thodd/core/infinity.hpp>
 
 #  include <thodd/lang/core.hpp>
 #  include <thodd/lang/regex.hpp>
@@ -195,7 +198,9 @@ namespace thodd::lang
         thodd::foreach_join(
             __follow.algo.algos,
             [&__continue, &__save, &__cursor, &__end] 
-            (auto&& __case, auto& __subrange)
+            (
+                auto&& __case, 
+                auto& __subrange)
             {
                 using case_t = decltype(__case);
                 using subrange_t = 
@@ -236,7 +241,7 @@ namespace thodd::lang
     interpret(
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree, 
-        indexes<indexes_c...> const&)
+        sequence<size_t, indexes_c...> const&)
     {
         return 
         thodd::make_tuple(
