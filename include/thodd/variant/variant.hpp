@@ -15,7 +15,9 @@ namespace thodd
     ///         type with the 
     ///         largest memory footprint 
     template<   
-        template<typename...> typename pack_t,
+        template<
+            typename...> 
+        typename pack_t,
         typename type_t, 
         typename ... types_t>
     constexpr size_t
@@ -132,7 +134,10 @@ namespace thodd
         wtype_t const&
         get() const
         {
-            return dynamic_cast<holder<wtype_t> const*>(holded.get())->data;
+            return 
+            dynamic_cast<
+                holder<wtype_t> const*>
+            (holded.get())->data;
         }
 
 
@@ -144,7 +149,10 @@ namespace thodd
             if(!holded)
                 holded.reset(new holder<wtype_t>(wtype_t()));
 
-            return dynamic_cast<holder<wtype_t>*>(holded.get())->data;
+            return 
+            dynamic_cast<
+                holder<wtype_t>*>
+            (holded.get())->data;
         }
     };
 }
