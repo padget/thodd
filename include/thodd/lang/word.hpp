@@ -1,10 +1,14 @@
 #ifndef __THODD_LANG_WORD_HPP__
 #  define __THODD_LANG_WORD_HPP__
 
-#  include <thodd/functional.hpp>
+#  include <thodd/functional/functional.hpp>
 
-#  include <thodd/lang_core.hpp>
-#  include <thodd/lang_regex.hpp>
+#  include <thodd/core/exception.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/meta/traits/decay.hpp>
+
+#  include <thodd/lang/core.hpp>
+#  include <thodd/lang/regex.hpp>
 
 namespace thodd::lang
 {
@@ -39,7 +43,7 @@ namespace thodd::lang
             auto&& __caster) const
         -> decltype(auto)
         {
-            using ocaster_t = meta::decay<decltype(__caster)>;
+            using ocaster_t = meta::decay_t<decltype(__caster)>;
 
             return 
             word<algo_t, ocaster_t>
@@ -54,7 +58,7 @@ namespace thodd::lang
         using algo_t = decltype(__algo);
 
         return 
-        word<meta::decay<algo_t>>
+        word<meta::decay_t<algo_t>>
         { perfect<algo_t>(__algo) };
     }
 

@@ -1,11 +1,11 @@
 #ifndef __THODD_LANG_REGEX_HPP__
 #  define __THODD_LANG_REGEX_HPP__
 
-#  include <thodd/law.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/containers.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/meta/traits/decay.hpp>
 
-namespace thodd::lang
+namespace 
+thodd::lang
 {
     template<
         typename algo_t>
@@ -14,11 +14,13 @@ namespace thodd::lang
         algo_t algo;
 
         constexpr auto
-        operator() (
+        operator () (
             auto&&... __params) const 
         -> decltype(auto)
         {
-            return regex{algo(perfect<decltype(__params)>(__params)...)};
+            return 
+            regex
+            { algo(perfect<decltype(__params)>(__params)...) };
         }
     };
 
@@ -28,8 +30,8 @@ namespace thodd::lang
         auto&& __algo)
     {
         return 
-        regex<meta::decay<decltype(__algo)>>
-        {perfect<decltype(__algo)>(__algo)};
+        regex<meta::decay_t<decltype(__algo)>>
+        { perfect<decltype(__algo)>(__algo) };
     }
 
 
@@ -43,7 +45,7 @@ namespace thodd::lang
     {
         auto __res = false;
         
-        if(__cursor != __end)
+        if (__cursor != __end)
             __res = __regex.algo(__cursor, __end);
 
         return __res;

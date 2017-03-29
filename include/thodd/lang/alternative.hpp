@@ -1,13 +1,12 @@
 #ifndef __THODD_LANG_ALTERNATIVE_HPP__
 #  define __THODD_LANG_ALTERNATIVE_HPP__
 
-#  include <thodd/tuple.hpp>
-#  include <thodd/law.hpp>
+#  include <thodd/tuple/tuple.hpp>
 #  include <thodd/variant.hpp>
 
-#  include <thodd/lang_core.hpp>
-#  include <thodd/lang_regex.hpp>
-#  include <thodd/lang_word.hpp> 
+#  include <thodd/lang/core.hpp>
+#  include <thodd/lang/regex.hpp>
+#  include <thodd/lang/word.hpp> 
 
 namespace thodd::lang
 {

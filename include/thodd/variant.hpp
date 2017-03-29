@@ -2,8 +2,6 @@
 #  define __THODD_VARIANT_HPP__
 
 #  include <thodd/core/expand.hpp>
-#  include <thodd/meta.hpp>
-#  include <thodd/pointers.hpp>
 
 namespace thodd
 {
@@ -11,7 +9,7 @@ namespace thodd
     ///         type with the 
     ///         largest memory footprint 
     template<   
-        template<typename...> class pack_t,
+        template<typename...> typename pack_t,
         typename type_t, 
         typename ... types_t>
     constexpr size_t
@@ -19,7 +17,7 @@ namespace thodd
         pack_t<type_t, types_t...> const&)
     {
         size_t __biggest{sizeof(type_t)};
-        expand{((__biggest = (sizeof(types_t) > __biggest ? sizeof(types_t) : __biggest)), 0)...};
+        expand{ ((__biggest = (sizeof(types_t) > __biggest ? sizeof(types_t) : __biggest)), 0)... };
 
         return __biggest;
     }
@@ -34,12 +32,20 @@ namespace thodd
 
         operator type_t&()
         {
-            return dynamic_cast<variant_t*>(this)->template get<type_t>();
+            return 
+            dynamic_cast<
+                variant_t*>
+            (this)->template 
+            get<type_t>();
         }
 
         operator type_t const&() const
         {
-            return dynamic_cast<variant_t const*>(this)->template get<type_t const>();
+            return 
+            dynamic_cast<
+                variant_t const*>
+            (this)->template 
+            get<type_t const>();
         }
     };
 

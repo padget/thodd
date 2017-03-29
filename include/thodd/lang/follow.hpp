@@ -1,14 +1,16 @@
 #ifndef __THODD_LANG_FOLLOW_HPP__
 #  define __THODD_LANG_FOLLOW_HPP__
 
-#  include <thodd/tuple.hpp>
-#  include <thodd/dynamic_tuple.hpp>
-#  include <thodd/law.hpp>
-#  include <thodd/variant.hpp>
+#  include <thodd/tuple/tuple.hpp>
+#  include <thodd/tuple/dynamic_tuple.hpp>
 
-#  include <thodd/lang_core.hpp>
-#  include <thodd/lang_regex.hpp>
-#  include <thodd/lang_word.hpp> 
+#  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/meta/traits/remove_pointer.hpp>
+#  include <thodd/core/declval.hpp>
+
+#  include <thodd/lang/core.hpp>
+#  include <thodd/lang/regex.hpp>
+#  include <thodd/lang/word.hpp> 
 
 namespace thodd::lang
 {
@@ -26,7 +28,7 @@ namespace thodd::lang
         tuple<algos_t...> const& __algos)
     {
         return 
-        follow<meta::decay<algos_t>...>
+        follow<meta::decay_t<algos_t>...>
         {__algos};
     }
 
@@ -128,7 +130,7 @@ namespace thodd::lang
     {
         return 
         follow_token<
-            meta::decay<decltype(__begin)>, 
+            meta::decay_t<decltype(__begin)>, 
             subtokens_t...>
         { { decltype(__begin)(__begin), 
             decltype(__end)(__end) }, 
@@ -180,7 +182,7 @@ namespace thodd::lang
     {   
         using subranges_t = 
             thodd::dynamic_tuple<
-                meta::decay<
+                meta::decay_t<
                     decltype(
                         matches(
                             declval<word<cases_t, casters_t>>(), 
@@ -197,8 +199,8 @@ namespace thodd::lang
             {
                 using case_t = decltype(__case);
                 using subrange_t = 
-                    meta::remove_pointer<
-                        meta::decay<decltype(__subrange)>>;
+                    meta::remove_pointer_t<
+                        meta::decay_t<decltype(__subrange)>>;
 
                 if(__continue)
                 {
@@ -252,8 +254,8 @@ namespace thodd::lang
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree)
     {
-        /*tuple<meta::decay<
-            decltype(interpret(thodd::declval<word<algos_t,  casters_t>>(), 
+        /*tuple<meta::decay_t<
+            decltype(interpret(declval<word<algos_t,  casters_t>>(), 
                      __tree))>...> __tpl;
 
         auto __subtree_it = __tree.sub_begin(); 

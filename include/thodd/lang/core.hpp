@@ -1,10 +1,12 @@
 #ifndef __THODD_LANG_CORE_HPP__
 #  define __THODD_LANG_CORE_HPP__
 
-#  include <thodd/meta.hpp>
-#  include <thodd/containers.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/container/range.hpp>
 
-namespace thodd::lang
+namespace 
+thodd::lang
 {
     /// Basic token with
     /// no special information
@@ -60,7 +62,7 @@ namespace thodd::lang
         auto&& __begin,
         auto&& __end)
     {
-        using iterator_t = meta::decay<decltype(__begin)>;
+        using iterator_t = meta::decay_t<decltype(__begin)>;
 
         return
         basic_token<iterator_t>

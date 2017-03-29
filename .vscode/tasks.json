@@ -1,0 +1,26 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "build container",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/container_test"
+            ],
+            "isShellCommand": true
+        },
+        {
+            "taskName": "clean",
+            "command": "rm",
+            "args": [
+                "-rf",
+                "${workspaceRoot}/debug/**/*.exe",
+                "${workspaceRoot}/debug/**/*.o"
+            ],
+            "isShellCommand": true
+        }
+    ]
+}
