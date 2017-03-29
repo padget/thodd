@@ -2,6 +2,12 @@
 #  define __THODD_VARIANT_HPP__
 
 #  include <thodd/core/expand.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+
+#  include <thodd/pointer/shared.hpp>
+
+#  include <thodd/variant/variant_caster.hpp>
 
 namespace thodd
 {
@@ -21,50 +27,6 @@ namespace thodd
 
         return __biggest;
     }
-
-
-    template<
-        typename type_t, 
-        typename variant_t>
-    struct variant_caster_item
-    {
-        virtual ~variant_caster_item() = default;
-
-        operator type_t&()
-        {
-            return 
-            dynamic_cast<
-                variant_t*>
-            (this)->template 
-            get<type_t>();
-        }
-
-        operator type_t const&() const
-        {
-            return 
-            dynamic_cast<
-                variant_t const*>
-            (this)->template 
-            get<type_t const>();
-        }
-    };
-
-
-    template<
-        typename variant_t, 
-        typename items_t>
-    struct variant_caster;
-
-
-    template<
-        typename variant_t, 
-        template<typename ...> typename pack_t,
-        typename ... items_t>
-    struct variant_caster<variant_t, pack_t<items_t...>>:
-        public variant_caster_item<items_t, variant_t>...
-    {
-        virtual ~variant_caster() = default;
-    };
 
 
     /// #struct variant
