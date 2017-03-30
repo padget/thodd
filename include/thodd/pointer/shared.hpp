@@ -1,7 +1,7 @@
 #ifndef __THODD_POINTER_SHARED_HPP__
 #  define __THODD_POINTER_SHARED_HPP__
 
-#  include <thodd/pointer_handler.hpp>
+#  include <thodd/pointer/handler.hpp>
 
 namespace thodd
 {

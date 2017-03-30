@@ -1,9 +1,13 @@
 #ifndef __THODD_POINTER_HANDLER_HPP__
 #  define __THODD_POINTER_HANDLER_HPP__
 
-#  include <thodd/law.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/core/exception.hpp>
+#  include <thodd/core/destroy.hpp>
+
 #  include <thodd/require.hpp>
-#  include <thodd/functional.hpp>
+#  include <thodd/functional/functional.hpp>
 
 namespace thodd
 {

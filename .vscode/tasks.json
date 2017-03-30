@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "tasks": [
         {
-            "taskName": "build meta",
+            "taskName": "build_meta",
             "command": "${workspaceRoot}/make.bat",
             "args": [
                 "${workspaceRoot}",
@@ -13,7 +13,7 @@
             "isShellCommand": true
         },
         {
-            "taskName": "build container",
+            "taskName": "build_container",
             "command": "${workspaceRoot}/make.bat",
             "args": [
                 "${workspaceRoot}",
@@ -22,7 +22,7 @@
             "isShellCommand": true
         },
         {
-            "taskName": "build tuple",
+            "taskName": "build_tuple",
             "command": "${workspaceRoot}/make.bat",
             "args": [
                 "${workspaceRoot}",
@@ -31,11 +31,20 @@
             "isShellCommand": true
         },
         {
-            "taskName": "build lang",
+            "taskName": "build_lang",
             "command": "${workspaceRoot}/make.bat",
             "args": [
                 "${workspaceRoot}",
                 "test/lang_test"
+            ],
+            "isShellCommand": true
+        },
+        {
+            "taskName": "build_variant",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/variant_test"
             ],
             "isShellCommand": true
         },

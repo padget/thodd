@@ -5,6 +5,8 @@
 #  include <thodd/core/rvalue.hpp>
 #  include <thodd/core/perfect.hpp>
 
+#  include <thodd/meta/pack/transfer.hpp>
+
 #  include <thodd/pointer/shared.hpp>
 
 #  include <thodd/variant/variant_caster.hpp>
