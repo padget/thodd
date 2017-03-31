@@ -5,14 +5,14 @@ namespace
 thodd
 {
     constexpr auto 
-    or_()
+    or_c()
     {
         return false;
     }
     
 
     constexpr auto
-    or_(
+    or_c(
         auto&& __v)
     {
         return __v;
@@ -20,13 +20,13 @@ thodd
 
 
     constexpr auto
-    or_(
+    or_c(
         auto&& __v,
         auto&&... __vs)
     {
         return 
         static_cast<decltype(__v)>(__v)  
-        || or_(static_cast<decltype(__vs)>(__vs)...);
+        || or_c(static_cast<decltype(__vs)>(__vs)...);
     }
 
 }

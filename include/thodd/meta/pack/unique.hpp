@@ -28,18 +28,20 @@ thodd::meta
         typename ... types_t>
     constexpr auto
     unique(
-        pack_t<type_t, types_t...> const)
+        pack_t<type_t, types_t...> const&)
     {
         return 
         concat(
-            if_(
-                contains(
-                    pack_t<types_t...>{}, 
-                    type_<type_t>{}),
-                pack_t<>{}, 
-                pack_t<type_t>{}), 
+            if_<contains(pack_t<types_t...>{}, type_<type_t>{})> (pack_t<>{}, pack_t<type_t>{}), 
             unique(pack_t<types_t...>{}));
     }
+
+
+    template<
+        typename pack_t>
+    using unique_t = 
+        decltype(
+            unique(pack_t{})); 
 }
 
 #endif

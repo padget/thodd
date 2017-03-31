@@ -81,47 +81,45 @@ Là comme ça, on se demande quel est l'intérêt des pointeurs... En fait, les 
 sont utilisés dans un premier temps pour conserver un moyen d'accès pour toutes instances
 initilisées sur le tas (cf. tas vs pile) : 
 
-<exemple>
-scope
-{
-    varnameptrs : @type_t = null;
 
-    scope1
+    scope
     {
-        varnameptrs1 : @type_t = new ... ;
-        varnameptrs = varnameptrs1; /// Les deux pointeurs pointent vers la même instance du tas
+        varnameptrs : @type_t = null;
+
+        scope1
+        {
+            varnameptrs1 : @type_t = new ... ;
+            varnameptrs = varnameptrs1; /// Les deux pointeurs pointent vers la même instance du tas
+        }
+
+        varnameptrs; /// pointe toujours sur l'instance initialisée dans scope1
+                    /// (une initialisation sur le tas ne dépend pas du scope).
+
+        delete varnameptrs; /// Destruction manuelle du pointeur et de l'instance pointée.   
+                            /// Si pas de destruction manuelle, alors il y aura fuite de mémoire 
+                            /// car il n'y aura plus de pointeur sur l'instance.
     }
 
-    varnameptrs; /// pointe toujours sur l'instance initialisée dans scope1
-                 /// (une initialisation sur le tas ne dépend pas du scope).
-
-    delete varnameptrs; /// Destruction manuelle du pointeur et de l'instance pointée.   
-                        /// Si pas de destruction manuelle, alors il y aura fuite de mémoire 
-                        /// car il n'y aura plus de pointeur sur l'instance.
-}
 
 Pour les pointeurs scopés, il n'y a pas de destruction manuelle à effectuer. 
 En revanche, un seul pointeur scopé peut pointer à un instant t sur l'instance du tas (via new).
 Un pointeur scopé ne peut pas pointer vers une instance dans la pile (non initilisée avec new).
 
-</exemple>
 
-<exemple>
-scope
-{
-    varnameptrs : (@)type_t = null;
-
-    scope1
+    scope
     {
-        varnameptrs1 : (@)type_t = new ... ;
-        varnameptrs = varnameptrs1; /// Il y a transfert de propriété de varnameptrs1 vers varnameptr.
-                                    /// varnameptrs1 vaut donc null. 
-    }
+        varnameptrs : (@)type_t = null;
 
-    varnameptrs ; /// possède la valeur de varnameptrs1 (transfert de scope)
-} /// Destruction de varnameptrs et donc de l'instance pointée également (à cause de la nature scopée du pointeur).
+        scope1
+        {
+            varnameptrs1 : (@)type_t = new ... ;
+            varnameptrs = varnameptrs1; /// Il y a transfert de propriété de varnameptrs1 vers varnameptr.
+                                        /// varnameptrs1 vaut donc null. 
+        }
 
-<exemple>
+        varnameptrs ; /// possède la valeur de varnameptrs1 (transfert de scope)
+    } /// Destruction de varnameptrs et donc de l'instance pointée également (à cause de la nature scopée du pointeur).
+
 
 L'utilisation d'un pointeur se fait donc principalement quand il y a nécessité de 
 transférer une instance d'un scope à l'autre (que ce soit de manière montante ou descendante).
@@ -130,11 +128,11 @@ transférer une instance d'un scope à l'autre (que ce soit de manière montante
 
 Les références sont en tout et pour tout de simple alias sur des instances. 
 
-<exemple>
-varname : type_t = ...;
-varnameref : #type_t = varname;
-varnameptr++ ; /// varname et varnameref on la même valeur incrémenté.
-</exemple>
+
+    varname : type_t = ...;
+    varnameref : #type_t = varname;
+    varnameptr++ ; /// varname et varnameref on la même valeur incrémenté.
+
 
 
 
@@ -144,45 +142,41 @@ varnameptr++ ; /// varname et varnameref on la même valeur incrémenté.
 
 Les POD permettent la composition de type au sein d'une même structure :
 
-<exemple>
 
-pod name_age: /// déclaration d'un pod
-{ 
-    name : string; /// string sera développé ultérieurement
-    age  : uint;
-};
+    pod name_age: /// déclaration d'un pod
+    { 
+        name : string; /// string sera développé ultérieurement
+        age  : uint;
+    };
 
-</exemple>
 
 ## Ensemble
 
 La notion d'ensemble permet de définir une ou plusieurs restriction sur un type donné :
 
-<exemple>
-age : {a : uint | 0 < a && a < 150}; /// age est l'ensemble des objets a de type uint tel que a est compris entre 0 et 150.
-                                     /// On définit donc ainsi un ensemble d'objet par restriction conditionnelle sur un ensemble plus vaste.
-</exemple>
+
+    age : {a : uint | 0 < a && a < 150}; /// age est l'ensemble des objets a de type uint tel que a est compris entre 0 et 150.
+                                        /// On définit donc ainsi un ensemble d'objet par restriction conditionnelle sur un ensemble plus vaste.
+
 
 Formellement on définit un ensemble de la manière suivante :
-<grammar>
 
-<name> ':' '{' <instance_name> ':' <type> '|' <expression> '}' /// <expression> doit être sémantiquement booléenne  
 
-</grammar>
+    <name> ':' '{' <instance_name> ':' <type> '|' <expression> '}' /// <expression> doit être sémantiquement booléenne  
+
+
 
 Un ensemble se définit donc comme un sous ensemble contraint par une expression booléenne d'un autre ensemble plus vaste.
 Cette expression booléenne sera vérifié à chaque initialisation/affectation de valeur à la variable de type_t (type_t étant le nom de l'ensemble défini) :
 
-<exemple>
-type_t : {o : other_t | expression_on_other_t(o) } ; /// expression_on_other_t(o) renvois doit renvoyer une valeur booléenne   
 
-t : type_t = ... /// ... est la valeur affecté à t et doit vérifier la contrainte expression_on_other_t(...) 
-                 /// sinon l'affectation ne peut avoir lieu et une erreur est levée (cf gestion des erreurs).
+    type_t : {o : other_t | expression_on_other_t(o) } ; /// expression_on_other_t(o) renvois doit renvoyer une valeur booléenne   
 
-t = ... /// affectation d'une autre valeur, de même que pour l'initialisation, la nouvelle valeur doit passer la contrainte
-        /// avant de pouvoir être affectée à t.
+    t : type_t = ... /// ... est la valeur affecté à t et doit vérifier la contrainte expression_on_other_t(...) 
+                    /// sinon l'affectation ne peut avoir lieu et une erreur est levée (cf gestion des erreurs).
 
-</exemple>
+    t = ... /// affectation d'une autre valeur, de même que pour l'initialisation, la nouvelle valeur doit passer la contrainte
+            /// avant de pouvoir être affectée à t.
 
 
 ## Instantiation d'un type_t
@@ -192,11 +186,9 @@ il nous faut nous intéresser à leur utilisation de base : l'instantiation.
 Instancier un type signifie déclarer une variable capable de contenir les valeurs de ce type.
 Formellement, l'instantiation se déroule de la façon suivante :
 
-<grammar>
 
-<name> ':' <type> ('=' <expression>) ? ';' 
+    <name> ':' <type> ('=' <expression>) ? ';' 
 
-</grammar>
 
 on a donc une variable '<name>' de type '<type>' avec éventuellement la valeur '<expression>'. L'expression '<expression>' doit 
 compatible avec '<type>' (de même type ou bien convertible).
@@ -219,8 +211,13 @@ Une allocation dynamique se fait par l'utilisation de l'allocateur 'new' et la d
 Pour éviter toute fuite de mémoire, il y aura donc intérêt à conserver en permanence un pointeur vers la valeur qui a été allouée
 dynamiquement pour que le moment venu, sa désallocation puisse se faire. Autrement, la zone mémoire correspondante serait perdue...
 
-<grammar>
+
     <name> ':' '@'<type> = 'new' <type2> '(' <arguments> ')' ';' /// Allocation dynamique
     <name> ':' <type> = <expression> ';' /// allocation statique  
     'delete' <name> ';' /// désallocation dynamique 
-</grammar>
+
+
+
+# Pense bête
+
+Le modèle de gestion de la mémoire pourrait être non pas basé sur un garbage collector automatique qui épargne à l'utilisateur toute préoccupation de la mémoire, mais plutôt sur un système semi automatique qui repose sur ce que va décider le développeur sur la manière dont il va modéliser ces données. Je ne veux pas de pointeur mais des références de différentes natures qui vont déterminer si la donnée référencée sera scopée ou non. En gros, je souhaite que le développeur se responsabilise et tienne compte du cycle de vie de ces données dans la mémoire afin de rendre celle-ci optimale (un Garbage Collector est souvent moins efficace qu'un humain sur ce point). Il n'y aura pas d'appel à un quelconque destructeur mais plus la définition du scope (contexte d'existence utile) de la donnée afin de détruire celle-ci automatiquement dès que le scope est invalidé. Ainsi n'est conservé en mémoire que ce qui est vraiment utilisé à un instant t et on s'épargne un thread qui se charge de collecter les références obsolètes et donc les détruires à ce moment là. 

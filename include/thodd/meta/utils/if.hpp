@@ -10,13 +10,13 @@ thodd::meta
         typename else_t>
     constexpr auto 
     if_( 
-        type_<then_t> const&, 
-        type_<else_t> const&)
+        then_t const&, 
+        else_t const&)
     {
         if constexpr(cond_c) 
-            return type_<then_t>{}; 
+            return then_t{}; 
         else 
-            return type_<else_t>{};
+            return else_t{};
     }
 }
 

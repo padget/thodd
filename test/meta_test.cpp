@@ -32,6 +32,7 @@
 #include <thodd/meta/pack/transfer.hpp>
 #include <thodd/meta/pack/contains.hpp>
 #include <thodd/meta/pack/concat.hpp>
+#include <thodd/meta/pack/unique.hpp>
 #include <thodd/meta/utils/if.hpp>
 
 using namespace thodd::meta;
@@ -93,6 +94,7 @@ static_assert(is_same(type_<decltype(transfer<pack2>(pack1<int, short>{}))>{}, t
 static_assert(contains(pack1<int, short, double>{}, type_<double>{}));
 static_assert(is_same(if_<true>(type_<int>{}, type_<short>{}), type_<int>{}));
 static_assert(is_same(type_<decltype(concat(pack1<int>{}, pack1<short>{}, pack2<double>{}))>{}, type_<pack1<int, short, double>>{}));
+static_assert(is_same(type_<decltype(unique(pack1<int, int, short>{}))>{}, type_<pack1<int, short>>{}));
 
 
 main() {}

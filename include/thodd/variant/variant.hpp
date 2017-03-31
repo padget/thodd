@@ -5,6 +5,7 @@
 #  include <thodd/core/rvalue.hpp>
 #  include <thodd/core/perfect.hpp>
 
+#  include <thodd/meta/pack/unique.hpp>
 #  include <thodd/meta/pack/transfer.hpp>
 
 #  include <thodd/pointer/shared.hpp>
@@ -32,15 +33,21 @@ namespace thodd
         return __biggest;
     }
 
+    template<typename ...>
+    struct pack {};
 
     /// #struct variant
     template<
         typename type_t,   
         typename ... types_t>
     class variant:
-        public variant_caster<
-                    variant<type_t, types_t...>,
-                    meta::transfer<meta::unique<meta::pack<type_t, types_t...>>, variant>>
+        public 
+        variant_caster<
+            variant<type_t, types_t...>,
+            meta::transfer_t<
+                variant,
+                meta::unique_t<
+                    pack<type_t, types_t...>>>>
     {
     private:
         /// holder base class
@@ -74,11 +81,12 @@ namespace thodd
             wtype_t&& __wt) :
             holded(new holder<wtype_t>(perfect<wtype_t>(__wt)))
         {
-           /* static_assert(meta::contains_f(
-                            type_<wtype_t>{}, 
-                            meta::pack<type_t, types_t...>{}), 
-                          "the type must be contained "
-                          "in variant possible types");*/
+            static_assert(
+                meta::contains(
+                    meta::unique(pack<type_t, types_t...>{}), 
+                    meta::type_<meta::decay_t<wtype_t>>{}), 
+                "the type must be contained "
+                "in variant possible types");
         }
 
         variant(
@@ -94,15 +102,16 @@ namespace thodd
         template<
             typename wtype_t>
         variant& 
-        operator=(
+        operator = (
             wtype_t&& __wt)
         {
-            /*static_assert(meta::contains_f(
-                            type_<wtype_t>{}, 
-                            meta::pack<type_t, types_t...>{}), 
-                          "the type must be contained "
-                          "in variant possible type !!");
-                          */
+            static_assert(
+                meta::contains(
+                    meta::unique(pack<type_t, types_t...>{}), 
+                    meta::type_<meta::decay_t<wtype_t>>{}), 
+                "the type must be contained "
+                "in variant possible types");
+                
             holded.reset(new holder<wtype_t>(perfect<wtype_t>(__wt)));
             
             return *this;
@@ -110,7 +119,7 @@ namespace thodd
 
 
         variant& 
-        operator=(
+        operator = (
             variant const& __other)
         {
             if(this != &__other)
@@ -121,7 +130,7 @@ namespace thodd
         
 
         variant& 
-        operator=(
+        operator = (
             variant&& __other)
         {
             if(this != &__other)

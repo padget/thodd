@@ -78,6 +78,7 @@ namespace thodd
 
     public:
         constexpr tuple() = default;
+        ~tuple() = default;
 
 
         template<

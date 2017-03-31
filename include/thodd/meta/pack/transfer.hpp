@@ -26,12 +26,9 @@ thodd::meta
         template<
             typename ...>
         typename to_t,
-        template<
-            typename ...>
-        typename from_t,
-        typename ... types_t>
+        typename from_t>
     using transfer_t = 
-        decltype(transfer<to_t>(from_t<types_t...>{}));
+        decltype(transfer<to_t>(from_t{}));
 }
 
 #endif

@@ -21,7 +21,7 @@ thodd::meta
         type_<type_t> const&)
     {
         return 
-        thodd::or_(
+        thodd::or_c(
             is_same(
                 type_<types_t>{}, 
                 type_<type_t>{})...);
