@@ -104,7 +104,7 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"123456789"};
+    std::string __input{"a1"};
     auto const __end = __input.end();
    
     constexpr auto 
@@ -125,7 +125,10 @@ try
                 return __res;
             })];
 
-    constexpr auto __ds_word = __d_word >> __d_word >> *__d_word;
+    constexpr auto
+    __l_word = make_word(__letter);
+
+    constexpr auto __ds_word = __l_word >> __d_word;
     
 
     auto __begin = __input.begin();

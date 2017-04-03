@@ -2,11 +2,21 @@
 #  define __THODD_LANG_ALTERNATIVE_HPP__
 
 #  include <thodd/tuple/tuple.hpp>
-#  include <thodd/variant.hpp>
+#  include <thodd/variant/variant.hpp>
 
-#  include <thodd/lang/core.hpp>
-#  include <thodd/lang/regex.hpp>
-#  include <thodd/lang/word.hpp> 
+#  include <thodd/core/declval.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/perfect.hpp>
+#  include <thodd/core/get.hpp>
+#  include <thodd/core/between.hpp>
+
+#  include <thodd/meta/traits/decay.hpp>
+
+#  include <thodd/lang/core/core.hpp>
+#  include <thodd/lang/core/regex.hpp>
+#  include <thodd/lang/core/word.hpp> 
+
+#  include <thodd/container/list.hpp>
 
 namespace thodd::lang
 {
@@ -23,8 +33,8 @@ namespace thodd::lang
         auto&&... __cases)
     {
         return 
-        alternative<meta::decay<decltype(__cases)>...>
-        {make_tuple(perfect<decltype(__cases)>(__cases)...)};
+        alternative<meta::decay_t<decltype(__cases)>...>
+        { make_tuple(perfect<decltype(__cases)>(__cases)...) };
     }
 
 
@@ -34,9 +44,132 @@ namespace thodd::lang
     make_alternative(tuple<cases_t...> const& __cases)
     {
         return 
-        alternative<meta::decay<cases_t>...>
-        {__cases};
+        alternative<meta::decay_t<cases_t>...>
+        { __cases };
     }
+
+
+        template<
+        typename iterator_t, 
+        typename subtoken_t>
+    struct alternative_token
+    {
+        using range_t = thodd::detail::range<iterator_t>;
+
+        range_t range;
+        thodd::list<subtoken_t> subranges;
+        size_t index;
+
+
+        constexpr
+        operator bool () const
+        {
+            return 
+            thodd::between(
+                subranges.size(), 
+                min, max);
+        }
+
+
+        inline auto const
+        begin() const
+        {
+            return range.begin();
+        }
+
+
+        inline auto
+        begin()
+        {
+            return range.begin();
+        }
+
+
+        inline auto const
+        end() const
+        {
+            return range.end();
+        }
+
+
+        inline auto
+        end()
+        {
+            return range.end();
+        }
+
+
+        inline auto const
+        subbegin() const
+        {
+            return subranges.begin();
+        }
+
+
+        inline auto
+        subbegin()
+        {
+            return subranges.begin();
+        }
+
+
+        inline auto const
+        subend() const
+        {
+            return subranges.end();
+        }
+
+
+        inline auto
+        subend()
+        {
+            return subranges.end();
+        }
+    };
+
+
+    template<
+        typename subtoken_t>
+    constexpr auto
+    make_alternative_token(
+        auto&& __begin, 
+        auto&& __end, 
+        thodd::list<subtoken_t> const& __subranges, 
+        auto&& __index)
+    {
+        using iterator_t = meta::decay_t<decltype(__begin)>;
+
+        return 
+        alternative_token<iterator_t, subtoken_t>
+        { thodd::range(
+            perfect<decltype(__begin)>(__begin),
+            perfect<decltype(__end)>(__end)),
+            __subranges, 
+            perfect<decltype(__index)>(__index) };
+    }
+
+
+    template<
+        typename subtoken_t>
+    constexpr auto
+    make_alternative_token(
+        auto&& __begin, 
+        auto&& __end, 
+        thodd::list<subtoken_t>&& __subranges, 
+        auto&& __index)
+    {
+        using iterator_t = meta::decay_t<decltype(__begin)>;
+
+        return 
+        alternative_token<iterator_t, subtoken_t>
+        { thodd::range(
+            perfect<decltype(__begin)>(__begin),
+            perfect<decltype(__end)>(__end)),
+            thodd::rvalue(__subranges), 
+            perfect<decltype(__index)>(__index) };
+    }
+
+
 
 
     template<
@@ -50,13 +183,16 @@ namespace thodd::lang
         auto __res = false;                
         auto __save = __cursor;
 
-        __alter.algo.cases.template foreach(
-            [&__res, &__save, &__cursor, &__end] (auto&& __case)
+        thodd::foreach(
+            __alter.algo.cases, 
+            [&] (auto&& __case)
             {
                 if(!__res) 
-                    __res |= matches(perfect<decltype(__case)>(__case), 
-                                        __cursor, 
-                                        __end);  
+                    __res |= 
+                        matches(
+                            perfect<decltype(__case)>(__case), 
+                            __cursor, 
+                            __end);  
                 
                 if(!__res) 
                     __cursor = __save;
@@ -76,20 +212,21 @@ namespace thodd::lang
         auto& __cursor, 
         auto const& __end)
     {              
-        auto&& __res = token(false, 0u, __cursor, __cursor);
+        auto list<>
         auto __save = __cursor;
         auto __index = 0u;
 
-        thodd::foreach(__alter.algo.cases, 
-            [&__res, &__save, &__index, 
-                &__cursor, &__end] 
-            (auto&& __case)
+        thodd::foreach(
+            __alter.algo.cases, 
+            [&] (auto&& __case)
             {
                 if(!((bool) __res)) 
-                    __res = thodd::rvalue(
-                            matches(perfect<decltype(__case)>(__case), 
-                                        __cursor, 
-                                        __end));  
+                    __res = 
+                        rvalue(
+                            matches(
+                                perfect<decltype(__case)>(__case), 
+                                __cursor, 
+                                __end));  
                 
                 if(!__res) 
                 {
@@ -100,7 +237,7 @@ namespace thodd::lang
         
         __res.index = __index;
 
-        return __res;
+        return make_alternative_token(__save, __cursor, , __index);
     }
 
 
@@ -113,7 +250,7 @@ namespace thodd::lang
     interpret(
         word<alternative<word<cases_t,  casters_t>...>, caster_t> const& __alter,
         auto&& __tree, 
-        indexes<indexes_c...> const&)
+        sequence<size_t, indexes_c...> const&)
     {
         return 
         thodd::make_tuple(
@@ -132,30 +269,27 @@ namespace thodd::lang
         word<alternative<word<cases_t,  casters_t>...>, caster_t> const& __alter,
         auto&& __tree)
     {
-            variant<meta::decay<
-                decltype(
-                    interpret(
-                        thodd::declval<word<cases_t,  casters_t>>(), 
-                        __tree))>...> __var;
+        variant<meta::decay_t<
+            decltype(
+                interpret(
+                    thodd::declval<word<cases_t,  casters_t>>(), 
+                    __tree))>...> __var;
 
         auto __subtree_it = __tree.sub_begin(); 
         auto __index = 0u;
 
         
-            thodd::foreach(__alter.algo.cases, 
-                [&__subtree_it, 
-                &__var, 
-                &__index, 
-                &__tree] 
-                (auto&& __case)
-                {
-                    if(__subtree_it != __tree.sub_end())
-                        if((*__subtree_it).index == __index)
-                            __var = interpret(__case, *__subtree_it);
-                    
-                    ++__subtree_it;
-                    ++__index;
-                });
+        thodd::foreach(
+            __alter.algo.cases, 
+            [&] (auto&& __case)
+            {
+                if(__subtree_it != __tree.sub_end() 
+                   and (*__subtree_it).index == __index)
+                    __var = interpret(__case, *__subtree_it);
+                
+                ++__subtree_it;
+                ++__index;
+            });
         
         return __alter.caster(__var);
     }
@@ -192,7 +326,7 @@ namespace thodd::lang
         make_regex(
             make_alternative(
                 __lalter.algo.cases 
-                + __rregex));
+                + make_tuple(__rregex)));
     }
 
 
@@ -245,7 +379,7 @@ namespace thodd::lang
         make_word(
             make_alternative(
                 __lalter.algo.algos 
-                + __rword));
+                + make_tuple(__rword)));
     }
 
     template<

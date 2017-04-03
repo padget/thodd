@@ -7,8 +7,8 @@
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
 
-#  include <thodd/lang/core.hpp>
-#  include <thodd/lang/regex.hpp>
+#  include <thodd/lang/core/core.hpp>
+#  include <thodd/lang/core/regex.hpp>
 
 namespace thodd::lang
 {
@@ -28,7 +28,7 @@ namespace thodd::lang
 
 
         constexpr auto
-        operator() (
+        operator () (
             auto&&... __params) const 
         -> decltype(auto)
         {
@@ -39,7 +39,7 @@ namespace thodd::lang
 
 
         constexpr auto
-        operator[](
+        operator [] (
             auto&& __caster) const
         -> decltype(auto)
         {
