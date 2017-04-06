@@ -4,6 +4,7 @@
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
 #  include <thodd/container/range.hpp>
+#  include <thodd/functional/functional.hpp>
 
 namespace 
 thodd::lang
@@ -67,6 +68,22 @@ thodd::lang
         { thodd::range(perfect<decltype(__begin)>(__begin),
                         perfect<decltype(__end)>(__end)) };
     }
+
+
+    extern constexpr auto interpret_ = 
+        [] (auto&& __case_getter, 
+            auto&& __token_getter)
+        {
+            return 
+            as_functor(
+                [&] (auto&& ... __args)
+                {
+                    return 
+                    interpret(
+                        __case_getter(perfect<decltype(__args)>(__args)...), 
+                        __token_getter(perfect<decltype(__args)>(__args)...));
+                });
+        };
 }
 
 #endif

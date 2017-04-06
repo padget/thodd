@@ -73,7 +73,6 @@ thodd::lang
         subranges_t __subranges;
 
         thodd::foreach_join(
-            __follow.algo.algos,
             [&] (
                 auto&& __case, 
                 auto& __subrange)
@@ -97,6 +96,7 @@ thodd::lang
                         __cursor = __save;
                 }     
             }, 
+            __follow.algo.algos,
             __subranges);
 
         if(!__continue)

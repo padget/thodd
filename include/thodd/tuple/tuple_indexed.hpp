@@ -405,42 +405,87 @@ namespace thodd
         }
 
 
+        template<
+            size_t index_c>
         constexpr auto
         foreach_join(
-            auto&& __func,
-            auto&& __other) &
+            auto&& __func, 
+            auto&&... __others) &
+        -> decltype(auto) 
+        {
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::get<index_c>(*this),
+                thodd::get<index_c>(perfect<decltype(__others)>(__others))...);
+        }
+
+
+        template<
+            size_t index_c>
+        constexpr auto
+        foreach_join(
+            auto&& __func, 
+            auto&&... __others) const &
         -> decltype(auto)
         {
-            expand{(perfect<decltype(__func)>(__func)(
-                thodd::get<indexes_c>(*this),
-                thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...};
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::get<index_c>(*this),
+                thodd::get<index_c>(perfect<decltype(__others)>(__others))...);
+        }
+
+
+        template<
+            size_t index_c>
+        constexpr auto
+        foreach_join(
+            auto&& __func, 
+            auto&&... __others) &&
+        -> decltype(auto)
+        {
+            return 
+            perfect<decltype(__func)>(__func)(
+                thodd::get<index_c>(*this),
+                thodd::get<index_c>(perfect<decltype(__others)>(__others))...);
         }
 
 
         constexpr auto
         foreach_join(
             auto&& __func,
-            auto&& __other) const &
+            auto&&... __others) &
         -> decltype(auto)
         {
-            expand{(perfect<decltype(__func)>(__func)(
-                thodd::get<indexes_c>(*this),
-                thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...};
+            expand {(
+                foreach_join<indexes_c>(
+                    perfect<decltype(__func)>(__func),  
+                    perfect<decltype(__others)>(__others)...), 0)...};
         }
 
 
         constexpr auto
         foreach_join(
             auto&& __func,
-            auto&& __other) &&
+            auto&&... __others) const &
         -> decltype(auto)
         {
-            expand{(perfect<decltype(__func)>(__func)(
-                thodd::rvalue(thodd::get<indexes_c>(*this)),
-                thodd::get<indexes_c>(
-                    perfect<decltype(__other)>(__other))), 0)...};
+            expand {(
+                foreach_join<indexes_c>(
+                    perfect<decltype(__func)>(__func), 
+                    perfect<decltype(__others)>(__others)...), 0)...};
+        }
+
+
+        constexpr auto
+        foreach_join(
+            auto&& __func,
+            auto&&... __others) &&
+        -> decltype(auto)
+        {
+            expand {(
+                foreach_join<indexes_c>(
+                    perfect<decltype(__func)>(__func), 
+                    perfect<decltype(__others)>(__others)...), 0)...};
         }
     };
 }

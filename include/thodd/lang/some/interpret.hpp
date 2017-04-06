@@ -27,9 +27,7 @@ thodd::lang
         thodd::list<meta::decay_t<target_t>> __lst;
 
         for(auto const& __tk : __tree.subranges)
-            thodd::push_back(
-                __lst, 
-                thodd::rvalue(interpret(__some.algo.something, __tk)));
+            thodd::push_back(__lst, thodd::rvalue(interpret(__some.algo.something, __tk)));
 
         return 
         __some.caster(__lst);

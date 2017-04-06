@@ -3,6 +3,7 @@
 
 #  include <thodd/core/begin.hpp>
 #  include <thodd/core/end.hpp>
+#  include <thodd/core/get.hpp>
 #  include <thodd/core/rvalue.hpp>
 #  include <thodd/core/perfect.hpp>
 
@@ -49,7 +50,8 @@ thodd::lang
             return __res; 
         }
 
-        inline auto const
+
+          inline auto const
         begin() const
         {
             return 
@@ -81,37 +83,40 @@ thodd::lang
         }
 
 
-        inline auto const
-        subbegin() const
-        {
-            return 
-            thodd::begin(subranges);
-        }
-
-
+        template<
+            size_t index_c>
         inline auto
-        subbegin()
+        get() &
+        -> decltype(auto)
         {
             return 
-            thodd::begin(subranges);
+            thodd::get<index_c>(subranges);
         }
 
-
-        inline auto const
-        subend() const
-        {
-            return 
-            thodd::end(subranges);
-        }
-
-
+        
+        template<
+            size_t index_c>
         inline auto
-        subend()
+        get() const & 
+        -> decltype(auto)
         {
             return 
-            thodd::end(subranges);
+            thodd::get<index_c>(subranges);
+        }
+
+        
+        template<
+            size_t index_c>
+        inline auto
+        get() && 
+        -> decltype(auto)
+        {
+            return 
+            thodd::get<index_c>(subranges);
         }
     };
+
+    
 
     template<
         typename ... subtokens_t>

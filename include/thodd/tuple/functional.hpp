@@ -51,9 +51,9 @@ namespace thodd
 
     constexpr auto
     foreach_join(
-        auto&& __t,
         auto&& __func,
-        auto&& __tuple1)
+        auto&& __t,
+        auto&& ... __tuples)
     -> decltype(auto)
     {
         return 
@@ -61,7 +61,7 @@ namespace thodd
         .template 
          foreach_join(
             perfect<decltype(__func)>(__func),
-            perfect<decltype(__tuple1)>(__tuple1));
+            perfect<decltype(__tuples)>(__tuples)...);
     }
 
 

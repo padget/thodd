@@ -142,7 +142,6 @@ namespace thodd::lang
                 __lfollow.algo.algos 
                 + __rfollow.algo.algos));
     }
-
 }
 
 #endif

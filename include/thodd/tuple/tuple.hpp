@@ -281,27 +281,27 @@ namespace thodd
         constexpr auto
         foreach_join(
             auto&& __func,
-            auto&& __other)
+            auto&&... __others)
         -> decltype(auto)
         {
             return 
             thodd::foreach_join(
-                this->pstorage(),
                 perfect<decltype(__func)>(__func), 
-                perfect<decltype(__other)>(__other));
+                this->pstorage(),
+                perfect<decltype(__others)>(__others)...);
         }
 
         constexpr auto
         foreach_join(
             auto&& __func,
-            auto&& __other) const
+            auto&&... __others) const
         -> decltype(auto)
         {
             return 
             thodd::foreach_join(
-                this->pstorage(),
                 perfect<decltype(__func)>(__func), 
-                perfect<decltype(__other)>(__other));
+                this->pstorage(),
+                perfect<decltype(__others)>(__others)...);
         }
     };
 

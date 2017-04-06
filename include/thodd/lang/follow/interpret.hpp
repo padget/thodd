@@ -42,22 +42,11 @@ thodd::lang
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree)
     {
-        /*tuple<meta::decay_t<
-            decltype(interpret(declval<word<algos_t,  casters_t>>(), 
-                     __tree))>...> __tpl;
-
-        auto __subtree_it = __tree.sub_begin(); 
-
-        thodd::foreach_join(__follow.algo.algos, 
-            [&__subtree_it] 
-            (auto&& __case, 
-                auto&& __tpl_item)
-            {
-                __tpl_item = interpret(__case, *__subtree_it);
-                ++__subtree_it;
-            }, __tpl);
-        
-        return __follow.caster(__tpl);*/
+        return 
+        interpret(
+            __follow, 
+            perfect<decltype(__tree)>(__tree),
+            make_sequence_t<size_t, 0, sizeof...(algos_t) - 1>{});
     }
 }
 
