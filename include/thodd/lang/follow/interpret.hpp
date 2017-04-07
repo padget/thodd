@@ -30,7 +30,7 @@ thodd::lang
         thodd::make_tuple(
             interpret(
                 thodd::get<indexes_c>(__follow.algo.algos), 
-                __tree)...);
+                *thodd::get<indexes_c>(__tree))...);
     }
     
     template<

@@ -55,33 +55,36 @@ thodd::lang
         auto __save = __cursor;            
         auto __cpt  = 0u;
 
-        subtoken_t __subrange;
-        thodd::list<subtoken_t> __subranges;
+        bool __matched = true; 
+        thodd::list<subtoken_t> __subtokens;
         
-        while((__subrange = rvalue(matches(__some.algo.something, __cursor, __end))) 
+        while(
+            __cursor != __end 
+            && __matched 
             && __cpt <= __some.algo.max)
         {
-            thodd::push_back(
-                __subranges, 
-                thodd::rvalue(__subrange));
-            
-            ++__cpt;
+            subtoken_t&& __subtoken = matches(__some.algo.something, __cursor, __end);
+
+            if((__matched = (bool) __subtoken)) 
+            {
+                thodd::push_back(__subtokens, thodd::rvalue(__subtoken));
+                ++__cpt;
+            }
         }
 
-        
         if(!thodd::between(
             __cpt, 
             __some.algo.min, 
             __some.algo.max))
         {    
-            __subranges.clear();
+            __subtokens.clear();
             __cursor = __save;
         }
 
         return 
         make_some_token(
             __save, __cursor, 
-            thodd::rvalue(__subranges), 
+            thodd::rvalue(__subtokens), 
             __some.algo.min,
             __some.algo.max);
     }

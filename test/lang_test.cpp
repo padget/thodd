@@ -14,6 +14,8 @@ extern constexpr auto __digit =
             auto&& __res = '0' <= *__cursor 
                         && *__cursor <= '9';
 
+            std::cout << (__res ? *__cursor : '.') << std::endl; 
+
             return __res ? 
                 (++__cursor, true) : 
                 false;
@@ -28,11 +30,33 @@ extern constexpr auto __letter =
             auto&& __res = 'a' <= *__cursor 
                         && *__cursor <= 'z';
 
+            std::cout << (__res ? *__cursor : '.') << std::endl;
+
             return __res ? 
                 (++__cursor, true) : 
                 false;
         });
 
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::basic_token<params_t...> const& __token, 
+    auto&& __offset);
+
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::follow_token<params_t...> const& __token, 
+    auto&& __offset);
+
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::follow_token<params_t...> const& __token, 
+    auto&& __offset);
 
 template<
     typename ... params_t>
@@ -69,7 +93,7 @@ print_token(
 
         std::cout << std::endl;
 
-        for(auto&& __subtoken : __token.subranges)
+        for(auto const& __subtoken : __token.subranges)
             print_token(__subtoken, __offset + "___"); 
     }
 }
@@ -86,12 +110,19 @@ print_token(
     {    
         std::cout << __offset << "|--> : ";
 
-            for(auto&& __c : __token)
-                std::cout << __c;
+        for(auto&& __c : __token)
+            std::cout << __c;
 
         std::cout << std::endl;
         
-        thodd::foreach(__token.subranges, [&__offset](auto&& __sub) {if(__sub != nullptr) print_token(*__sub, __offset + "___");});
+        thodd::foreach(
+            __token.subranges, 
+            [&__offset] 
+            (auto const& __sub) 
+            {
+                if(__sub != nullptr) 
+                    print_token(*__sub, __offset + "___");
+            });
     }
 }
 
@@ -99,7 +130,8 @@ print_token(
 constexpr auto __d_word = make_word(__digit) ;
 constexpr auto __l_word = make_word(__letter) ;
 
-constexpr auto __ds_word = __l_word >> __l_word;
+constexpr auto __ds_word = * ((*__l_word >> *__d_word)[(cout_ << "coucou" << endl_, $0)]);
+constexpr auto __ds_wordf = __l_word >> __d_word;
 
 
 int main(
@@ -110,20 +142,17 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"aa"};
+    std::string __input{"a1a1a1a1a1a1a1aaaa1111aaaa2222"};
     auto const __end = __input.end();
        
-
     auto __begin = __input.begin();
     auto __token = matches(__ds_word, __begin, __end);
-       
     print_token(__token, std::string()); 
 
-    decltype(interpret(__ds_word, __token)) __t;
-    
+    auto __var = interpret(__ds_word, __token);
     auto sum = 0;
-    
-    sum += sum * 2;
+    sum ++; 
+   
     // for(auto&& __item : __var)
     //     print_token(__item, "__");
 }
