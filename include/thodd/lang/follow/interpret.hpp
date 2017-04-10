@@ -42,11 +42,14 @@ thodd::lang
         word<follow<word<algos_t,  casters_t>...>, caster_t> const& __follow,
         auto&& __tree)
     {
-        return 
+        auto&& __res = 
         interpret(
             __follow, 
             perfect<decltype(__tree)>(__tree),
             make_sequence_t<size_t, 0, sizeof...(algos_t) - 1>{});
+
+        return 
+        __follow.caster(__res);
     }
 }
 

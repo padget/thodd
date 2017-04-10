@@ -130,7 +130,11 @@ print_token(
 constexpr auto __d_word = make_word(__digit) ;
 constexpr auto __l_word = make_word(__letter) ;
 
-constexpr auto __ds_word = * ((*__l_word >> *__d_word)[(cout_ << "coucou" << endl_, $0)]);
+constexpr auto some_exec = (thodd::cout_ << thodd::val(1234) << thodd::endl_, thodd::$0);
+
+constexpr auto __ds_word = 
+    *((*__l_word >> *__d_word)[some_exec]);
+    
 constexpr auto __ds_wordf = __l_word >> __d_word;
 
 
@@ -152,6 +156,12 @@ try
     auto __var = interpret(__ds_word, __token);
     auto sum = 0;
     sum ++; 
+
+    std::string __input2 = "0";
+    auto __begin2 = __input2.begin();
+    constexpr auto __ords = __digit | __letter;
+
+    std::cout << std::boolalpha << matches(__ords, __begin2, __input2.end()) << std::endl;
    
     // for(auto&& __item : __var)
     //     print_token(__item, "__");
