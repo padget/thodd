@@ -20,6 +20,14 @@ thodd
         public variant_caster_item<items_t, variant_t>...
     {
         virtual ~variant_caster() = default;
+
+        inline auto
+        visit(
+            auto&& __func)
+        -> decltype(auto)
+        {
+            expand{ (__func(static_cast<items_t>(*this)), 0)... };
+        }
     };
 }
 

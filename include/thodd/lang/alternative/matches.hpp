@@ -8,8 +8,10 @@
 
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/declval.hpp>
 
 #  include <thodd/tuple/functional.hpp>
+
 namespace 
 thodd::lang
 {
@@ -53,30 +55,44 @@ thodd::lang
         auto& __cursor, 
         auto const& __end)
     {              
-        auto __res = false;
+        variant<meta::decay_t<
+            decltype(
+                matches(
+                    thodd::declval<word<cases_t,  casters_t>>(), 
+                    __cursor, __end))>...> __var;
+       
         auto __save = __cursor;
         auto __index = 0u;
+        auto __continue = true;
+       
 
         thodd::foreach(
             __alter.algo.cases, 
             [&] (auto&& __case)
             {
-                if(!((bool) __res)) 
-                    __res = 
+                if(__continue) 
+                {
+                    auto&& __tmp = 
                         rvalue(
                             matches(
                                 perfect<decltype(__case)>(__case), 
                                 __cursor, 
-                                __end));  
-                
-                if(!__res) 
+                                __end)); 
+
+                    __continue = static_cast<bool>(__tmp);
+                    
+                    if(__continue)
+                        __var = __tmp;
+                }
+
+                if(!__continue) 
                 {
                     __cursor = __save;
                     ++__index;
                 }
             });
 
-        return make_alternative_token(__save, __cursor, __index);
+        return make_alternative_token(__save, __cursor, __var, __index);
     }
 }
 

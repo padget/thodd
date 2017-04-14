@@ -265,16 +265,25 @@ view person on name_age:	/// declaration of view person on the pod name_age
 operator + : #[int]   * #[int]   -> [int]
 operator + : #[short] * #[short] -> [short]
 
-
-[[is_integral]] : t : type -> (t == int || t == short) : boolean
+<type_t>
+[[is_integral]]  
+    t : [#]type_t 
+    -> (type_t == int || type_t == short)
 	
 
-<integral_t> [is_integral(integral_t)]
-[[add]] : [#]integral_t * [#]integral_t -> integral_t
+<integral_t> 
+[is_integral(integral_t)]
+[[add]] 
+    [#]integral_t * [#]integral_t 
+    -> integral_t
 
 
-<integral_t> [is_integral(integral_t)]
-[[add]] x : [#]integral_t, y : [#]integral_t -> x + y
+<integral_t> 
+[is_integral(integral_t)]
+[[add]] 
+    x : [#]integral_t, 
+    y : [#]integral_t 
+    -> x + y
 
 
 print(add(1, 2)) 

@@ -13,9 +13,6 @@ extern constexpr auto __digit =
         {
             auto&& __res = '0' <= *__cursor 
                         && *__cursor <= '9';
-
-            std::cout << (__res ? *__cursor : '.') << std::endl; 
-
             return __res ? 
                 (++__cursor, true) : 
                 false;
@@ -29,9 +26,6 @@ extern constexpr auto __letter =
         {
             auto&& __res = 'a' <= *__cursor 
                         && *__cursor <= 'z';
-
-            std::cout << (__res ? *__cursor : '.') << std::endl;
-
             return __res ? 
                 (++__cursor, true) : 
                 false;
@@ -126,6 +120,34 @@ print_token(
     }
 }
 
+
+template<
+    typename ... params_t>
+inline void
+print_token(
+    thodd::lang::alternative_token<params_t...> const& __token, 
+    auto&& __offset)
+{
+    if(static_cast<bool>(__token))
+    {    
+        std::cout << __offset << "|--> : ";
+
+        /*for(auto&& __c : __token)
+            std::cout << __c;
+
+        std::cout << std::endl;
+        
+        thodd::foreach(
+            __token.subranges, 
+            [&__offset] 
+            (auto const& __sub) 
+            {
+                if(__sub != nullptr) 
+                    print_token(*__sub, __offset + "___");
+            });*/
+    }
+}
+
 // detect a digit
 constexpr auto __d_word = make_word(__digit) ;
 constexpr auto __l_word = make_word(__letter) ;
@@ -159,10 +181,12 @@ try
 
     std::string __input2 = "0";
     auto __begin2 = __input2.begin();
-    constexpr auto __ords = __digit | __letter;
+    constexpr auto __ords = __d_word | __l_word;
 
-    std::cout << std::boolalpha << matches(__ords, __begin2, __input2.end()) << std::endl;
-   
+    auto&& __token2 = matches(__ords, __begin2, __input2.end());
+
+    std::cout << "token 2" << std::endl;
+    print_token(__token2, std::string());
     // for(auto&& __item : __var)
     //     print_token(__item, "__");
 }
