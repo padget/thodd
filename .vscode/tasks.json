@@ -47,6 +47,15 @@
                 "test/variant_test"
             ],
             "isShellCommand": true
+        },  
+        {
+            "taskName": "build_proto",
+            "command": "${workspaceRoot}/make.bat",
+            "args": [
+                "${workspaceRoot}",
+                "test/proto_test"
+            ],
+            "isShellCommand": true
         },
         {
             "taskName": "clean",

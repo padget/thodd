@@ -19,6 +19,8 @@ thodd
     struct variant_caster<variant_t, pack_t<items_t...>>:
         public variant_caster_item<items_t, variant_t>...
     {
+        int index {-1};
+
         virtual ~variant_caster() = default;
 
         inline auto

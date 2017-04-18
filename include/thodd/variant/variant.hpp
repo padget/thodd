@@ -14,26 +14,8 @@
 
 namespace thodd
 {
-    /// #return the size of the 
-    ///         type with the 
-    ///         largest memory footprint 
-    template<   
-        template<
-            typename...> 
-        typename pack_t,
-        typename type_t, 
-        typename ... types_t>
-    constexpr size_t
-    biggest_sizeof(
-        pack_t<type_t, types_t...> const&)
-    {
-        size_t __biggest{sizeof(type_t)};
-        expand{ ((__biggest = (sizeof(types_t) > __biggest ? sizeof(types_t) : __biggest)), 0)... };
-
-        return __biggest;
-    }
-
-    template<typename ...>
+    template<
+        typename ...>
     struct pack {};
 
     /// #struct variant
@@ -143,7 +125,7 @@ namespace thodd
         template<
             typename wtype_t>
         wtype_t const&
-        get() const
+        get () const
         {
             return 
             dynamic_cast<
@@ -155,7 +137,7 @@ namespace thodd
         template<
             typename wtype_t>
         wtype_t&
-        get()
+        get ()
         {
             if(!holded)
                 holded.reset(new holder<wtype_t>(wtype_t()));
