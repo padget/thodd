@@ -3,8 +3,16 @@
 
 #  include <thodd/meta/pack/transfer.hpp>
 #  include <thodd/meta/pack/unique.hpp>
-#  include <thodd/core/rvalue.hpp>
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/meta/pack/indexof.hpp>
+#  include <thodd/meta/pack/at.hpp>
+
+#  include <thodd/core/sequence.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/expand.hpp>
+
+#  include <thodd/pointer/shared.hpp>
+
 
 namespace 
 thodd::proto
@@ -107,12 +115,13 @@ thodd::proto
         typename type_t,
         typename ... types_t>
     class variant:
-        variant_caster<type_t, variant<type_t, types_t...>>, 
-        variant_caster<types_t, variant<type_t, types_t...>>...
+        public variant_caster<type_t, variant<type_t, types_t...>>, 
+        public variant_caster<types_t, variant<type_t, types_t...>>...
     {
     private:
-        size_t m_index = -1;
-        variant_item_base* m_data{nullptr};
+        long long int m_index = -1;
+        shared<variant_item_base> m_data{nullptr};
+
 
     public:    
         virtual ~variant() = default;
@@ -121,7 +130,43 @@ thodd::proto
         template<
             typename otype_t>
         variant(otype_t&& __data) : 
-           m_data(new variant_item<meta::decay_t<otype_t>>{static_cast<otype_t&&>(__data)}) {}
+            m_index{
+                meta::indexof(
+                    pack<type_t, types_t...>{}, 
+                    meta::decay(
+                        meta::type_<otype_t>{}))},
+            m_data{
+               new variant_item<meta::decay_t<otype_t>>
+               {static_cast<otype_t&&>(__data)}} {}
+
+    public:
+        variant(variant const&) = default;
+        variant(variant&&) = default;
+
+
+    public:
+        template<
+            typename otype_t>
+        inline variant&
+        operator = (   
+            otype_t&& __data) 
+        {
+            m_index = 
+                 meta::indexof(
+                    pack<type_t, types_t...>{}, 
+                    meta::decay(
+                        meta::type_<otype_t>{}));
+            m_data = 
+                new variant_item<meta::decay_t<otype_t>>
+                {static_cast<otype_t&&>(__data)};
+
+            return *this;
+        } 
+
+    public:
+        variant& operator = (variant const&) = default;
+        variant& operator = (variant&&) = default;
+
 
     public:
         inline auto const 
@@ -130,6 +175,7 @@ thodd::proto
             return m_index;
         }
 
+
     public:
         template<
             typename otype_t>
@@ -137,8 +183,11 @@ thodd::proto
         get() &
         -> decltype(auto)
         {
+            using derived_t = variant_item<otype_t>;
+            
             return 
-            static_cast<otype_t&>(*m_data);
+            static_cast<otype_t&>(
+                dynamic_cast<derived_t&>(*m_data).item);
         }
 
 
@@ -148,10 +197,12 @@ thodd::proto
         get() const &
         -> decltype(auto)
         {
+            using derived_t = variant_item<otype_t>;
+            
             return 
-            static_cast<otype_t const&>(*m_data);
+            static_cast<otype_t const&>(
+                dynamic_cast<derived_t const&>(*m_data).item);
         }
-
 
         
         template<
@@ -160,8 +211,38 @@ thodd::proto
         get() &&
         -> decltype(auto)
         {
+            using derived_t = variant_item<otype_t>;
+            
             return 
-            static_cast<otype_t&&>(*m_data);
+            static_cast<otype_t&&>(
+                dynamic_cast<derived_t&&>(*m_data).item);
+        }
+
+    
+    private:
+        template<
+            size_t ... indexes_c>
+        inline auto
+        visit(
+            auto&& __func, 
+            sequence<size_t, indexes_c...> const&)
+        {
+            expand{ (m_index == indexes_c ? __func, 0)...};
+        }
+
+
+    public:
+        inline auto
+        visit(
+            auto&& __func)
+        -> decltype(auto)
+        {
+            return 
+            visit(
+                perfect<decltype(__func)>(__func), 
+                make_sequence(
+                    igral<sizeof...(types_t) + 1>{});
+            )
         }
     };
 }
