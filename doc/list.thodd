@@ -1,0 +1,48 @@
+<type_t>
+pod binary_node:
+    item  : type_t
+    left  : [@] binary_node
+    right : [@] binary_node
+
+<type_t>
+pod list_iterator_current:
+    current : @binary_node 
+
+<type_t>
+view list_iterator on list_iterator_current<type_t> :
+    operator ++ : 
+        current = current.right
+        -> self : # auto
+
+    operator -- : 
+        current = current.left
+        -> self : # auto 
+
+<type_t>
+pod linked_list:
+    first : [@] binary_node<type_t>
+    last  : [@] binary_node<type_t>
+    size  : unsigned int
+
+
+
+<type_t>
+view list on linked_list<type_t>:
+    begin :
+        -> first : # auto
+
+
+    end :
+        -> last : # auto
+
+
+    begin ():
+        -> first : (#) auto
+
+
+    end ():
+        -> last : (#) auto
+
+
+    size (): 
+        -> size : () auto
