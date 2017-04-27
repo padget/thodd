@@ -3,7 +3,8 @@
 
 #  include <thodd/container/range.hpp>
 
-#  include <thodd/variant/variant.hpp>
+//#  include <thodd/variant/variant.hpp>
+#  include <thodd/tuple/dynamic_tuple.hpp>
 
 #  include <thodd/core/size_t.hpp>
 #  include <thodd/core/between.hpp>
@@ -23,7 +24,7 @@ thodd::lang
         using range_t = thodd::detail::range<iterator_t>;
 
         range_t range;
-        variant<subtokens_t...> subranges;
+        dynamic_tuple<subtokens_t...> subranges;
         size_t index;
 
 
@@ -74,7 +75,7 @@ thodd::lang
     make_alternative_token(
         auto&& __begin, 
         auto&& __end, 
-        variant<subtokens_t...> const& __subranges, 
+        dynamic_tuple<subtokens_t...> const& __subranges, 
         auto&& __index)
     {
         using iterator_t = meta::decay_t<decltype(__begin)>;
@@ -95,7 +96,7 @@ thodd::lang
     make_alternative_token(
         auto&& __begin, 
         auto&& __end, 
-        variant<subtokens_t...>&& __subranges, 
+        dynamic_tuple<subtokens_t...>&& __subranges, 
         auto&& __index)
     {
         using iterator_t = meta::decay_t<decltype(__begin)>;

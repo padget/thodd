@@ -10,9 +10,10 @@
 #  include <thodd/core/declval.hpp>
 
 #  include <thodd/tuple/tuple.hpp>
+#  include <thodd/tuple/dynamic_tuple.hpp>
 #  include <thodd/tuple/functional.hpp>
 
-#  include <thodd/variant/variant.hpp>
+// #  include <thodd/variant/variant.hpp>
 
 #  include <thodd/meta/traits/decay.hpp>
 
@@ -36,7 +37,7 @@ thodd::lang
                 thodd::get<indexes_c>(__alter.algo.cases), 
                 __tree)...);
     }
-    
+     
     
     template<
         typename ... cases_t, 
@@ -47,7 +48,7 @@ thodd::lang
         word<alternative<word<cases_t,  casters_t>...>, caster_t> const& __alter,
         auto&& __tree)
     {
-        variant<meta::decay_t<
+        dynamic_tuple<meta::decay_t<
             decltype(
                 interpret(
                     thodd::declval<word<cases_t,  casters_t>>(), 

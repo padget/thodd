@@ -11,6 +11,7 @@
 #  include <thodd/core/declval.hpp>
 
 #  include <thodd/tuple/functional.hpp>
+#  include <thodd/tuple/dynamic_tuple.hpp>
 
 namespace 
 thodd::lang
@@ -44,7 +45,7 @@ thodd::lang
         return __res;
     }
 
-
+ 
     template<
         typename ... cases_t, 
         typename ... casters_t, 
@@ -55,7 +56,7 @@ thodd::lang
         auto& __cursor, 
         auto const& __end)
     {              
-        variant<meta::decay_t<
+        dynamic_tuple<meta::decay_t<
             decltype(
                 matches(
                     thodd::declval<word<cases_t,  casters_t>>(), 

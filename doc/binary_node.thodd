@@ -1,0 +1,7 @@
+module thodd
+
+<type_t>
+pod binary_node:
+    item  : type_t
+    left  : [#] binary_node
+    right : [#] binary_node

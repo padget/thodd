@@ -2,7 +2,6 @@
 #  define __THODD_LANG_ALTERNATIVE_ALTERNATIVE_HPP__
 
 #  include <thodd/tuple/tuple.hpp>
-#  include <thodd/variant/variant.hpp>
 
 #  include <thodd/meta/traits/decay.hpp>
 
@@ -31,7 +30,7 @@ namespace thodd::lang
         return 
         alternative<meta::decay_t<cases_t>...>
         { __cases };
-    }
+    } 
 
 
     constexpr auto 
