@@ -60,40 +60,49 @@ thodd::lang
             decltype(
                 matches(
                     thodd::declval<word<cases_t,  casters_t>>(), 
-                    __cursor, __end))>...> __var;
+                    __cursor, __end))>...> __subranges;
        
         auto __save = __cursor;
         auto __index = 0u;
         auto __continue = true;
-       
 
-        thodd::foreach(
-            __alter.algo.cases, 
-            [&] (auto&& __case)
+        thodd::foreach_join(
+            [&] 
+            (auto&& __case, 
+             auto&& __subrange)
             {
                 if(__continue) 
                 {
-                    auto&& __tmp = 
+                    auto&& __token = 
                         rvalue(
                             matches(
                                 perfect<decltype(__case)>(__case), 
                                 __cursor, 
                                 __end)); 
-
-                    __continue = static_cast<bool>(__tmp);
                     
-                    if(__continue)
-                        __var = __tmp;
+                    if(static_cast<bool>(__token))
+                    {
+                        __continue = !__continue;
+                        __subrange = 
+                            new meta::remove_pointer_t<
+                                    meta::decay_t<
+                                        decltype(__subrange)>>
+                                (thodd::rvalue(__token));
+                    }
+                    else 
+                    {
+                        ++__index;
+                        __cursor = __save;
+                    }
                 }
+            },
+            __alter.algo.cases, 
+            __subranges);
 
-                if(!__continue) 
-                {
-                    __cursor = __save;
-                    ++__index;
-                }
-            });
+        if(__save == __cursor)
+            std::cout << "prout" << std::endl; 
 
-        return make_alternative_token(__save, __cursor, __var, __index);
+        return make_alternative_token(__save, __cursor, __subranges, __index);
     }
 }
 

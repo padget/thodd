@@ -16,13 +16,16 @@
 
 #  include <thodd/meta/traits/decay.hpp>
 
+#  include <thodd/lang/core/core.hpp>
+
 namespace
 thodd::lang
 {
     template<
         typename iterator_t, 
         typename ... subtokens_t>
-    struct follow_token
+    struct follow_token:
+        public token<iterator_t>
     {
         using range_t = thodd::detail::range<iterator_t>;
 

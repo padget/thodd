@@ -10,8 +10,6 @@
 #  include <thodd/lang/core/regex.hpp>
 #  include <thodd/lang/core/word.hpp>
 
-#  
-
 namespace thodd::lang
 {
     template<

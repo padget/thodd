@@ -391,11 +391,6 @@ namespace thodd
 
 
 
-
-
-
-
-
         template<
             typename func_t, 
             typename algorithm_t>

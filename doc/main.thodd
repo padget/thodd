@@ -1,0 +1,13 @@
+main: 
+    > strings : string...
+    
+    print('Hello Wolrd')
+    
+    auto __key = '\0'
+    auto __out = '\0'
+
+    if (__key == '\0')
+        __out = '9'
+        __key += 12
+
+    -> 0

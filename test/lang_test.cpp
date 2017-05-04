@@ -35,7 +35,7 @@ template<
     typename ... params_t>
 inline void
 print_token(
-    thodd::lang::basic_token<params_t...> const& __token, 
+    thodd::lang::token<params_t...> const& __token, 
     auto&& __offset);
 
 template<
@@ -56,7 +56,7 @@ template<
     typename ... params_t>
 inline void
 print_token(
-    thodd::lang::basic_token<params_t...> const& __token, 
+    thodd::lang::token<params_t...> const& __token, 
     auto&& __offset)
 {
     if(static_cast<bool>(__token)) 
@@ -130,9 +130,9 @@ print_token(
 {
     if(static_cast<bool>(__token))
     {    
-        std::cout << __offset << "|--> : ";
-
-        /*for(auto&& __c : __token)
+        std::cout << __offset << "|--> : " << '(' << __token.index << ')';
+        
+        for(auto&& __c : __token)
             std::cout << __c;
 
         std::cout << std::endl;
@@ -144,18 +144,17 @@ print_token(
             {
                 if(__sub != nullptr) 
                     print_token(*__sub, __offset + "___");
-            });*/
+            });
     }
 }
 
 // detect a digit
-constexpr auto __d_word = make_word(__digit) ;
-constexpr auto __l_word = make_word(__letter) ;
+constexpr auto __d_word = make_word(__digit);
+constexpr auto __l_word = make_word(__letter);
 
 constexpr auto some_exec = (thodd::cout_ << thodd::val(1234) << thodd::endl_, thodd::$0);
 
-constexpr auto __ds_word = 
-    *((*__l_word >> *__d_word)[some_exec]);
+constexpr auto __ds_word = *((*__l_word >> *__d_word)[some_exec]);
     
 constexpr auto __ds_wordf = __l_word >> __d_word;
 
@@ -168,27 +167,15 @@ try
     using namespace thodd;
     using namespace thodd::lang;
 
-    std::string __input{"a1a1a1a1a1a1a1aaaa1111aaaa2222"};
-    auto const __end = __input.end();
-       
-    auto __begin = __input.begin();
-    auto __token = matches(__ds_word, __begin, __end);
-    print_token(__token, std::string()); 
-
-    auto __var = interpret(__ds_word, __token);
-    auto sum = 0;
-    sum ++; 
-
-    std::string __input2 = "0";
+    std::string __input2 = "d";
     auto __begin2 = __input2.begin();
     constexpr auto __ords = __d_word | __l_word;
 
-    auto&& __token2 = matches(__ords, __begin2, __input2.end());
+    auto __token2 = matches(__ords, __begin2, __input2.end());
 
-    std::cout << "token 2" << std::endl;
     print_token(__token2, std::string());
-    // for(auto&& __item : __var)
-    //     print_token(__item, "__");
+    std::cout << "endl" << std::endl;
+
 }
 catch( ... )
 {

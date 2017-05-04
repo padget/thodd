@@ -45,25 +45,22 @@ thodd::lang
         auto& __cursor, 
         auto const& __end)
     {     
-        using subtoken_t = 
-            meta::decay_t<
-                decltype(
-                    matches(
-                        __some.algo.something, 
-                        __cursor, __end))>;
+        using iterator_t = meta::decay_t<decltype(__cursor)>;
+        using subrange_t = token<iterator_t>;
+        using subranges_t = thodd::list<subrange_t>;
 
         auto __save = __cursor;            
         auto __cpt  = 0u;
 
         bool __matched = true; 
-        thodd::list<subtoken_t> __subtokens;
+        subranges_t __subtokens;
         
         while(
             __cursor != __end 
             && __matched 
             && __cpt <= __some.algo.max)
         {
-            subtoken_t&& __subtoken = matches(__some.algo.something, __cursor, __end);
+            auto&& __subtoken = matches(__some.algo.something, __cursor, __end);
 
             if((__matched = (bool) __subtoken)) 
             {

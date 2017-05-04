@@ -13,140 +13,113 @@
 
 #  include <thodd/meta/traits/decay.hpp>
 
+#  include <thodd/lang/core/core.hpp>
+
 namespace 
 thodd::lang
 {
     template<
-        typename iterator_t, 
-        typename subtoken_t>
-    struct some_token
+        typename iterator_t>
+    class some_token:
+        public token<iterator_t>
     {
-        using range_t = thodd::detail::range<iterator_t>;
-
-        range_t range;
-        thodd::list<subtoken_t> subranges;
+        using range_t = typename token<iterator_t>::range_t;
+        using subranges_t = typename token<iterator_t>::subranges_t;
+        
         size_t min{0u}; 
         size_t max{thodd::infinity};
 
+    public:
+        constexpr 
+        some_token() = default;
+        
+        constexpr 
+        some_token(some_token const&) = default;
+        
+        constexpr 
+        some_token(some_token&&) = default;
+        virtual ~some_token() = default;
 
-        constexpr
+    public:
+        constexpr some_token& 
+        operator = (some_token const&) = default;
+        
+        constexpr some_token& 
+        operator = (some_token&&) = default;
+
+    public:
+        constexpr 
+        some_token(
+            range_t const& __range, 
+            subranges_t const& __subranges) :
+            token<iterator_t>(
+                __range, 
+                __subranges) {}
+
+        constexpr 
+        some_token(
+            range_t&& __range, 
+            subranges_t&& __subranges) :
+            token<iterator_t>(
+                rvalue(__range), 
+                rvalue(__subranges)) {}
+        
+        constexpr 
+        some_token(
+            range_t const& __range, 
+            subranges_t&& __subranges) :
+            token<iterator_t>(
+                __range, 
+                rvalue(__subranges)) {}
+
+        constexpr 
+        some_token(
+            range_t&& __range,
+            subranges_t const& __subranges) :
+            token<iterator_t>(
+                rvalue(__range), 
+                __subranges) {} 
+
+    public:
+        some_token& 
+        operator () (
+            size_t const& __min, 
+            size_t const& __max) const
+        {
+            this->min = __min;
+            this->max = __max;
+            
+            return *this;
+        }     
+
+    public:
+        virtual
         operator bool () const
         {
             return 
             thodd::between(
-                subranges.size(), 
+                this->subsize(), 
                 min, max);
-        }
-
-
-        inline auto const
-        begin() const
-        {
-            return 
-            thodd::begin(range);
-        }
-
-
-        inline auto
-        begin()
-        {
-            return 
-            thodd::begin(range);
-        }
-
-
-        inline auto const
-        end() const
-        {
-            return 
-            thodd::end(range);
-        }
-
-
-        inline auto
-        end()
-        {
-            return 
-            thodd::end(range);
-        }
-
-
-        inline auto const
-        subbegin() const
-        {
-            return 
-            thodd::begin(subranges);
-        }
-
-
-        inline auto
-        subbegin()
-        {
-            return
-            thodd::begin(subranges);
-        }
-
-
-        inline auto const
-        subend() const
-        {
-            return 
-            thodd::end(subranges);
-        }
-
-
-        inline auto
-        subend()
-        {
-            return  
-            thodd::end(subranges);
         }
     };
 
-
-    template<
-        typename subtoken_t>
     constexpr auto
     make_some_token(
         auto&& __begin, 
         auto&& __end, 
-        thodd::list<subtoken_t> const& __subranges, 
+        auto&& __subranges, 
         size_t const& __min, 
         size_t const& __max)
     {
         using iterator_t = meta::decay_t<decltype(__begin)>;
 
-        return 
-        some_token<iterator_t, subtoken_t>
-        { thodd::range(
-            perfect<decltype(__begin)>(__begin),
-            perfect<decltype(__end)>(__end)),
-            __subranges, 
-            __min, 
-            __max };
-    }
-
-
-    template<
-        typename subtoken_t>
-    constexpr auto
-    make_some_token(
-        auto&& __begin, 
-        auto&& __end, 
-        thodd::list<subtoken_t>&& __subranges, 
-        size_t const& __min, 
-        size_t const& __max)
-    {
-        using iterator_t = meta::decay_t<decltype(__begin)>;
-
-        return 
-        some_token<iterator_t, subtoken_t>
-        { thodd::range(
-            perfect<decltype(__begin)>(__begin),
-            perfect<decltype(__end)>(__end)),
-            thodd::rvalue(__subranges), 
-            __min, 
-            __max };
+        return  
+        some_token<iterator_t>(
+            thodd::range(
+                perfect<decltype(__begin)>(__begin),
+                perfect<decltype(__end)>(__end)),
+            perfect<decltype(__subranges)>(__subranges))
+        (__min, __max);
     }
 }
 
