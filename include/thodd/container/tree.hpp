@@ -23,16 +23,30 @@ thodd
         mutable tree_node* current{nullptr};
     };
 
+
     template<
         typename type_t>
-    tree_dive_iterator& 
+    tree_dive_iterator<type_t>& 
     operator ++ (
-        tree_dive_iterator& __it)
+        tree_dive_iterator<type_t>& __it)
     {
         if(__it.current != nullptr)
 
 
-        return __it;
+        return 
+        __it;
+    }
+
+
+    template<
+        typename type_t>
+    tree_dive_iterator<type_t>& 
+    operator -- (
+        tree_dive_iterator<type_t>& __it)
+    {
+
+        return 
+        __it;
     }
     
     
@@ -53,6 +67,20 @@ thodd
 
     tree_iterator& 
     operator ++ (
+        tree_iterator<auto>& __it) 
+    {
+        if(__it.current != nullptr)
+        {
+
+        } 
+
+
+        return 
+        __it;
+    }
+
+    tree_iterator& 
+    operator -- (
         tree_iterator<auto>& __it) 
     {
         if(__it.current != nullptr)
