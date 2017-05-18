@@ -1,3 +1,11 @@
+| Titre 1       |     Titre 2     |   Titre 3      |
+| ------------- | -------------   | ---------      |
+| Colonne       |     Colonne     |      Colonne   |
+| Alignée à     |      Alignée au |     Alignée à  |
+| Gauche        |      Centre     |      Droite    |
+
+
+
 # Valeur, Référence faible(#), Référence forte([#]), Alias (##)
 
 ## Valeur 
@@ -26,7 +34,7 @@ Une référence faible ne modifiant pas le cycle de vie de la variable pointée,
 
 ## Quelque chose vers une valeur
 
-Quand on affecte quelque chose à une variable de type valeur, alors il y a copie de la première dans la seconde. 
+Quand on affecte quelque chose à une variable de type valeur, alors il y a copie de la première dans la seconde. Lorsque le quelque chose qui est affecté à une valeur est null il y a alors erreur d'exécution. 
 
 ## Quelque chose vers un alias
 
