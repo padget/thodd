@@ -40,15 +40,19 @@ La différence fondamentale pour entre une référence forte et une valeur est l
 ## Symbolismes
 
 Référence forte : 
+
      i : [#]int = 12;
 
 Référence faible :
+
      i2 : #int = i;
 
 Valeur :
+
     i3 : int = 12;
 
 Alias :
+
      i4 : @int = i3;
 
 
