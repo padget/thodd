@@ -1,137 +1,17 @@
-#  Les types de bases
+# Valeur, Référence faible(#), Référence forte([#]), Alias (##)
 
-## Les types intégrals
+## Valeur 
 
-Les types intégrals constituent la base des calculs pour thodd. 
-Il existe une multitude de types intégrals permettant de n'utiliser
-que les intervales de valeur dont on a besoins. C'est une question
-d'optimisation. Si l'on a besoin que de valeurs comprises entre 0 et 127, 
-alors on ne prendra pas de type permettant de stocker des valeurs allant 
-jusqu'à plusieurs milliards... Ce serait une perte de mémoire stupide.
+Une valeur est une variable qui a été initialisé dans la pile. 
 
- - short - ushort 
- - char  - uchar
- - int   - uint
- - lint  - ulint
- - llint - ullint
- - bint  - ubint (virtuellement infini)
+## Alias
 
+Un alias n'est qu'un simple renommage d'une variable (quelque soit sa nature).
 
-## Les types flottants
+# Référence faible vs Référence forte
 
-Les types flottants sont essentiels au calcul scientifique mais
-souffrent d'erreurs d'imprécision quand les calculs exigent une 
-précision forte des résultats. Tout comme les intégrals, les 
-flottants se déclinent en plusieurs types suivants les besoins
-du programme.
+Toutes deux sont nullables. Ce qui diffère vraiment est la durée de vie de chacune. Une référence faible n'a, à proprement parler, pas  de cycle de vie étant donnée qu'au moment de l'invalidation du scope parent, la variable pointée par la référence ne sera pas invalidé elle aussi. Alors que dans le cas d'une référence forte, la variable pointée sera invalidée juste avant l'invalidation du scope parent.
 
- - float    - ufloat
- - double   - udouble
- - ldouble  - uldouble
- - lldouble - ulldouble
- - bdouble  - ubdouble (virtuellement infini)
-
-## Les déclinaisons de types
-
-Les déclinaisons de type permette de manipuler les instances
-autrement que par leur simple valeur. Prenons type_t comme type
-pour la description des déclinaisons :
- - type_t        : valeur de type_t
- - [type_t]      : valeur de type_t et constante (ne supporte qu'une seul initialisation)
- 
- - @type_t       : pointeurs simples de vers des instances de type_t
- - (@)type_t     : pointeurs managés vers des instances de type_t 
- - [(@)]type_t   : pointeur managé et constant vers une instance de type_t
- - @[type_t]     : pointeur vers une valeur constante de type_t
- - (@)[type_t]   : pointeur managé vers une valeur constante de type_t
- - [(@)][type_t] : pointeur managé constant vers une valeur constante de type_t
-
- - #type_t       : référence vers des instances de type_t
- - #[type_t]     : référence vers des instances constantes de type_t
-
-### Pointeur et pointeur scopé
-
-Un pointeur réprésente la valeur de l'adresse d'une instance. Quand on
-écrit @type_t on désigne donc une adresse d'une instance de type_t.
-Toute instance possède une adresse. 
-
-La déclaration d'un pointeur se fait donc de la manière suivante :
-<exemple> 
-varname : @type_t = ...;
-</exemple>
-
-L'opérateur @ (at) permet de restituer l'adresse d'une instance :
-<exemple>
-varname    : type_t  = ...;
-varnameptr : @type_t = @varname;
-</exemple>
-
-Un pointeur scopé permet de laisser le soin au programme de détruire
-l'instance au bout du pointeur au moment de la destruction du scope dans 
-lequel il est stocké :
-
-<exemple>
-scope1
-{
-    varnameptr : (@)type_t = ... ;
-} /// Destruction automatique de l'instance pointée par varnameptr. 
-</exemple>
-
-Là comme ça, on se demande quel est l'intérêt des pointeurs... En fait, les pointeurs
-sont utilisés dans un premier temps pour conserver un moyen d'accès pour toutes instances
-initilisées sur le tas (cf. tas vs pile) : 
-
-
-    scope
-    {
-        varnameptrs : @type_t = null;
-
-        scope1
-        {
-            varnameptrs1 : @type_t = new ... ;
-            varnameptrs = varnameptrs1; /// Les deux pointeurs pointent vers la même instance du tas
-        }
-
-        varnameptrs; /// pointe toujours sur l'instance initialisée dans scope1
-                    /// (une initialisation sur le tas ne dépend pas du scope).
-
-        delete varnameptrs; /// Destruction manuelle du pointeur et de l'instance pointée.   
-                            /// Si pas de destruction manuelle, alors il y aura fuite de mémoire 
-                            /// car il n'y aura plus de pointeur sur l'instance.
-    }
-
-
-Pour les pointeurs scopés, il n'y a pas de destruction manuelle à effectuer. 
-En revanche, un seul pointeur scopé peut pointer à un instant t sur l'instance du tas (via new).
-Un pointeur scopé ne peut pas pointer vers une instance dans la pile (non initilisée avec new).
-
-
-    scope
-    {
-        varnameptrs : (@)type_t = null;
-
-        scope1
-        {
-            varnameptrs1 : (@)type_t = new ... ;
-            varnameptrs = varnameptrs1; /// Il y a transfert de propriété de varnameptrs1 vers varnameptr.
-                                        /// varnameptrs1 vaut donc null. 
-        }
-
-        varnameptrs ; /// possède la valeur de varnameptrs1 (transfert de scope)
-    } /// Destruction de varnameptrs et donc de l'instance pointée également (à cause de la nature scopée du pointeur).
-
-
-L'utilisation d'un pointeur se fait donc principalement quand il y a nécessité de 
-transférer une instance d'un scope à l'autre (que ce soit de manière montante ou descendante).
-
-### Référence
-
-Les références sont en tout et pour tout de simple alias sur des instances. 
-
-
-    varname : type_t = ...;
-    varnameref : #type_t = varname;
-    varnameptr++ ; /// varname et varnameref on la même valeur incrémenté.
 
 
 
@@ -221,3 +101,56 @@ dynamiquement pour que le moment venu, sa désallocation puisse se faire. Autrem
 # Pense bête
 
 Le modèle de gestion de la mémoire pourrait être non pas basé sur un garbage collector automatique qui épargne à l'utilisateur toute préoccupation de la mémoire, mais plutôt sur un système semi automatique qui repose sur ce que va décider le développeur sur la manière dont il va modéliser ces données. Je ne veux pas de pointeur mais des références de différentes natures qui vont déterminer si la donnée référencée sera scopée ou non. En gros, je souhaite que le développeur se responsabilise et tienne compte du cycle de vie de ces données dans la mémoire afin de rendre celle-ci optimale (un Garbage Collector est souvent moins efficace qu'un humain sur ce point). Il n'y aura pas d'appel à un quelconque destructeur mais plus la définition du scope (contexte d'existence utile) de la donnée afin de détruire celle-ci automatiquement dès que le scope est invalidé. Ainsi n'est conservé en mémoire que ce qui est vraiment utilisé à un instant t et on s'épargne un thread qui se charge de collecter les références obsolètes et donc les détruires à ce moment là. 
+
+
+# Module vs Feature
+
+Deux mots clés pour deux choses distinctes :
+- feature : signifie que le code dans le scope de ce mot clé est déclaré comme étant du code métier et n'est donc pas exportable en dehors de l'unité de compilation.
+- module : signifie que le code dans le scope de ce mot clé est déclaré comme étant du code technique et est donc exportable en dehors de l'unité de compilation.
+
+Exemple feature:
+    
+    /// Calculatrice.thodd
+
+    feature calc
+    {
+        add: 
+            > a:int 
+            > b:int
+            -> a + b
+    }
+
+Dans cet exemple la fonction add ne pourra être utilisé que dans le fichier Calculatrice.thodd
+
+Exemple module:
+    
+    /// Calculatrice.thodd
+
+    module calc
+    {
+        add: 
+            > a:int 
+            > b:int
+            -> a + b
+    }
+
+Dans cet exemple, contrairement au précédent, add pourra être utilisé via un import de celle-ci dans d'autres unités de compilation.
+
+
+# Import d'unité de compilation
+
+Avec l'utilisation du mot clé 'import' dans une unité de compilation (un fichier .thodd), on peut importer des fonction, pod, view d'autres unités de compilation. Attention, tout ce qui a été déclaré dans un scope de type feature ne peut être utilisé autre part que dans ce même scope. 
+
+Plusieurs constructions sont possibles : 
+    /// import a module with fullpath
+    import thodd.math /// thodd.math.add(....)
+
+    /// import a module with an aliasing
+    import thodd.math as math /// math.add(....)
+
+    /// import a function, pod, view from a module
+    from thodd.math import add /// add(....)
+
+    /// import a function, pod, view from a module with aliasing 
+    from thodd.math import add as plus /// plus(....)
