@@ -8,12 +8,48 @@ Une valeur est une variable qui a été initialisé dans la pile.
 
 Un alias n'est qu'un simple renommage d'une variable (quelque soit sa nature).
 
-# Référence faible vs Référence forte
+## Référence faible vs Référence forte
 
 Toutes deux sont nullables. Ce qui diffère vraiment est la durée de vie de chacune. Une référence faible n'a, à proprement parler, pas  de cycle de vie étant donnée qu'au moment de l'invalidation du scope parent, la variable pointée par la référence ne sera pas invalidé elle aussi. Alors que dans le cas d'une référence forte, la variable pointée sera invalidée juste avant l'invalidation du scope parent.
 
+## Quelque chose vers une Référence forte
+
+Affecter une variable dans une référence forte va modifier le scope parent de la valeur portée par la variable. Ainsi on évite les copies de données, on va juste déplacer celle-ci dans un nouveau scope. 
+
+Par exemple, on crée le noeud d'une liste chainée indépendemment de celle-ci, puis on l'ajoute dans la liste chainée. Au lieu de faire des copies en profondeur de cette donnée dans une instance clone de la liste chainée, on va simplement déplacer la donnée dans le scope de la liste chainée.
+
+Bien entendu, ce déplacement va rendre invalide l'utilisation de la variable dont la valeur a ainsi été déplacée. Toute utilisation ultérieure de cette variable provoquera une erreur d'exécution (à voir si l'erreur peut être détectée à la compilation).
+
+## Quelque chose vers une Référence faible
+
+Une référence faible ne modifiant pas le cycle de vie de la variable pointée, il n'y a pas de problème d'invalidité de cette dernière après son référencement faible. 
+
+## Quelque chose vers une valeur
+
+Quand on affecte quelque chose à une variable de type valeur, alors il y a copie de la première dans la seconde. 
+
+## Quelque chose vers un alias
+
+Un alias est, rappellons le, non nullable, et ne peut donc faire allusion qu'à une variable de type valeur. Le fait de passer par un alias au lieu d'une référence faible, garantit qu'en dessous nous avons à faire à une valeur forcément non null (pb de compilation autrement). A partir du moment où il y a utilisation de référence faible, il faudra continuer à utiliser les références faibles/fortes.
 
 
+## Référence forte vs Valeur
+
+La différence fondamentale pour entre une référence forte et une valeur est la nullabilité de la première contrairement à la seconde. 
+
+## Symbolismes
+
+Référence forte : 
+     i : [#]int = 12;
+
+Référence faible :
+     i2 : #int = i;
+
+Valeur :
+    i3 : int = 12;
+
+Alias :
+     i4 : @int = i3;
 
 
 # Ensemble et POD (Plain of data)
