@@ -1,11 +1,3 @@
-| Titre 1       |     Titre 2     |   Titre 3      |
-| ------------- | -------------   | ---------      |
-| Colonne       |     Colonne     |      Colonne   |
-| Alignée à     |      Alignée au |     Alignée à  |
-| Gauche        |      Centre     |      Droite    |
-
-
-
 # Valeur, Référence faible(#), Référence forte([#]), Alias (##)
 
 ## Valeur 
@@ -20,6 +12,7 @@ Un alias n'est qu'un simple renommage d'une variable (quelque soit sa nature).
 
 Toutes deux sont nullables. Ce qui diffère vraiment est la durée de vie de chacune. Une référence faible n'a, à proprement parler, pas  de cycle de vie étant donnée qu'au moment de l'invalidation du scope parent, la variable pointée par la référence ne sera pas invalidé elle aussi. Alors que dans le cas d'une référence forte, la variable pointée sera invalidée juste avant l'invalidation du scope parent.
 
+
 ## Quelque chose vers une Référence forte
 
 Affecter une variable dans une référence forte va modifier le scope parent de la valeur portée par la variable. Ainsi on évite les copies de données, on va juste déplacer celle-ci dans un nouveau scope. 
@@ -28,13 +21,18 @@ Par exemple, on crée le noeud d'une liste chainée indépendemment de celle-ci,
 
 Bien entendu, ce déplacement va rendre invalide l'utilisation de la variable dont la valeur a ainsi été déplacée. Toute utilisation ultérieure de cette variable provoquera une erreur d'exécution (à voir si l'erreur peut être détectée à la compilation).
 
+De plus, si jamais la référence forte contenait au préalable une valeur alors, celle-ci sera détruite juste avant la prochaine affectation. Affecter une valeur null à une référence forte est donc un moyen de détruire des valeurs dont on ne veut plus.  
+
+
 ## Quelque chose vers une Référence faible
 
 Une référence faible ne modifiant pas le cycle de vie de la variable pointée, il n'y a pas de problème d'invalidité de cette dernière après son référencement faible. 
 
+
 ## Quelque chose vers une valeur
 
 Quand on affecte quelque chose à une variable de type valeur, alors il y a copie de la première dans la seconde. Lorsque le quelque chose qui est affecté à une valeur est null il y a alors erreur d'exécution. 
+
 
 ## Quelque chose vers un alias
 
@@ -49,11 +47,11 @@ La différence fondamentale pour entre une référence forte et une valeur est l
 
 Référence forte : 
 
-     i : [#]int = 12;
+    i : [#]int = 12;
 
 Référence faible :
 
-     i2 : #int = i;
+    i2 : #int = i;
 
 Valeur :
 
@@ -61,7 +59,7 @@ Valeur :
 
 Alias :
 
-     i4 : @int = i3;
+    i4 : @int = i3;
 
 
 # Ensemble et POD (Plain of data)
@@ -114,9 +112,7 @@ il nous faut nous intéresser à leur utilisation de base : l'instantiation.
 Instancier un type signifie déclarer une variable capable de contenir les valeurs de ce type.
 Formellement, l'instantiation se déroule de la façon suivante :
 
-
     <name> ':' <type> ('=' <expression>) ? ';' 
-
 
 on a donc une variable '<name>' de type '<type>' avec éventuellement la valeur '<expression>'. L'expression '<expression>' doit 
 compatible avec '<type>' (de même type ou bien convertible).
@@ -132,6 +128,7 @@ Nous parlons bien ici de la variable et non pas de la valeur. Car il existe deux
 L'instanciation statique permet principalement de garantir la durée de vie d'une variable : elle est la même que celle du scope dans
 lequel elle a été déclarée. 
 
+
 ### Instanciation dynamique
 
 L'instanciation dynamique elle permet de laisser au développeur le soin de controlé la durée de vie de la valeur de la variable. 
@@ -139,11 +136,9 @@ Une allocation dynamique se fait par l'utilisation de l'allocateur 'new' et la d
 Pour éviter toute fuite de mémoire, il y aura donc intérêt à conserver en permanence un pointeur vers la valeur qui a été allouée
 dynamiquement pour que le moment venu, sa désallocation puisse se faire. Autrement, la zone mémoire correspondante serait perdue...
 
-
     <name> ':' '@'<type> = 'new' <type2> '(' <arguments> ')' ';' /// Allocation dynamique
     <name> ':' <type> = <expression> ';' /// allocation statique  
     'delete' <name> ';' /// désallocation dynamique 
-
 
 
 # Pense bête

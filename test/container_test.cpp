@@ -1,9 +1,7 @@
 #include <exception>
 #include <iostream>
 
-
-#include <thodd/container/list.hpp>
-#include <thodd/container/view.hpp>
+#include <thodd/container/tree.hpp>
 
 class something
 {
@@ -30,19 +28,32 @@ int main(
     char* args[])
 try
 {
-    thodd::list<int> __ls{1,2,3,4,5,6};
+    using namespace thodd;
 
-    auto __vs = thodd::view(__ls);
+    tree_node<int> __root{1};
+    tree_node<int> __2{2};
+    tree_node<int> __21{21};
+    tree_node<int> __22{22};
+    
+    auto& __2in = *__root.childs.push_at(__2, __root.childs.end());
+    __2in.parent = &__root;
 
-    for(auto&& __item : __vs)
-        std::cout << __item << std::endl;
+    auto& __21in = *__root.childs.push_at(__21, __root.childs.end());
+    __21in.parent         = &__root;
+    __2in.great_brother   = &__21in;
+    __21in.little_brother = &__2in;
+    
+    auto& __22in = *__root.childs.push_at(__22, __root.childs.end());
+    __22in.parent         = &__root;
+    __21in.great_brother  = &__22in;
+    __22in.little_brother = &__21in;
 
-    for(auto& __item : __ls)
-        __item++;
+    rlg_tree_iterator<int> const __it{&__root};
 
-    for(auto&& __item : __vs)
-        std::cout << __item << std::endl;
-
+    std::cout << *__it << std::endl;
+    std::cout << *++__it << std::endl;
+    std::cout << *++__it << std::endl;
+    std::cout << *++__it << std::endl;
 }
 catch(std::exception& __e)
 {

@@ -19,6 +19,14 @@ namespace thodd::lang
         "to the found range of stream")
 
     template<
+        typename enum_t, 
+        enum_t enum_c>
+    struct word
+    {
+            
+    };
+
+    template<
         typename algo_t, 
         typename caster_t = thodd::id>
     struct word

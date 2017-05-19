@@ -2,9 +2,7 @@
 #  define __THODD_LANG_ALTERNATIVE_ALTERNATIVE_HPP__
 
 #  include <thodd/tuple/tuple.hpp>
-
 #  include <thodd/meta/traits/decay.hpp>
-
 #  include <thodd/core/perfect.hpp>
 
 #  include <thodd/lang/core/regex.hpp>
