@@ -21,7 +21,8 @@ namespace thodd::lang
     template<
         typename ... cases_t>
     constexpr auto 
-    make_alternative(tuple<cases_t...> const& __cases)
+    make_alternative(
+        tuple<cases_t...> const& __cases)
     {
         return 
         alternative<meta::decay_t<cases_t>...>

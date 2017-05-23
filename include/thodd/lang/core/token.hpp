@@ -24,14 +24,18 @@ thodd::lang
         auto&& __begin, 
         auto&& __end)
     {
+        using type_t = decltype(__type); 
+        using begin_t = decltype(__begin);
+        using end_t = decltype(__end);
+
         return 
         token<
-            meta::decay_t<decltype(__type)>, 
-            meta::decay_t<decltype(__begin)>>
-        { perfect<decltype(__type)>(__type), 
-          range<meta::decay_t<decltype(__begin)>>
-          { perfect<decltype(__begin)>(__begin), 
-            prefect<decltype(__end)>(__end) } };
+            meta::decay_t<type_t>, 
+            meta::decay_t<begin_t>>
+        { perfect<type_t>(__type), 
+          range<meta::decay_t<begin_t>>
+          { perfect<begin_t>(__begin), 
+            prefect<end_t>(__end) } };
     }
 }
 

@@ -7,7 +7,7 @@
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
 
-#  include <thodd/lang/core/core.hpp>
+#  include <thodd/lang/core/token.hpp>
 #  include <thodd/lang/core/regex.hpp>
 
 namespace thodd::lang
@@ -20,20 +20,13 @@ namespace thodd::lang
 
     template<
         typename enum_t, 
-        enum_t enum_c>
-    struct word
-    {
-            
-    };
-
-    template<
+        enum_t enum_c, 
         typename algo_t, 
         typename caster_t = thodd::id>
     struct word
     {
         algo_t algo;
-        caster_t caster;
-
+        caster_t caster; 
 
         constexpr auto
         operator () (
@@ -43,9 +36,9 @@ namespace thodd::lang
             return 
             word
             { algo(perfect<decltype(__params)>(__params)...), caster };
-        }
+        } 
 
-
+        
         constexpr auto
         operator [] (
             auto&& __caster) const
@@ -56,17 +49,23 @@ namespace thodd::lang
             return 
             word<algo_t, ocaster_t>
             { algo, perfect<decltype(__caster)>(__caster) };
-        }
+        } 
     };
+
 
     constexpr auto 
     make_word(
+        auto&& __enumid,
         auto&& __algo)
     {
         using algo_t = decltype(__algo);
+        using enum_t = decltype(__enumid);
 
         return 
-        word<meta::decay_t<algo_t>>
+        word<
+            meta::decay_t<enum_t>, 
+            __enumid,
+            meta::decay_t<algo_t>>
         { perfect<algo_t>(__algo) };
     }
 
@@ -99,21 +98,6 @@ namespace thodd::lang
     {
         return 
         matches(__word.algo, __cursor, __end);
-    }
-
-
-    template<
-        typename algo_t, 
-        typename caster_t>
-    inline auto 
-    interpret(
-        word<regex<algo_t>, caster_t> const& __word,
-        auto const& __tree)
-    {
-        if(static_cast<bool>(__tree))
-            return __word.caster(__tree);
-        else 
-            throw bad_caster_exception();
     }
 }
 
