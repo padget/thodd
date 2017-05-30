@@ -85,30 +85,35 @@ namespace thodd
 
     public:
         type_t*
+        get() 
+        {
+            return m_handled;
+        }
+
+
+        type_t const*
         get() const
         {
             return m_handled;
         }
 
+
         type_t*
-        operator->() const
+        operator -> ()
         {
             return m_handled;
         }
 
 
-        type_t const&
-        operator*() const
+        type_t const*
+        operator -> () const
         {
-            go<contract>(
-                require(ref(m_handled) != val(nullptr))
-                > throw_<null_pointer_exception>());
-
-            return *m_handled;
+            return m_handled;
         }
+
 
         type_t&
-        operator*()
+        operator * ()
         {
             go<contract>(
                 require(ref(m_handled) != val(nullptr))
@@ -117,8 +122,20 @@ namespace thodd
             return *m_handled;
         }
 
+
+        type_t const&
+        operator * () const
+        {
+            go<contract>(
+                require(ref(m_handled) != val(nullptr))
+                > throw_<null_pointer_exception>());
+
+            return *m_handled;
+        }
+
+       
         inline type_t&
-        operator[](
+        operator [] (
             size_t const& _index)
         {
             go<contract>(
@@ -128,8 +145,9 @@ namespace thodd
             return *(m_handled + _index);
         }
 
+
         inline type_t const&
-        operator[](
+        operator [] ( 
             size_t const& _index) const
         {
             go<contract>(
@@ -139,15 +157,17 @@ namespace thodd
             return *(m_handled + _index);
         }
 
+
         inline bool const
-        operator==(
+        operator == (
             type_t* _other) const
         {
             return m_handled == _other;
         }
 
+
         inline bool const
-        operator==(
+        operator == ( 
             handler const& _other) const
         {
             return this->operator ==(_other.m_handled);

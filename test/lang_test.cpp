@@ -18,6 +18,11 @@ enum class calc
 };
 
 
+auto operator ""_xa (auto i)
+{
+    return 
+    (int) i;
+}
 
 
 int main(
@@ -32,6 +37,8 @@ try
     
     auto __begin = __input.begin();
     auto __end = __input.end();
+
+    std::cout << 2_xa << std::endl;   
 
     std::cout << "endl" << std::endl;
 

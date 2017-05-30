@@ -2,6 +2,7 @@
 #include <thodd/logging.hpp>
 #include <thodd/lang.hpp> 
 #include <string>
+#include <iostream>
 
 struct __test
 {
@@ -33,7 +34,7 @@ void foo(auto&& __t)
 void foo2(__test&& __t)
 {
     using namespace thodd;
-    
+     
     __t.get();
 }
 

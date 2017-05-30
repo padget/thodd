@@ -22,7 +22,7 @@
             "type": "cppdbg",
             "request": "attach",
             "program": "${workspaceRoot}/debug/test/container_test.exe",
-            "processId": "${command.pickProcess}",
+            "processId": "${command:pickProcess}",
             "linux": {
                 "MIMode": "gdb",
                 "miDebuggerPath": "c:\\gcc-7-win64\\bin\\gdb.exe"
