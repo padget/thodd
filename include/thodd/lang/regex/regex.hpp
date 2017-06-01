@@ -2,6 +2,7 @@
 #  define __THODD_LANG_REGEX_REGEX_HPP__
 
 #  include <thodd/core/perfect.hpp>
+#  include <thodd/meta/traits/decay.hpp>
 
 namespace 
 thodd::lang::regex
@@ -10,18 +11,20 @@ thodd::lang::regex
         typename algo_t>
     struct regex
     {
-        algo_t algo;
+        algo_t algo ;
+    } ;
 
-        constexpr auto
-        operator () (
-            auto&&... __params) const 
-        -> decltype(auto)
-        {
-            return 
-            regex
-            { algo(perfect<decltype(__params)>(__params)...) };
-        }
-    };
+    constexpr auto
+    make_regex(
+        auto&& __algo)
+    {
+        using algo_t  = decltype(__algo) ;
+        using algod_t = meta::decay_t<algo_t> ;
+
+        return
+        regex<algod_t>
+        { perfect<algo_t>(__algo) } ;
+    }
 }
 
 #endif
