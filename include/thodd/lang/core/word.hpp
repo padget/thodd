@@ -12,92 +12,30 @@
 
 namespace thodd::lang
 {
-    THODD_EXCEPTION(
-        bad_caster_exception, 
-        "bad_caster_exception : "
-        "the caster is not adapted " 
-        "to the found range of stream")
-
     template<
         typename enum_t, 
         enum_t enum_c, 
-        typename algo_t, 
-        typename caster_t = thodd::id>
+        typename algo_t>
     struct word
     {
-        algo_t algo;
-        caster_t caster; 
-
-        constexpr auto
-        operator () (
-            auto&&... __params) const 
-        -> decltype(auto)
-        {
-            return 
-            word
-            { algo(perfect<decltype(__params)>(__params)...), caster };
-        } 
-
-        
-        constexpr auto
-        operator [] (
-            auto&& __caster) const
-        -> decltype(auto)
-        {
-            using ocaster_t = meta::decay_t<decltype(__caster)>;
-
-            return 
-            word<algo_t, ocaster_t>
-            { algo, perfect<decltype(__caster)>(__caster) };
-        } 
-    };
+        algo_t algo ;
+    } ;
 
 
     constexpr auto 
     make_word(
-        auto&& __enumid,
+        auto&& __enum,
         auto&& __algo)
     {
-        using algo_t = decltype(__algo);
-        using enum_t = decltype(__enumid);
+        using algo_t = decltype(__algo) ;
+        using enum_t = decltype(__enum) ;
 
         return 
         word<
             meta::decay_t<enum_t>, 
-            __enumid,
+            __enum,
             meta::decay_t<algo_t>>
-        { perfect<algo_t>(__algo) };
-    }
-
-
-    template<
-        typename algo_t, 
-        typename caster_t>
-    inline auto 
-    matches(
-        word<regex<algo_t>, caster_t> const& __word, 
-        auto& __cursor, 
-        auto const& __end)
-    {
-        auto __save = __cursor;
-
-        if(!(matches(__word.algo, __cursor, __end)))
-            __cursor = __save;
-            
-        return make_token(__save, __cursor);
-    }
-
-
-    template<
-        typename ... params_t>
-    inline auto 
-    matches(
-        word<params_t...> const& __word, 
-        auto& __cursor, 
-        auto const& __end)
-    {
-        return 
-        matches(__word.algo, __cursor, __end);
+        { perfect<algo_t>(__algo) } ;
     }
 }
 
