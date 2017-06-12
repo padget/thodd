@@ -1,29 +1,25 @@
 #ifndef __THODD_LANG_REGEX_REGEX_HPP__
 #  define __THODD_LANG_REGEX_REGEX_HPP__
 
-#  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/meta/type.hpp>
+#  include <thodd/meta/traits/is_base_of.hpp>
 
 namespace 
 thodd::lang::regex
 {
-    template< 
-        typename algo_t>
-    struct regex
-    {
-        algo_t algo ;
-    } ;
+    struct regex {} ;
 
+    template<
+        typename type_t>
     constexpr auto
-    make_regex(
-        auto&& __algo)
+    is_regex_based(
+        type_t&&)
     {
-        using algo_t  = decltype(__algo) ;
-        using algod_t = meta::decay_t<algo_t> ;
-
-        return
-        regex<algod_t>
-        { perfect<algo_t>(__algo) } ;
+        return 
+        is_base_of(
+            type_<regex>{}, 
+            type_<decay_t<type_t>>{}) ;
     }
 }
 

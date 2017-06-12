@@ -2,44 +2,55 @@
 #  define __THODD_LANG_REGEX_AND_HPP__
 
 #  include <thodd/tuple/tuple.hpp>
+#  include <thodd/lang/regex/regex.hpp>
+#  include <thodd/meta/traits/decay.hpp>
 
 namespace 
 thodd::lang::regex
 {
     template<
         typename ... regexs_t>
-    struct and_ 
+    struct and_ : regex
     {
         tuple<regexs_t...> regexs ;
     } ;
 
 
-    template<
-        typename lalgo_t, 
-        typename ralgo_t>
-    constexpr and_<
-                regex<lalgo_t>, 
-                regex<ralgo_t>>
+    constexpr auto
     operator > (
-        regex<lalgo_t> const& __lregex, 
-        regex<lalgo_t> const& __rregex)
+        auto&& __lregex, 
+        auto&& __rregex)
     {
+        static_assert(is_regex_based(__lregex)) ;
+        static_assert(is_regex_based(__rregex)) ;
+
+        using namespace thodd::meta ;
+
         return
-        { make_tuple(__lregex, __rregex) } ;
+        and_<
+            decay_t<decltype(__lregex)>, 
+            decay_t<decltype(__rregex)>>
+        { make_tuple(
+            perfect<decltype(__lregex)>(__lregex), 
+            perfect<decltype(__rregex)>(__rregex)) } ;
     }
 
 
     template<
-        typename ... algos_t, 
-        typename ralgo_t>
-    constexpr and_<
-                regex<algos_t>..., 
-                regex<ralgo_t>>
-    operator | (
-        and_<regex<algos_t>...> const& __or,
-        regex<ralgo_t> const& __regex)
+        typename ... regexs_t>
+    constexpr auto
+    operator > (
+        and_<regexs_t...> const& __and,
+        auto&& __rregex)
     {
+        static_assert(is_regex_based(__rregex)) ;
+
+        using namespace thodd::meta ;
+
         return 
-        { __or.choices + make_tuple(__regex) } ;
+        and_<regexs_t..., decay_t<decltype(__rregex)>>
+        { __and.regexs + make_tuple(perfect<decltype(__rregex)>(__rregex)) } ;
     }
 }
+
+#endif

@@ -2,45 +2,53 @@
 #include <exception>
 
 #include <string>
+// #include <type_traits>
+#include <thodd/meta/traits/is_base_of.hpp>
+#include <thodd/meta/traits/decay.hpp>
+#include <thodd/meta/type.hpp>
 
-#include <thodd/lang.hpp>
-
-enum class calc
+struct regex_base
 {
-    integer,
-    comma, 
-    lbracket, 
-    rbracket, 
-    plus, 
-    minus, 
-    multiply, 
-    divide
-};
+    constexpr auto
+    operator() ()
+    {
+        return 3;
+    }
+} ;
 
-
-auto operator ""_xa (auto i)
+struct regex : 
+    regex_base
 {
-    return 
-    (int) i;
+
+} ;
+
+struct bad_regex 
+{
+
+} ;
+
+constexpr auto 
+operator ~ (
+    auto&& __r)
+{
+    using namespace thodd::meta ;
+
+    static_assert(
+        is_base_of(
+            type_<regex_base>{}, 
+            type_<decay_t<decltype(__r)>>{}), 
+        "not based on regex_base") ;
+
+    return __r ;
 }
-
 
 int main(
     int argc, 
     char* args[])
 try
 {
-    using namespace thodd;
-    using namespace thodd::lang;
-
-    std::string __input = "d";
-    
-    auto __begin = __input.begin();
-    auto __end = __input.end();
-
-    std::cout << 2_xa << std::endl;   
-
-    std::cout << "endl" << std::endl;
+    constexpr bad_regex __r {};
+    std::cout << (~__r)() << std::endl;
 
 }
 catch( ... )
