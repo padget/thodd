@@ -6,6 +6,14 @@
 #include <thodd/lang/regex/or.hpp>
 #include <thodd/lang/regex/regex.hpp>
 
+constexpr bool
+matches(
+    between<auto, auto> const& __between, 
+    auto const& __c)
+{
+    return 
+}
+
 int main(
     int argc, 
     char* args[])
