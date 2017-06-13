@@ -4,6 +4,7 @@
 #  include <thodd/core/positive_t.hpp>
 #  include <thodd/lang/regex/regex.hpp>
 #  include <thodd/core/infinity.hpp>
+#  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
 
 namespace 
@@ -15,9 +16,12 @@ thodd::lang::regex
     {
         regex_t reg ;
 
-        positive_t min {0} ;
-        positive_t max {1} ; 
-    
+        mutable positive_t min {0} ;
+        mutable positive_t max {1} ; 
+        
+        constexpr some(auto&& __reg) :
+            reg { __reg } {} 
+
         constexpr some
         operator () (
             positive_t const& __min, 
@@ -29,7 +33,7 @@ thodd::lang::regex
             return 
             *this ;
         }
-    };
+    } ;
 
 
     constexpr auto
@@ -42,12 +46,12 @@ thodd::lang::regex
 
         return
         some<decay_t<decltype(__regex)>>
-        { perfect<decltype(__regex)>(__regex), 1, infinity } ;
+        { perfect<decltype(__regex)>(__regex) }(1, infinity) ;
     }
 
    
     constexpr auto
-    operator - (
+    operator * (
         auto&& __regex)
     {   
         static_assert(is_regex_based(__regex)) ;
@@ -56,7 +60,7 @@ thodd::lang::regex
 
         return
         some<decay_t<decltype(__regex)>>
-        { perfect<decltype(__regex)>(__regex), 0, infinity } ;
+        { perfect<decltype(__regex)>(__regex) }(1, infinity) ;
     }
 
         
@@ -71,8 +75,6 @@ thodd::lang::regex
         return
         some<decay_t<decltype(__regex)>>
         { perfect<decltype(__regex)>(__regex) } ;
-    }
-
     }
 }
 

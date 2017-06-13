@@ -4,6 +4,7 @@
 #  include <thodd/tuple/tuple.hpp>
 #  include <thodd/lang/regex/regex.hpp>
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/core/perfect.hpp>
 
 namespace 
 thodd::lang::regex
@@ -13,6 +14,10 @@ thodd::lang::regex
     struct or_ : regex
     {
         tuple<choices_t...> choices ;
+
+        constexpr or_(
+            auto&& __choices) :
+            choices { perfect<decltype(__choices)>(__choices) } {}
     } ;
 
 
@@ -32,23 +37,23 @@ thodd::lang::regex
             decay_t<decltype(__rregex)>>
         { make_tuple(
             perfect<decltype(__lregex)>(__lregex), 
-            prefect<decltype(__rregex)>(__rregex)) } ;
+            perfect<decltype(__rregex)>(__rregex)) } ;
     }
 
 
     template<
-        typename ... choices_t>
+        typename ... lregexs_t>
     constexpr auto
     operator | (
         or_<lregexs_t...> const& __or,
-        rregex_t&& __rregex)
+        auto&& __rregex)
     {
         static_assert(is_regex_based(__rregex)) ;
 
         using namespace thodd::meta;
 
         return 
-        or_<choices_t..., decay_t<decltype(__rregex)>>
+        or_<lregexs_t..., decay_t<decltype(__rregex)>>
         { __or.choices + make_tuple(perfect<decltype(__rregex)>(__rregex)) } ;
     }
 }

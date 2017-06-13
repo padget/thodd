@@ -15,6 +15,13 @@ thodd::lang::regex
     {
         min_t min ;  
         max_t max ;
+
+        constexpr between(
+            auto&& __min, 
+            auto&& __max) :
+            min {perfect<decltype(__min)>(__min) }, 
+            max {perfect<decltype(__max)>(__max) } {} 
+            
     } ;
 
 

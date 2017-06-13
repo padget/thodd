@@ -13,8 +13,12 @@ thodd::lang::regex
     struct and_ : regex
     {
         tuple<regexs_t...> regexs ;
-    } ;
 
+        constexpr and_(
+            auto&& __regexs):
+            regexs { perfect<decltype(__regexs)>(__regexs) } {}
+
+    } ;
 
     constexpr auto
     operator > (

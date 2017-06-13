@@ -16,6 +16,8 @@ thodd::lang::regex
     is_regex_based(
         type_t&&)
     {
+        using namespace thodd::meta;
+        
         return 
         is_base_of(
             type_<regex>{}, 

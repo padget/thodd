@@ -3,6 +3,7 @@
 
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/core/rvalue.hpp>
+#  include <thodd/core/size_t.hpp>
 
 namespace thodd
 {

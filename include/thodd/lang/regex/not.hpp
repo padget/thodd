@@ -12,7 +12,11 @@ thodd::lang::regex
         typename regex_t>
     struct not_ : regex
     {
-        regex_t expr ;
+        regex_t reg ;
+
+        constexpr not_(
+            auto&& __reg) : 
+            reg { perfect<decltype(__reg)>(__reg) } {}
     } ;
 
     
@@ -25,8 +29,8 @@ thodd::lang::regex
         using namespace thodd::meta;
 
         return
-        not_<decay_t<delctype(__regex)>>
-        { perfect<delctype(__regex)>(__regex) } ; 
+        not_<decay_t<decltype(__regex)>>
+        { perfect<decltype(__regex)>(__regex) } ; 
     }
 }
 

@@ -3,6 +3,7 @@
 
 #  include <thodd/meta/traits/decay.hpp>
 #  include <thodd/core/perfect.hpp>
+#  include <thodd/lang/regex/regex.hpp>
 
 namespace 
 thodd::lang::regex 
@@ -11,34 +12,35 @@ thodd::lang::regex
         typename char_t>
     struct char_ : regex
     {
-        char_t c;
+        char_t c ;
+
+        constexpr char_(
+            auto&& __c) :
+            c { perfect<decltype(__c)>(__c) } {}
     } ;
 
-    template<
-        typename type_t>
-    constexpr auto
-    is_char(
-        type_t&&)
-    {
-        return 
-        false ;   
-    }
     
-    template<
-        typename type_t>
+    
     constexpr auto
     is_char(
-        char_<type_t> const&)
+        auto const&)
     {
-        return 
-        true ;   
+        return false ;   
+    }
+
+
+    constexpr auto
+    is_char(
+        char_<auto> const&)
+    {
+        return true ;   
     }
 
     constexpr auto
     chr(auto&& __c)
     {
         using namespace thodd::meta;
-
+        
         return 
         char_<decay_t<decltype(__c)>>
         { perfect<decltype(__c)>(__c) } ;
