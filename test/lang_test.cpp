@@ -1,3 +1,6 @@
+#include <iostream>
+#include <string>
+
 #include <thodd/lang/regex/some.hpp>
 #include <thodd/lang/regex/and.hpp>
 #include <thodd/lang/regex/between.hpp>
@@ -6,13 +9,7 @@
 #include <thodd/lang/regex/or.hpp>
 #include <thodd/lang/regex/regex.hpp>
 
-constexpr bool
-matches(
-    between<auto, auto> const& __between, 
-    auto const& __c)
-{
-    return 
-}
+
 
 int main(
     int argc, 
@@ -20,8 +17,14 @@ int main(
 try
 {
     using namespace thodd::lang::regex;
+    std::string __s{"c"};
     
-    (!((chr('A') - chr('Z')) > (chr('A') - chr('Z')) > *(chr('a') - chr('z')))) | +(chr('0') - chr('9')) | !chr('a');
+    auto __begin = __s.begin();
+    auto __end = __s.end();
+
+    std::cout << matches(chr('a'), __begin, __end) << '\n';
+    --__begin;
+    std::cout << matches(chr('c'), __begin, __end) << '\n' << std::endl;
 }
 catch(...)
 {

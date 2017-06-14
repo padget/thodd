@@ -45,6 +45,18 @@ thodd::lang::regex
         char_<decay_t<decltype(__c)>>
         { perfect<decltype(__c)>(__c) } ;
     }
+
+    constexpr auto
+    matches(
+        char_<auto> const& __rx,
+        auto& __current, 
+        auto const& __end)
+    {
+        auto&& __matched = __current != __end 
+                        && *__current == __rx.c ;
+        ++__current ;
+        return __matched ; 
+    }
 }
 
 #endif
