@@ -6,7 +6,7 @@
 #  include <thodd/core/infinity.hpp>
 #  include <thodd/core/perfect.hpp>
 #  include <thodd/meta/traits/decay.hpp>
-#  include <thodd/meta/traits/enable_if.hpp>
+#  include <thodd/meta/traits/require.hpp>
 #  include <type_traits>
 namespace 
 thodd::lang::regex
@@ -51,13 +51,13 @@ thodd::lang::regex
     }
 
    
-    template<typename type_t>
+    template<
+        typename type_t>
     constexpr auto
     operator * (
+        
         type_t&& __regex)
-    -> meta::enable_if_t<
-                is_regex_based(type_t{}), 
-                some<meta::decay_t<type_t>>>
+    -> meta::require<is_regex_based(type_t{}), some<meta::decay_t<type_t>>>
     {   
         return
         some<meta::decay_t<type_t>>

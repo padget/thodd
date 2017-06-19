@@ -1,5 +1,7 @@
-#ifndef __THODD_META_TRAITS_ENABLE_IF_HPP__
-#  define __THODD_META_TRAITS_ENABLE_IF_HPP__
+#ifndef __THODD_META_TRAITS_REQUIRE_HPP__
+#  define __THODD_META_TRAITS_REQUIRE_HPP__
+
+#  include <thodd/meta/type.hpp>
 
 namespace 
 thodd::meta 
@@ -7,11 +9,11 @@ thodd::meta
     template<
         bool test_c, 
         typename type_t>
-    struct enable_if ;
+    struct require ;
 
     template<
         typename type_t>
-    struct enable_if<true, type_t>
+    struct require<true, type_t>
     {
         using type = type_t ;
     } ;
@@ -19,7 +21,8 @@ thodd::meta
     template<
         bool test_c,
         typename type_t = void>
-    using enable_if_t = typename enable_if<test_c, type_t>::type ;
+    using require_t = typename require<test_c, type_t>::type ;
+    
 }
 
 
