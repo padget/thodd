@@ -15,8 +15,8 @@ thodd::lang::regex
         regex_t reg ;
 
         constexpr not_(
-            auto&& __reg) : 
-            reg { perfect<decltype(__reg)>(__reg) } {}
+            decltype(reg) const & __reg) : 
+            reg { rvalue(__reg) } {}
     } ;
 
     

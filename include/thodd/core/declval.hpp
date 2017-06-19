@@ -20,7 +20,7 @@ thodd
 {
     template<
         typename type_t>
-    inline meta::add_rvalue_reference_t<type_t>
+    constexpr meta::add_rvalue_reference_t<type_t>
     declval() noexcept
     {
         using namespace declval_detail;

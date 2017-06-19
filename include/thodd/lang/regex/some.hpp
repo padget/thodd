@@ -5,9 +5,9 @@
 #  include <thodd/lang/regex/regex.hpp>
 #  include <thodd/core/infinity.hpp>
 #  include <thodd/core/perfect.hpp>
+#  include <thodd/core/rvalue.hpp>
 #  include <thodd/meta/traits/decay.hpp>
-#  include <thodd/meta/traits/require.hpp>
-#  include <type_traits>
+
 namespace 
 thodd::lang::regex
 {
@@ -20,8 +20,11 @@ thodd::lang::regex
         mutable positive_t min {0} ;
         mutable positive_t max {1} ; 
         
-        constexpr some(auto&& __reg) :
-            reg { __reg } {} 
+        constexpr some(regex_based&& __reg) :
+            reg { rvalue(__reg) } {} 
+
+        constexpr some(regex_based const& __reg) :
+            reg { __reg } {}
 
         constexpr some
         operator () (
@@ -41,8 +44,6 @@ thodd::lang::regex
     operator + (
         auto&& __regex)
     {   
-        static_assert(is_regex_based(__regex)) ;
-
         using namespace thodd::meta ;
 
         return
@@ -50,17 +51,14 @@ thodd::lang::regex
         { perfect<decltype(__regex)>(__regex) }(1, infinity) ;
     }
 
-   
-    template<
-        typename type_t>
+
+
     constexpr auto
     operator * (
-        
-        type_t&& __regex)
-    -> meta::require<is_regex_based(type_t{}), some<meta::decay_t<type_t>>>
+        regex_based&& __regex) 
     {   
         return
-        some<meta::decay_t<type_t>>
+        some<meta::decay_t<decltype(__regex)>>
         { perfect<decltype(__regex)>(__regex) }(1, infinity) ;
     }
 

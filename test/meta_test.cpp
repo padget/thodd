@@ -21,7 +21,7 @@
 #include <thodd/meta/traits/is_object.hpp>
 #include <thodd/meta/traits/is_pointer.hpp>
 #include <thodd/meta/traits/is_reference.hpp>
-#include <thodd/meta/traits/is_same.hpp>
+//#include <thodd/meta/traits/is_same.hpp>
 #include <thodd/meta/traits/is_scalar.hpp>
 #include <thodd/meta/traits/is_union.hpp>
 #include <thodd/meta/traits/is_void.hpp>
@@ -35,7 +35,10 @@
 #include <thodd/meta/pack/unique.hpp>
 #include <thodd/meta/utils/if.hpp>
 
+#include <thodd/meta/traits/concepts.hpp>
+
 using namespace thodd::meta;
+
 
 static_assert(is_array(type_<int[]>{}));
 static_assert(!is_array(type_<int>{}));

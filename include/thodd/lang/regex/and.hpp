@@ -1,9 +1,11 @@
 #ifndef __THODD_LANG_REGEX_AND_HPP__
 #  define __THODD_LANG_REGEX_AND_HPP__
 
-#  include <thodd/tuple/tuple.hpp>
-#  include <thodd/lang/regex/regex.hpp>
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/core/rvalue.hpp>
+#  include <thodd/tuple/tuple.hpp>
+
+#  include <thodd/lang/regex/regex.hpp>
 
 namespace 
 thodd::lang::regex
@@ -15,9 +17,17 @@ thodd::lang::regex
         tuple<regexs_t...> regexs ;
 
         constexpr and_(
-            auto&& __regexs):
+            decltype(regexs) && __regexs):
             regexs { perfect<decltype(__regexs)>(__regexs) } {}
 
+        constexpr and_(
+            decltype(regexs) const & __regexs) :
+            regexs { rvalue(__regexs) } {}
+
+        constexpr and_(and_ const&) = default ;
+        constexpr and_(and_&&) = default ;
+        constexpr and_& operator = (and_ const &) = default ;
+        constexpr and_& operator = (and_ &&) = default ;
     } ;
 
     constexpr auto

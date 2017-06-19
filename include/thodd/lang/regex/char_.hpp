@@ -2,7 +2,10 @@
 #  define __THODD_LANG_REGEX_CHAR_HPP__ 
 
 #  include <thodd/meta/traits/decay.hpp>
+#  include <thodd/meta/traits/require.hpp>
+
 #  include <thodd/core/perfect.hpp>
+#  include <thodd/core/rvalue.hpp>
 #  include <thodd/lang/regex/regex.hpp>
 
 namespace 
@@ -15,8 +18,17 @@ thodd::lang::regex
         char_t c ;
 
         constexpr char_(
-            auto&& __c) :
-            c { perfect<decltype(__c)>(__c) } {}
+            decltype(c) && __c) :
+            c { rvalue(__c) } {}
+
+        constexpr char_(
+            decltype(c) const& __c) :
+            c { __c } {}
+
+        constexpr char_(char_ const&) = default ;
+        constexpr char_(char_&&) = default ;
+        constexpr char_& operator = (char_ const&) = default ;
+        constexpr char_& operator = (char_&&) = default ;
     } ;
 
     

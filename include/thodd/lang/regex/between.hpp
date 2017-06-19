@@ -3,6 +3,7 @@
 
 #  include <thodd/lang/regex/regex.hpp>
 #  include <thodd/core/perfect.hpp>
+#  include <thodd/core/rvalue.hpp>
 #  include <thodd/meta/traits/decay.hpp>
 
 namespace 
@@ -17,11 +18,33 @@ thodd::lang::regex
         max_t max ;
 
         constexpr between(
-            auto&& __min, 
-            auto&& __max) :
-            min {perfect<decltype(__min)>(__min) }, 
-            max {perfect<decltype(__max)>(__max) } {} 
+            decltype(min) const & __min, 
+            decltype(max) const & __max) :
+            min { __min }, 
+            max { __max } {} 
+
+        constexpr between(
+            decltype(min) && __min, 
+            decltype(max) const & __max) :
+            min { rvalue(__min)>(__min) }, 
+            max { __max } {} 
             
+        constexpr between(
+            decltype(min) const & __min, 
+            decltype(max) && __max) :
+            min { __min }, 
+            max { rvalue(__max) } {} 
+
+        constexpr between(
+            decltype(min) && __min, 
+            decltype(max) && __max) :
+            min { rvalue(__min) }, 
+            max { rvalue(__max) } {}
+
+        constexpr between(between const &) = default;
+        constexpr between(between &&) = default;
+        constexpr between & operator = (between const &) = default;
+        constexpr between & operator = (between &&) = default;
     } ;
 
 

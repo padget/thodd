@@ -22,6 +22,8 @@ thodd::meta
     template<
         typename type_t>
     using is_arithmetic_t = __type<decltype(is_arithmetic(type_<type_t>{}))>;
+
+
 }
 
 #endif 

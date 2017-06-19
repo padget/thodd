@@ -17,14 +17,9 @@ int main(
 try
 {
     using namespace thodd::lang::regex;
-    std::string __s{"c"};
-    
-    auto __begin = __s.begin();
-    auto __end = __s.end();
 
-    std::cout << matches(chr('a'), __begin, __end) << '\n';
-    --__begin;
-    std::cout << matches(chr('c'), __begin, __end) << '\n' << std::endl;
+    *(*chr('1'));
+    
 }
 catch(...)
 {
